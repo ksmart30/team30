@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/main">
+	<th:block layout:fragment="customHead">
+		<meta charset="UTF-8">
+		<title>전표입력</title>
+	</th:block>
+	<th:block layout:fragment="customBody">
+		<font color="black">
+		<div class="col-md-12 col-sm-6 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h1>전표입력</h1>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+					회계단위
+					<select>
+						<option>ANU디자인그룹(주)</option>
+					</select>
+					전표유형
+					<select>
+						<option>일반전표</option>
+						<option>대금지금전표</option>
+						<option>결산전표</option>
+					</select>
+					전표일자
+						<input type="date"name="">-
+						<input type="text"name="">
+						<button type="button"name="">ㅁ</button>
+						<button type="button"name="">입력</button>
+						<button type="button"name="">상세검색</button>
+						<button type="button"name="">전표복사</button>
+						<button type="button"name="">순번추가</button>
+						<button type="button"name="">순번삭제</button>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 col-sm-6 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h3>전표입력리스트</h3>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+                    <table class="table table-bordered">
+				<thead>
+					<tr>
+						<td bgcolor="#E6E6E6">#</td>
+						<td bgcolor="#E6E6E6">순번</td>
+						<td bgcolor="#E6E6E6">계정코드</td>
+						<td bgcolor="#E6E6E6">세목</td>
+						<td bgcolor="#E6E6E6">귀속부서</td>
+						<td bgcolor="#E6E6E6">차변금액</td>
+						<td bgcolor="#E6E6E6">대변금액</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+					<th scope="row">1</th>
+						<td>100</td>
+						<td>001</td>
+						<td>안녕</td>
+						<td>2team</td>
+						<td>10000</td>
+						<td>20000</td>
+					</tr>
+					<tr>
+						<th scope="row">2</th>
+						<td>100</td>
+						<td>001</td>
+						<td>안녕</td>
+						<td>2team</td>
+						<td>10000</td>
+						<td>20000</td>
+					</tr>
+					<tr>
+						<th scope="row">3</th>
+						<td>100</td>
+						<td>001</td>
+						<td>안녕</td>
+						<td>2team</td>
+						<td>10000</td>
+						<td>20000</td>
+					</tr>
+					<tr>               
+						<td></td>
+						<td colspan="4">합계</td>
+						<td></td>
+						<td></td>
+					</tr>
+						</tbody>
+						</table>
+
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 col-sm-6 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h3>전표기본내역</h3>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+                    <table class="table table-bordered">
+				<tr>
+					<td>
+						회계단위
+					</td>
+					<td colspan="3">
+						<select>
+							<option>
+								?????
+							</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						전표유형
+					</td>
+					<td>
+						<select>
+							<option>
+								?????
+							</option>
+						</select>	
+					</td>
+					<td>종　　류</td>
+					<td>
+						<input type="radio" >현금
+						<input type="radio" >대체
+					</td>
+				</tr>
+				<tr>
+					<td>
+						전표일자
+					</td>
+					<td>
+						<input type="date"name="">
+					</td>
+					<td>
+					전표번호
+					</td>
+					<td>
+						<input type="text"name="">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						발의일자
+					</td>
+					<td>
+						<input type="date"name="">
+					</td>
+					<td>
+						발의부서
+					</td>
+					<td>
+						<input type="text"name="">
+						<button type="button"name="">ㅁ</button>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						발의자
+					</td>
+					<td>
+					<input type="text"name="">
+					<button type="button"name="">ㅁ</button>
+					</td>
+					<td>
+						상　　태
+					</td>
+					<td>
+						<input type="text"name="">
+					</td>
+				</tr>
+			</table>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 col-sm-6 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h3>전표상세내역</h3>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                          <li><a href="#">Settings 2</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+                   <table class="table table-bordered">
+                      <thead>
+				<tr>
+					<td colspan="8">기본내역</td>
+				</tr>
+				<tr>
+					<td>전표순번</td>
+					<td colspan="4"><input type="text"name=""></td>
+				</tr>
+				<tr>
+					<td>
+						계정코드
+					</td>
+					<td colspan="4">
+						<input type="text"name="">
+						<input type="text"name="">
+						<button type="button"name="">ㅁ</button>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						귀속부서
+					</td>
+					<td colspan="4">
+						<input type="text"name="">
+						<button type="button"name="">ㅁ</button>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						차대구분
+					</td>
+					<td>
+						<input type="radio"name="">차변
+						<input type="radio"name="">대변
+					<td>
+					<td>
+						금　　액
+					</td>
+					<td>
+						<input type="text"name="">
+					</td>
+				</tr>
+				<tr>
+					<td>
+						적요
+					</td>
+					<td colspan="4">
+						<input type="text"name="">
+					</td>
+				</tr>
+				
+			</table>
+
+                  </div>
+                </div>
+              </div>
+              </font>
+	</th:block>
+</html>
