@@ -1690,12 +1690,12 @@ require('./scales/scale.time')(Chart);
 
 // Controllers must be loaded after elements
 // See Chart.core.datasetController.dataElementType
-require('./controllers/controller.bar')(Chart);
-require('./controllers/controller.bubble')(Chart);
-require('./controllers/controller.doughnut')(Chart);
-require('./controllers/controller.line')(Chart);
-require('./controllers/controller.polarArea')(Chart);
-require('./controllers/controller.radar')(Chart);
+require('./controllers/com.cafe24.ksmart30.team01.business.controller.bar')(Chart);
+require('./controllers/com.cafe24.ksmart30.team01.business.controller.bubble')(Chart);
+require('./controllers/com.cafe24.ksmart30.team01.business.controller.doughnut')(Chart);
+require('./controllers/com.cafe24.ksmart30.team01.business.controller.line')(Chart);
+require('./controllers/com.cafe24.ksmart30.team01.business.controller.polarArea')(Chart);
+require('./controllers/com.cafe24.ksmart30.team01.business.controller.radar')(Chart);
 
 require('./charts/Chart.Bar')(Chart);
 require('./charts/Chart.Bubble')(Chart);
@@ -1707,7 +1707,7 @@ require('./charts/Chart.Scatter')(Chart);
 
 window.Chart = module.exports = Chart;
 
-},{"./charts/Chart.Bar":8,"./charts/Chart.Bubble":9,"./charts/Chart.Doughnut":10,"./charts/Chart.Line":11,"./charts/Chart.PolarArea":12,"./charts/Chart.Radar":13,"./charts/Chart.Scatter":14,"./controllers/controller.bar":15,"./controllers/controller.bubble":16,"./controllers/controller.doughnut":17,"./controllers/controller.line":18,"./controllers/controller.polarArea":19,"./controllers/controller.radar":20,"./core/core.animation":21,"./core/core.controller":22,"./core/core.datasetController":23,"./core/core.element":24,"./core/core.helpers":25,"./core/core.js":26,"./core/core.layoutService":27,"./core/core.legend":28,"./core/core.plugin.js":29,"./core/core.scale":30,"./core/core.scaleService":31,"./core/core.title":32,"./core/core.tooltip":33,"./elements/element.arc":34,"./elements/element.line":35,"./elements/element.point":36,"./elements/element.rectangle":37,"./scales/scale.category":38,"./scales/scale.linear":39,"./scales/scale.logarithmic":40,"./scales/scale.radialLinear":41,"./scales/scale.time":42}],8:[function(require,module,exports){
+},{"./charts/Chart.Bar":8,"./charts/Chart.Bubble":9,"./charts/Chart.Doughnut":10,"./charts/Chart.Line":11,"./charts/Chart.PolarArea":12,"./charts/Chart.Radar":13,"./charts/Chart.Scatter":14,"./controllers/com.cafe24.ksmart30.team01.business.controller.bar":15,"./controllers/com.cafe24.ksmart30.team01.business.controller.bubble":16,"./controllers/com.cafe24.ksmart30.team01.business.controller.doughnut":17,"./controllers/com.cafe24.ksmart30.team01.business.controller.line":18,"./controllers/com.cafe24.ksmart30.team01.business.controller.polarArea":19,"./controllers/com.cafe24.ksmart30.team01.business.controller.radar":20,"./core/core.animation":21,"./core/core.controller":22,"./core/core.datasetController":23,"./core/core.element":24,"./core/core.helpers":25,"./core/core.js":26,"./core/core.layoutService":27,"./core/core.legend":28,"./core/core.plugin.js":29,"./core/core.scale":30,"./core/core.scaleService":31,"./core/core.title":32,"./core/core.tooltip":33,"./elements/element.arc":34,"./elements/element.line":35,"./elements/element.point":36,"./elements/element.rectangle":37,"./scales/scale.category":38,"./scales/scale.linear":39,"./scales/scale.logarithmic":40,"./scales/scale.radialLinear":41,"./scales/scale.time":42}],8:[function(require,module,exports){
 "use strict";
 
 module.exports = function(Chart) {
@@ -3669,7 +3669,7 @@ module.exports = function(Chart) {
 	// Controllers available for dataset visualization eg. bar, line, slice, etc.
 	Chart.controllers = {};
 
-	// The main controller of a chart
+	// The main com.cafe24.ksmart30.team01.business.controller of a chart
 	Chart.Controller = function(instance) {
 
 		this.chart = instance;
@@ -3906,8 +3906,8 @@ module.exports = function(Chart) {
 			Chart.pluginService.notifyPlugins('afterScaleUpdate', [this]);
 
 			// Can only reset the new controllers after the scales have been updated
-			helpers.each(newControllers, function(controller) {
-				controller.reset();
+			helpers.each(newControllers, function(com.cafe24.ksmart30.team01.business.controller) {
+				com.cafe24.ksmart30.team01.business.controller.reset();
 			});
 
 			// This will loop through any data and do the appropriate element update for the type
@@ -3974,7 +3974,7 @@ module.exports = function(Chart) {
 			context.rect(this.chartArea.left, this.chartArea.top, this.chartArea.right - this.chartArea.left, this.chartArea.bottom - this.chartArea.top);
 			context.clip();
 
-			// Draw each dataset via its respective controller (reversed to support proper line stacking)
+			// Draw each dataset via its respective com.cafe24.ksmart30.team01.business.controller (reversed to support proper line stacking)
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				if (this.isDatasetVisible(datasetIndex)) {
 					this.getDatasetMeta(datasetIndex).controller.draw(ease);
@@ -4080,7 +4080,7 @@ module.exports = function(Chart) {
 				type: null,
 				data: [],
 				dataset: null,
-				controller: null,
+				com.cafe24.ksmart30.team01.business.controller: null,
 				hidden: null,			// See isDatasetVisible() comment
 				xAxisID: null,
 				yAxisID: null
@@ -5951,7 +5951,7 @@ module.exports = function(Chart) {
 			var ci = this.chart;
 			var meta = ci.getDatasetMeta(index);
 
-			// See controller.isDatasetVisible comment
+			// See com.cafe24.ksmart30.team01.business.controller.isDatasetVisible comment
 			meta.hidden = meta.hidden === null? !ci.data.datasets[index].hidden : null;
 
 			// We hid a dataset ... rerender the chart

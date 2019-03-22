@@ -27,7 +27,7 @@
 * Use the internal timing function of angular
 * Added the ability to create two instances of the chart on one main scope
 * Removed unnecessary stuff from the angular example to provide the minimal setup
-* Added more conventional way to create controller in angular
+* Added more conventional way to create com.cafe24.ksmart30.team01.business.controller in angular
 
 ## Version 2.0.3 - Sep 29, 2013
 * Fixed render bug on retina displays

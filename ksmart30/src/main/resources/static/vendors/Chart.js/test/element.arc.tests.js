@@ -22,7 +22,7 @@ describe('Arc element tests', function() {
 		expect(arc.inRange(2, 2)).toBe(false);
 		expect(arc.inLabelRange(2)).toBe(false);
 
-		// Mock out the view as if the controller put it there
+		// Mock out the view as if the com.cafe24.ksmart30.team01.business.controller put it there
 		arc._view = {
 			startAngle: 0,
 			endAngle: Math.PI / 2,
@@ -45,7 +45,7 @@ describe('Arc element tests', function() {
 			_index: 1
 		});
 
-		// Mock out the view as if the controller put it there
+		// Mock out the view as if the com.cafe24.ksmart30.team01.business.controller put it there
 		arc._view = {
 			startAngle: 0,
 			endAngle: Math.PI / 2,
@@ -70,7 +70,7 @@ describe('Arc element tests', function() {
 			}
 		});
 
-		// Mock out the view as if the controller put it there
+		// Mock out the view as if the com.cafe24.ksmart30.team01.business.controller put it there
 		arc._view = {
 			startAngle: 0,
 			endAngle: Math.PI / 2,
@@ -125,7 +125,7 @@ describe('Arc element tests', function() {
 			}
 		});
 
-		// Mock out the view as if the controller put it there
+		// Mock out the view as if the com.cafe24.ksmart30.team01.business.controller put it there
 		arc._view = {
 			startAngle: 0,
 			endAngle: Math.PI / 2,

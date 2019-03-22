@@ -364,18 +364,18 @@
          * @private
          */
         _resetController: function (api) {
-            var controller = this._controller;
+            var com.cafe24.ksmart30.team01.business.controller = this._controller;
 
-            // Init controller.
-            if (!controller) {
-                controller = this._controller = new RoamController(api.getZr());
-                controller.enable(this.seriesModel.get('roam'));
-                controller.on('pan', bind(this._onPan, this));
-                controller.on('zoom', bind(this._onZoom, this));
+            // Init com.cafe24.ksmart30.team01.business.controller.
+            if (!com.cafe24.ksmart30.team01.business.controller) {
+                com.cafe24.ksmart30.team01.business.controller = this._controller = new RoamController(api.getZr());
+                com.cafe24.ksmart30.team01.business.controller.enable(this.seriesModel.get('roam'));
+                com.cafe24.ksmart30.team01.business.controller.on('pan', bind(this._onPan, this));
+                com.cafe24.ksmart30.team01.business.controller.on('zoom', bind(this._onZoom, this));
             }
 
             var rect = new BoundingRect(0, 0, api.getWidth(), api.getHeight());
-            controller.rectProvider = function () {
+            com.cafe24.ksmart30.team01.business.controller.rectProvider = function () {
                 return rect;
             };
         },
@@ -384,10 +384,10 @@
          * @private
          */
         _clearController: function () {
-            var controller = this._controller;
-            if (controller) {
-                controller.off('pan').off('zoom');
-                controller = null;
+            var com.cafe24.ksmart30.team01.business.controller = this._controller;
+            if (com.cafe24.ksmart30.team01.business.controller) {
+                com.cafe24.ksmart30.team01.business.controller.off('pan').off('zoom');
+                com.cafe24.ksmart30.team01.business.controller = null;
             }
         },
 

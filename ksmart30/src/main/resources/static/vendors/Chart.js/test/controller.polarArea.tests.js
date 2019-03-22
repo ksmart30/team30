@@ -1,5 +1,5 @@
-// Test the polar area controller
-describe('Polar area controller tests', function() {
+// Test the polar area com.cafe24.ksmart30.team01.business.controller
+describe('Polar area com.cafe24.ksmart30.team01.business.controller tests', function() {
 
 	beforeEach(function() {
 		window.addDefaultMatchers(jasmine);

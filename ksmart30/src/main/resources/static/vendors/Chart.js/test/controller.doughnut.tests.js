@@ -1,5 +1,5 @@
-// Test the bar controller
-describe('Doughnut controller tests', function() {
+// Test the bar com.cafe24.ksmart30.team01.business.controller
+describe('Doughnut com.cafe24.ksmart30.team01.business.controller tests', function() {
 
 	beforeEach(function() {
 		window.addDefaultMatchers(jasmine);

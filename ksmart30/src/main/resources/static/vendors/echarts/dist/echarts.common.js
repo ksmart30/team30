@@ -32704,10 +32704,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * @private
 	         */
-	        _onPan: function (coordInfo, controller, dx, dy) {
+	        _onPan: function (coordInfo, com.cafe24.ksmart30.team01.business.controller, dx, dy) {
 	            return (
 	                this._range = panCartesian(
-	                    [dx, dy], this._range, controller, coordInfo
+	                    [dx, dy], this._range, com.cafe24.ksmart30.team01.business.controller, coordInfo
 	                )
 	            );
 	        },
@@ -32715,7 +32715,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * @private
 	         */
-	        _onZoom: function (coordInfo, controller, scale, mouseX, mouseY) {
+	        _onZoom: function (coordInfo, com.cafe24.ksmart30.team01.business.controller, scale, mouseX, mouseY) {
 	            var dataZoomModel = this.dataZoomModel;
 
 	            if (dataZoomModel.option.zoomLock) {
@@ -32725,14 +32725,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return (
 	                this._range = scaleCartesian(
 	                    1 / scale, [mouseX, mouseY], this._range,
-	                    controller, coordInfo, dataZoomModel
+	                    com.cafe24.ksmart30.team01.business.controller, coordInfo, dataZoomModel
 	                )
 	            );
 	        }
 
 	    });
 
-	    function panCartesian(pixelDeltas, range, controller, coordInfo) {
+	    function panCartesian(pixelDeltas, range, com.cafe24.ksmart30.team01.business.controller, coordInfo) {
 	        range = range.slice();
 
 	        // Calculate transform by the first axis.
@@ -32741,7 +32741,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return;
 	        }
 
-	        var directionInfo = getDirectionInfo(pixelDeltas, axisModel, controller);
+	        var directionInfo = getDirectionInfo(pixelDeltas, axisModel, com.cafe24.ksmart30.team01.business.controller);
 
 	        var percentDelta = directionInfo.signal
 	            * (range[1] - range[0])
@@ -32757,7 +32757,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return range;
 	    }
 
-	    function scaleCartesian(scale, mousePoint, range, controller, coordInfo, dataZoomModel) {
+	    function scaleCartesian(scale, mousePoint, range, com.cafe24.ksmart30.team01.business.controller, coordInfo, dataZoomModel) {
 	        range = range.slice();
 
 	        // Calculate transform by the first axis.
@@ -32766,7 +32766,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return;
 	        }
 
-	        var directionInfo = getDirectionInfo(mousePoint, axisModel, controller);
+	        var directionInfo = getDirectionInfo(mousePoint, axisModel, com.cafe24.ksmart30.team01.business.controller);
 
 	        var mouse = directionInfo.pixel - directionInfo.pixelStart;
 	        var percentPoint = mouse / directionInfo.pixelLength * (range[1] - range[0]) + range[0];
@@ -32778,9 +32778,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return fixRange(range);
 	    }
 
-	    function getDirectionInfo(xy, axisModel, controller) {
+	    function getDirectionInfo(xy, axisModel, com.cafe24.ksmart30.team01.business.controller) {
 	        var axis = axisModel.axis;
-	        var rect = controller.rectProvider();
+	        var rect = com.cafe24.ksmart30.team01.business.controller.rectProvider();
 	        var ret = {};
 
 	        if (axis.dim === 'x') {
@@ -32820,12 +32820,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * @file Roam controller manager.
+	 * @file Roam com.cafe24.ksmart30.team01.business.controller manager.
 	 */
 
 
-	    // Only create one roam controller for each coordinate system.
-	    // one roam controller might be refered by two inside data zoom
+	    // Only create one roam com.cafe24.ksmart30.team01.business.controller for each coordinate system.
+	    // one roam com.cafe24.ksmart30.team01.business.controller might be refered by two inside data zoom
 	    // components (for example, one for x and one for y). When user
 	    // pan or zoom, only dispatch one action for those data zoom
 	    // components.
@@ -32943,7 +32943,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    /**
-	     * Key: coordId, value: {dataZoomInfos: [], count, controller}
+	     * Key: coordId, value: {dataZoomInfos: [], count, com.cafe24.ksmart30.team01.business.controller}
 	     * @type {Array.<Object>}
 	     */
 	    function giveStore(api) {
@@ -32954,12 +32954,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    function createController(api, dataZoomInfo, newRecord) {
-	        var controller = new RoamController(api.getZr());
-	        controller.enable();
-	        controller.on('pan', curry(onPan, newRecord));
-	        controller.on('zoom', curry(onZoom, newRecord));
+	        var com.cafe24.ksmart30.team01.business.controller = new RoamController(api.getZr());
+	        com.cafe24.ksmart30.team01.business.controller.enable();
+	        com.cafe24.ksmart30.team01.business.controller.on('pan', curry(onPan, newRecord));
+	        com.cafe24.ksmart30.team01.business.controller.on('zoom', curry(onZoom, newRecord));
 
-	        return controller;
+	        return com.cafe24.ksmart30.team01.business.controller;
 	    }
 
 	    function cleanStore(store) {
@@ -35476,7 +35476,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    proto._createController = function (
 	        controllerGroup, featureModel, ecModel, api
 	    ) {
-	        var controller = this._controller = new SelectController(
+	        var com.cafe24.ksmart30.team01.business.controller = this._controller = new SelectController(
 	            'rect',
 	            api.getZr(),
 	            {
@@ -35486,21 +35486,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	                fill: 'rgba(0,0,0,0.2)'
 	            }
 	        );
-	        controller.on(
+	        com.cafe24.ksmart30.team01.business.controller.on(
 	            'selectEnd',
 	            zrUtil.bind(
-	                this._onSelected, this, controller,
+	                this._onSelected, this, com.cafe24.ksmart30.team01.business.controller,
 	                featureModel, ecModel, api
 	            )
 	        );
-	        controller.enable(controllerGroup, false);
+	        com.cafe24.ksmart30.team01.business.controller.enable(controllerGroup, false);
 	    };
 
 	    proto._disposeController = function () {
-	        var controller = this._controller;
-	        if (controller) {
-	            controller.off('selected');
-	            controller.dispose();
+	        var com.cafe24.ksmart30.team01.business.controller = this._controller;
+	        if (com.cafe24.ksmart30.team01.business.controller) {
+	            com.cafe24.ksmart30.team01.business.controller.off('selected');
+	            com.cafe24.ksmart30.team01.business.controller.dispose();
 	        }
 	    };
 
@@ -35537,13 +35537,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * @private
 	     */
-	    proto._onSelected = function (controller, featureModel, ecModel, api, selRanges) {
+	    proto._onSelected = function (com.cafe24.ksmart30.team01.business.controller, featureModel, ecModel, api, selRanges) {
 	        if (!selRanges.length) {
 	            return;
 	        }
 	        var selRange = selRanges[0];
 
-	        controller.update(); // remove cover
+	        com.cafe24.ksmart30.team01.business.controller.update(); // remove cover
 
 	        var snapshot = {};
 

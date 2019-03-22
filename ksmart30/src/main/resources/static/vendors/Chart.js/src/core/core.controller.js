@@ -13,7 +13,7 @@ module.exports = function(Chart) {
 	// Controllers available for dataset visualization eg. bar, line, slice, etc.
 	Chart.controllers = {};
 
-	// The main controller of a chart
+	// The main com.cafe24.ksmart30.team01.business.controller of a chart
 	Chart.Controller = function(instance) {
 
 		this.chart = instance;
@@ -250,8 +250,8 @@ module.exports = function(Chart) {
 			Chart.pluginService.notifyPlugins('afterScaleUpdate', [this]);
 
 			// Can only reset the new controllers after the scales have been updated
-			helpers.each(newControllers, function(controller) {
-				controller.reset();
+			helpers.each(newControllers, function(com.cafe24.ksmart30.team01.business.controller) {
+				com.cafe24.ksmart30.team01.business.controller.reset();
 			});
 
 			// This will loop through any data and do the appropriate element update for the type
@@ -318,7 +318,7 @@ module.exports = function(Chart) {
 			context.rect(this.chartArea.left, this.chartArea.top, this.chartArea.right - this.chartArea.left, this.chartArea.bottom - this.chartArea.top);
 			context.clip();
 
-			// Draw each dataset via its respective controller (reversed to support proper line stacking)
+			// Draw each dataset via its respective com.cafe24.ksmart30.team01.business.controller (reversed to support proper line stacking)
 			helpers.each(this.data.datasets, function(dataset, datasetIndex) {
 				if (this.isDatasetVisible(datasetIndex)) {
 					this.getDatasetMeta(datasetIndex).controller.draw(ease);
@@ -424,7 +424,7 @@ module.exports = function(Chart) {
 				type: null,
 				data: [],
 				dataset: null,
-				controller: null,
+				com.cafe24.ksmart30.team01.business.controller: null,
 				hidden: null,			// See isDatasetVisible() comment
 				xAxisID: null,
 				yAxisID: null

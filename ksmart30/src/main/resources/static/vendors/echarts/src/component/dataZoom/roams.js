@@ -1,10 +1,10 @@
 /**
- * @file Roam controller manager.
+ * @file Roam com.cafe24.ksmart30.team01.business.controller manager.
  */
 define(function(require) {
 
-    // Only create one roam controller for each coordinate system.
-    // one roam controller might be refered by two inside data zoom
+    // Only create one roam com.cafe24.ksmart30.team01.business.controller for each coordinate system.
+    // one roam com.cafe24.ksmart30.team01.business.controller might be refered by two inside data zoom
     // components (for example, one for x and one for y). When user
     // pan or zoom, only dispatch one action for those data zoom
     // components.
@@ -122,7 +122,7 @@ define(function(require) {
     };
 
     /**
-     * Key: coordId, value: {dataZoomInfos: [], count, controller}
+     * Key: coordId, value: {dataZoomInfos: [], count, com.cafe24.ksmart30.team01.business.controller}
      * @type {Array.<Object>}
      */
     function giveStore(api) {
@@ -133,12 +133,12 @@ define(function(require) {
     }
 
     function createController(api, dataZoomInfo, newRecord) {
-        var controller = new RoamController(api.getZr());
-        controller.enable();
-        controller.on('pan', curry(onPan, newRecord));
-        controller.on('zoom', curry(onZoom, newRecord));
+        var com.cafe24.ksmart30.team01.business.controller = new RoamController(api.getZr());
+        com.cafe24.ksmart30.team01.business.controller.enable();
+        com.cafe24.ksmart30.team01.business.controller.on('pan', curry(onPan, newRecord));
+        com.cafe24.ksmart30.team01.business.controller.on('zoom', curry(onZoom, newRecord));
 
-        return controller;
+        return com.cafe24.ksmart30.team01.business.controller;
     }
 
     function cleanStore(store) {

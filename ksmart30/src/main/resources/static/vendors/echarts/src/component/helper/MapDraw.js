@@ -243,12 +243,12 @@ define(function (require) {
 
         _updateController: function (mapOrGeoModel, ecModel, api) {
             var geo = mapOrGeoModel.coordinateSystem;
-            var controller = this._controller;
-            controller.zoomLimit = mapOrGeoModel.get('scaleLimit');
+            var com.cafe24.ksmart30.team01.business.controller = this._controller;
+            com.cafe24.ksmart30.team01.business.controller.zoomLimit = mapOrGeoModel.get('scaleLimit');
             // Update zoom from model
-            controller.zoom = geo.getZoom();
+            com.cafe24.ksmart30.team01.business.controller.zoom = geo.getZoom();
             // roamType is will be set default true if it is null
-            controller.enable(mapOrGeoModel.get('roam') || false);
+            com.cafe24.ksmart30.team01.business.controller.enable(mapOrGeoModel.get('roam') || false);
             var mainType = mapOrGeoModel.mainType;
 
             function makeActionBase() {
@@ -259,14 +259,14 @@ define(function (require) {
                 action[mainType + 'Id'] = mapOrGeoModel.id;
                 return action;
             }
-            controller.off('pan')
+            com.cafe24.ksmart30.team01.business.controller.off('pan')
                 .on('pan', function (dx, dy) {
                     api.dispatchAction(zrUtil.extend(makeActionBase(), {
                         dx: dx,
                         dy: dy
                     }));
                 });
-            controller.off('zoom')
+            com.cafe24.ksmart30.team01.business.controller.off('zoom')
                 .on('zoom', function (zoom, mouseX, mouseY) {
                     api.dispatchAction(zrUtil.extend(makeActionBase(), {
                         zoom: zoom,
@@ -285,7 +285,7 @@ define(function (require) {
                     }
                 }, this);
 
-            controller.rectProvider = function () {
+            com.cafe24.ksmart30.team01.business.controller.rectProvider = function () {
                 return geo.getViewRectAfterRoam();
             };
         }

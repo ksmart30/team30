@@ -45,7 +45,7 @@ new EasyPieChart(element, {
 
 ### AngularJS
 
-For a value binding you need to add the `percent` attribute and bind it to your controller.
+For a value binding you need to add the `percent` attribute and bind it to your com.cafe24.ksmart30.team01.business.controller.
 
 ### RequireJS
 

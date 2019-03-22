@@ -1,5 +1,5 @@
-// Test the bubble controller
-describe('Bubble controller tests', function() {
+// Test the bubble com.cafe24.ksmart30.team01.business.controller
+describe('Bubble com.cafe24.ksmart30.team01.business.controller tests', function() {
 
 	beforeEach(function() {
 		window.addDefaultMatchers(jasmine);

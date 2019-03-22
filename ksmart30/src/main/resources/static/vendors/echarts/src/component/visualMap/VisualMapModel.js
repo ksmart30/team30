@@ -289,7 +289,7 @@ define(function(require) {
         resetVisual: function (fillVisualOption) {
             var dataExtent = this.getExtent();
 
-            doReset.call(this, 'controller', this.controllerVisuals);
+            doReset.call(this, 'com.cafe24.ksmart30.team01.business.controller', this.controllerVisuals);
             doReset.call(this, 'target', this.targetVisuals);
 
             function doReset(baseAttr, visualMappings) {
@@ -314,7 +314,7 @@ define(function(require) {
 
                         // Prepare a alpha for opacity, for some case that opacity
                         // is not supported, such as rendering using gradient color.
-                        if (baseAttr === 'controller' && visualType === 'opacity') {
+                        if (baseAttr === 'com.cafe24.ksmart30.team01.business.controller' && visualType === 'opacity') {
                             mappingOption = zrUtil.clone(mappingOption);
                             mappingOption.type = 'colorAlpha';
                             mappings.__hidden.__alphaForOpacity = new VisualMapping(mappingOption);
@@ -341,18 +341,18 @@ define(function(require) {
             var base = {inRange: thisOption.inRange, outOfRange: thisOption.outOfRange};
 
             var target = thisOption.target || (thisOption.target = {});
-            var controller = thisOption.controller || (thisOption.controller = {});
+            var com.cafe24.ksmart30.team01.business.controller = thisOption.controller || (thisOption.controller = {});
 
             zrUtil.merge(target, base); // Do not override
-            zrUtil.merge(controller, base); // Do not override
+            zrUtil.merge(com.cafe24.ksmart30.team01.business.controller, base); // Do not override
 
             var isCategory = this.isCategory();
 
             completeSingle.call(this, target);
-            completeSingle.call(this, controller);
+            completeSingle.call(this, com.cafe24.ksmart30.team01.business.controller);
             completeInactive.call(this, target, 'inRange', 'outOfRange');
             completeInactive.call(this, target, 'outOfRange', 'inRange');
-            completeController.call(this, controller);
+            completeController.call(this, com.cafe24.ksmart30.team01.business.controller);
 
             function completeSingle(base) {
                 // Compatible with ec2 dataRange.color.
@@ -415,22 +415,22 @@ define(function(require) {
                 }
             }
 
-            function completeController(controller) {
-                var symbolExists = (controller.inRange || {}).symbol
-                    || (controller.outOfRange || {}).symbol;
-                var symbolSizeExists = (controller.inRange || {}).symbolSize
-                    || (controller.outOfRange || {}).symbolSize;
+            function completeController(com.cafe24.ksmart30.team01.business.controller) {
+                var symbolExists = (com.cafe24.ksmart30.team01.business.controller.inRange || {}).symbol
+                    || (com.cafe24.ksmart30.team01.business.controller.outOfRange || {}).symbol;
+                var symbolSizeExists = (com.cafe24.ksmart30.team01.business.controller.inRange || {}).symbolSize
+                    || (com.cafe24.ksmart30.team01.business.controller.outOfRange || {}).symbolSize;
                 var inactiveColor = this.get('inactiveColor');
 
                 each(this.stateList, function (state) {
 
                     var itemSize = this.itemSize;
-                    var visuals = controller[state];
+                    var visuals = com.cafe24.ksmart30.team01.business.controller[state];
 
-                    // Set inactive color for controller if no other color
+                    // Set inactive color for com.cafe24.ksmart30.team01.business.controller if no other color
                     // attr (like colorAlpha) specified.
                     if (!visuals) {
-                        visuals = controller[state] = {
+                        visuals = com.cafe24.ksmart30.team01.business.controller[state] = {
                             color: isCategory ? inactiveColor : [inactiveColor]
                         };
                     }
@@ -516,7 +516,7 @@ define(function(require) {
         // newOption has anyone of these keys, all of these keys
         // will be reset. Otherwise, all keys remain.
         var visualKeys = [
-            'inRange', 'outOfRange', 'target', 'controller', 'color'
+            'inRange', 'outOfRange', 'target', 'com.cafe24.ksmart30.team01.business.controller', 'color'
         ];
         var has;
         zrUtil.each(visualKeys, function (key) {

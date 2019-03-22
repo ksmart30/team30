@@ -82,10 +82,10 @@ define(function (require) {
         /**
          * @private
          */
-        _onPan: function (coordInfo, controller, dx, dy) {
+        _onPan: function (coordInfo, com.cafe24.ksmart30.team01.business.controller, dx, dy) {
             return (
                 this._range = panCartesian(
-                    [dx, dy], this._range, controller, coordInfo
+                    [dx, dy], this._range, com.cafe24.ksmart30.team01.business.controller, coordInfo
                 )
             );
         },
@@ -93,7 +93,7 @@ define(function (require) {
         /**
          * @private
          */
-        _onZoom: function (coordInfo, controller, scale, mouseX, mouseY) {
+        _onZoom: function (coordInfo, com.cafe24.ksmart30.team01.business.controller, scale, mouseX, mouseY) {
             var dataZoomModel = this.dataZoomModel;
 
             if (dataZoomModel.option.zoomLock) {
@@ -103,14 +103,14 @@ define(function (require) {
             return (
                 this._range = scaleCartesian(
                     1 / scale, [mouseX, mouseY], this._range,
-                    controller, coordInfo, dataZoomModel
+                    com.cafe24.ksmart30.team01.business.controller, coordInfo, dataZoomModel
                 )
             );
         }
 
     });
 
-    function panCartesian(pixelDeltas, range, controller, coordInfo) {
+    function panCartesian(pixelDeltas, range, com.cafe24.ksmart30.team01.business.controller, coordInfo) {
         range = range.slice();
 
         // Calculate transform by the first axis.
@@ -119,7 +119,7 @@ define(function (require) {
             return;
         }
 
-        var directionInfo = getDirectionInfo(pixelDeltas, axisModel, controller);
+        var directionInfo = getDirectionInfo(pixelDeltas, axisModel, com.cafe24.ksmart30.team01.business.controller);
 
         var percentDelta = directionInfo.signal
             * (range[1] - range[0])
@@ -135,7 +135,7 @@ define(function (require) {
         return range;
     }
 
-    function scaleCartesian(scale, mousePoint, range, controller, coordInfo, dataZoomModel) {
+    function scaleCartesian(scale, mousePoint, range, com.cafe24.ksmart30.team01.business.controller, coordInfo, dataZoomModel) {
         range = range.slice();
 
         // Calculate transform by the first axis.
@@ -144,7 +144,7 @@ define(function (require) {
             return;
         }
 
-        var directionInfo = getDirectionInfo(mousePoint, axisModel, controller);
+        var directionInfo = getDirectionInfo(mousePoint, axisModel, com.cafe24.ksmart30.team01.business.controller);
 
         var mouse = directionInfo.pixel - directionInfo.pixelStart;
         var percentPoint = mouse / directionInfo.pixelLength * (range[1] - range[0]) + range[0];
@@ -156,9 +156,9 @@ define(function (require) {
         return fixRange(range);
     }
 
-    function getDirectionInfo(xy, axisModel, controller) {
+    function getDirectionInfo(xy, axisModel, com.cafe24.ksmart30.team01.business.controller) {
         var axis = axisModel.axis;
-        var rect = controller.rectProvider();
+        var rect = com.cafe24.ksmart30.team01.business.controller.rectProvider();
         var ret = {};
 
         if (axis.dim === 'x') {

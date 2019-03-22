@@ -26,12 +26,12 @@ require('./scales/scale.time')(Chart);
 
 // Controllers must be loaded after elements
 // See Chart.core.datasetController.dataElementType
-require('./controllers/controller.bar')(Chart);
-require('./controllers/controller.bubble')(Chart);
-require('./controllers/controller.doughnut')(Chart);
-require('./controllers/controller.line')(Chart);
-require('./controllers/controller.polarArea')(Chart);
-require('./controllers/controller.radar')(Chart);
+require('./controllers/com.cafe24.ksmart30.team01.business.controller.bar')(Chart);
+require('./controllers/com.cafe24.ksmart30.team01.business.controller.bubble')(Chart);
+require('./controllers/com.cafe24.ksmart30.team01.business.controller.doughnut')(Chart);
+require('./controllers/com.cafe24.ksmart30.team01.business.controller.line')(Chart);
+require('./controllers/com.cafe24.ksmart30.team01.business.controller.polarArea')(Chart);
+require('./controllers/com.cafe24.ksmart30.team01.business.controller.radar')(Chart);
 
 require('./charts/Chart.Bar')(Chart);
 require('./charts/Chart.Bubble')(Chart);

@@ -88,7 +88,7 @@ define(function (require) {
          * @param {string=} visualCluster Only can be 'color' 'opacity' 'symbol' 'symbolSize'
          * @param {Object} [opts]
          * @param {string=} [opts.forceState] Specify state, instead of using getValueState method.
-         * @param {string=} [opts.convertOpacityToAlpha=false] For color gradient in controller widget.
+         * @param {string=} [opts.convertOpacityToAlpha=false] For color gradient in com.cafe24.ksmart30.team01.business.controller widget.
          * @return {*} Visual value.
          */
         getControllerVisual: function (targetValue, visualCluster, opts) {

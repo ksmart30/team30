@@ -1,5 +1,5 @@
-// Test the polar area controller
-describe('Radar controller tests', function() {
+// Test the polar area com.cafe24.ksmart30.team01.business.controller
+describe('Radar com.cafe24.ksmart30.team01.business.controller tests', function() {
 	beforeEach(function() {
 		window.addDefaultMatchers(jasmine);
 	});
@@ -40,7 +40,7 @@ describe('Radar controller tests', function() {
 			}
 		});
 
-		var controller = new Chart.controllers.radar(chart, 0);
+		var com.cafe24.ksmart30.team01.business.controller = new Chart.controllers.radar(chart, 0);
 
 		var meta = chart.getDatasetMeta(0);
 		expect(meta.dataset instanceof Chart.elements.Line).toBe(true); // line element
@@ -161,7 +161,7 @@ describe('Radar controller tests', function() {
 			}));
 		});
 
-		// Now update controller and ensure proper updates
+		// Now update com.cafe24.ksmart30.team01.business.controller and ensure proper updates
 		meta.controller.update();
 		
 		[ 

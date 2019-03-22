@@ -43,7 +43,7 @@ If you don't want to use jQuery, implement the Vanilla JS version without any de
 ### AngularJS
 
 ```html
-<div ng-controller="chartCtrl">
+<div ng-com.cafe24.ksmart30.team01.business.controller="chartCtrl">
     <div easypiechart options="options" percent="percent"></div>
 </div>
 

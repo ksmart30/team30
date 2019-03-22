@@ -343,23 +343,23 @@ Dataset controllers must implement the following interface.
 The following methods may optionally be overridden by derived dataset controllers
 ```javascript
 {
-	// Initializes the controller
+	// Initializes the com.cafe24.ksmart30.team01.business.controller
 	initialize: function(chart, datasetIndex) {},
 
-	// Ensures that the dataset represented by this controller is linked to a scale. Overridden to helpers.noop in the polar area and doughnut controllers as these
+	// Ensures that the dataset represented by this com.cafe24.ksmart30.team01.business.controller is linked to a scale. Overridden to helpers.noop in the polar area and doughnut controllers as these
 	// chart types using a single scale
 	linkScales: function() {},
 
-	// Called by the main chart controller when an update is triggered. The default implementation handles the number of data points changing and creating elements appropriately. 
+	// Called by the main chart com.cafe24.ksmart30.team01.business.controller when an update is triggered. The default implementation handles the number of data points changing and creating elements appropriately. 
 	buildOrUpdateElements: function() {}
 }
 ```
 
 ### Extending Existing Chart Types
 
-Extending or replacing an existing controller type is easy. Simply replace the constructor for one of the built in types with your own.
+Extending or replacing an existing com.cafe24.ksmart30.team01.business.controller type is easy. Simply replace the constructor for one of the built in types with your own.
 
-The built in controller types are:
+The built in com.cafe24.ksmart30.team01.business.controller types are:
 * `Chart.controllers.line`
 * `Chart.controllers.bar`
 * `Chart.controllers.radar`
@@ -368,7 +368,7 @@ The built in controller types are:
 * `Chart.controllers.bubble`
 
 #### Bar Controller
-The bar controller has a special property that you should be aware of. To correctly calculate the width of a bar, the controller must determine the number of datasets that map to bars. To do this, the bar controller attaches a property `bar` to the dataset during initialization. If you are creating a replacement or updated bar controller, you should do the same. This will ensure that charts with regular bars and your new derived bars will work seamlessly.
+The bar com.cafe24.ksmart30.team01.business.controller has a special property that you should be aware of. To correctly calculate the width of a bar, the com.cafe24.ksmart30.team01.business.controller must determine the number of datasets that map to bars. To do this, the bar com.cafe24.ksmart30.team01.business.controller attaches a property `bar` to the dataset during initialization. If you are creating a replacement or updated bar com.cafe24.ksmart30.team01.business.controller, you should do the same. This will ensure that charts with regular bars and your new derived bars will work seamlessly.
 
 ### Creating Plugins
 

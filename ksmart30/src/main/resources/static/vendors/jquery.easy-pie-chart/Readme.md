@@ -72,7 +72,7 @@ If you don't want to use jQuery, implement the Vanilla JS version without any de
 #### AngularJS
 
 ```html
-<div ng-controller="chartCtrl">
+<div ng-com.cafe24.ksmart30.team01.business.controller="chartCtrl">
     <div easypiechart options="options" percent="percent"></div>
 </div>
 
@@ -233,7 +233,7 @@ new EasyPieChart(element, {
 
 #### AngularJS
 
-For a value binding you need to add the `percent` attribute and bind it to your controller.
+For a value binding you need to add the `percent` attribute and bind it to your com.cafe24.ksmart30.team01.business.controller.
 
 #### RequireJS
 

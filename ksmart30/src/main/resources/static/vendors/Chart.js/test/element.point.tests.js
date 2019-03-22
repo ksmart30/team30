@@ -22,7 +22,7 @@ describe('Point element tests', function() {
 		expect(point.inRange(5)).toBe(false);
 		expect(point.inLabelRange(5)).toBe(false);
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		point._view = {
 			radius: 2,
 			hitRadius: 3,
@@ -49,7 +49,7 @@ describe('Point element tests', function() {
 			_index: 1
 		});
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		point._view = {
 			radius: 2,
 			borderWidth: 6,
@@ -74,7 +74,7 @@ describe('Point element tests', function() {
 			}
 		});
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		point._view = {
 			radius: 2,
 			pointStyle: 'circle',
@@ -400,7 +400,7 @@ describe('Point element tests', function() {
 			}
 		});
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		point._view = {
 			radius: 2,
 			hitRadius: 3,
@@ -448,7 +448,7 @@ describe('Point element tests', function() {
 			}
 		});
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		point._view = {
 			radius: 2,
 			hitRadius: 3,

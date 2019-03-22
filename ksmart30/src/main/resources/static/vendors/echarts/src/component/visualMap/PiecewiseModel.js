@@ -37,9 +37,9 @@ define(function(require) {
                                         // When categories: {'cate1': false, 'cate3': true}
                                         // When selected === false, means all unselected.
             align: 'auto',              // 'auto', 'left', 'right'
-            itemWidth: 20,              // When put the controller vertically, it is the length of
+            itemWidth: 20,              // When put the com.cafe24.ksmart30.team01.business.controller vertically, it is the length of
                                         // horizontal side of each item. Otherwise, vertical side.
-            itemHeight: 14,             // When put the controller vertically, it is the length of
+            itemHeight: 14,             // When put the com.cafe24.ksmart30.team01.business.controller vertically, it is the length of
                                         // vertical side of each item. Otherwise, horizontal side.
             itemSymbol: 'roundRect',
             pieceList: null,            // Each item is Object, with some of those attrs:

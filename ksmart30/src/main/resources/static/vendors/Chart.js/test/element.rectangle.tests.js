@@ -22,7 +22,7 @@ describe('Rectangle element tests', function() {
 		expect(rectangle.inRange(5)).toBe(false);
 		expect(rectangle.inLabelRange(5)).toBe(false);
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		rectangle._view = {
 			base: 0,
 			width: 4,
@@ -48,7 +48,7 @@ describe('Rectangle element tests', function() {
 			_index: 1
 		});
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		negativeRectangle._view = {
 			base: 0,
 			width: 4,
@@ -67,7 +67,7 @@ describe('Rectangle element tests', function() {
 			_index: 1
 		});
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		rectangle._view = {
 			base: 0,
 			width: 4,
@@ -83,7 +83,7 @@ describe('Rectangle element tests', function() {
 			_index: 1
 		});
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		negativeRectangle._view = {
 			base: -10,
 			width: 4,
@@ -99,7 +99,7 @@ describe('Rectangle element tests', function() {
 			_index: 1
 		});
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		rectangle._view = {
 			base: 0,
 			width: 4,
@@ -118,7 +118,7 @@ describe('Rectangle element tests', function() {
 			_index: 1
 		});
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		negativeRectangle._view = {
 			base: -10,
 			width: 4,
@@ -142,7 +142,7 @@ describe('Rectangle element tests', function() {
 			}
 		});
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		rectangle._view = {
 			backgroundColor: 'rgb(255, 0, 0)',
 			base: 0,
@@ -199,7 +199,7 @@ describe('Rectangle element tests', function() {
 			}
 		});
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		rectangle._view = {
 			backgroundColor: 'rgb(255, 0, 0)',
 			base: 0,
@@ -248,7 +248,7 @@ describe('Rectangle element tests', function() {
 			_chart: { ctx: mockContext }
 		});
 
-		// Attach a view object as if we were the controller
+		// Attach a view object as if we were the com.cafe24.ksmart30.team01.business.controller
 		rectangle._view = {
 			borderSkipped: borderSkipped, // set tested 'borderSkipped' parameter
 			ctx: mockContext,

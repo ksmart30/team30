@@ -29807,12 +29807,12 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	        _updateController: function (mapOrGeoModel, ecModel, api) {
 	            var geo = mapOrGeoModel.coordinateSystem;
-	            var controller = this._controller;
-	            controller.zoomLimit = mapOrGeoModel.get('scaleLimit');
+	            var com.cafe24.ksmart30.team01.business.controller = this._controller;
+	            com.cafe24.ksmart30.team01.business.controller.zoomLimit = mapOrGeoModel.get('scaleLimit');
 	            // Update zoom from model
-	            controller.zoom = geo.getZoom();
+	            com.cafe24.ksmart30.team01.business.controller.zoom = geo.getZoom();
 	            // roamType is will be set default true if it is null
-	            controller.enable(mapOrGeoModel.get('roam') || false);
+	            com.cafe24.ksmart30.team01.business.controller.enable(mapOrGeoModel.get('roam') || false);
 	            var mainType = mapOrGeoModel.mainType;
 
 	            function makeActionBase() {
@@ -29823,14 +29823,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	                action[mainType + 'Id'] = mapOrGeoModel.id;
 	                return action;
 	            }
-	            controller.off('pan')
+	            com.cafe24.ksmart30.team01.business.controller.off('pan')
 	                .on('pan', function (dx, dy) {
 	                    api.dispatchAction(zrUtil.extend(makeActionBase(), {
 	                        dx: dx,
 	                        dy: dy
 	                    }));
 	                });
-	            controller.off('zoom')
+	            com.cafe24.ksmart30.team01.business.controller.off('zoom')
 	                .on('zoom', function (zoom, mouseX, mouseY) {
 	                    api.dispatchAction(zrUtil.extend(makeActionBase(), {
 	                        zoom: zoom,
@@ -29849,7 +29849,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    }
 	                }, this);
 
-	            controller.rectProvider = function () {
+	            com.cafe24.ksmart30.team01.business.controller.rectProvider = function () {
 	                return geo.getViewRectAfterRoam();
 	            };
 	        }
@@ -31855,18 +31855,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * @private
 	         */
 	        _resetController: function (api) {
-	            var controller = this._controller;
+	            var com.cafe24.ksmart30.team01.business.controller = this._controller;
 
-	            // Init controller.
-	            if (!controller) {
-	                controller = this._controller = new RoamController(api.getZr());
-	                controller.enable(this.seriesModel.get('roam'));
-	                controller.on('pan', bind(this._onPan, this));
-	                controller.on('zoom', bind(this._onZoom, this));
+	            // Init com.cafe24.ksmart30.team01.business.controller.
+	            if (!com.cafe24.ksmart30.team01.business.controller) {
+	                com.cafe24.ksmart30.team01.business.controller = this._controller = new RoamController(api.getZr());
+	                com.cafe24.ksmart30.team01.business.controller.enable(this.seriesModel.get('roam'));
+	                com.cafe24.ksmart30.team01.business.controller.on('pan', bind(this._onPan, this));
+	                com.cafe24.ksmart30.team01.business.controller.on('zoom', bind(this._onZoom, this));
 	            }
 
 	            var rect = new BoundingRect(0, 0, api.getWidth(), api.getHeight());
-	            controller.rectProvider = function () {
+	            com.cafe24.ksmart30.team01.business.controller.rectProvider = function () {
 	                return rect;
 	            };
 	        },
@@ -31875,10 +31875,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * @private
 	         */
 	        _clearController: function () {
-	            var controller = this._controller;
-	            if (controller) {
-	                controller.off('pan').off('zoom');
-	                controller = null;
+	            var com.cafe24.ksmart30.team01.business.controller = this._controller;
+	            if (com.cafe24.ksmart30.team01.business.controller) {
+	                com.cafe24.ksmart30.team01.business.controller.off('pan').off('zoom');
+	                com.cafe24.ksmart30.team01.business.controller = null;
 	            }
 	        },
 
@@ -34984,14 +34984,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var lineDraw = new LineDraw();
 	            var group = this.group;
 
-	            var controller = new RoamController(api.getZr(), group);
+	            var com.cafe24.ksmart30.team01.business.controller = new RoamController(api.getZr(), group);
 
 	            group.add(symbolDraw.group);
 	            group.add(lineDraw.group);
 
 	            this._symbolDraw = symbolDraw;
 	            this._lineDraw = lineDraw;
-	            this._controller = controller;
+	            this._controller = com.cafe24.ksmart30.team01.business.controller;
 
 	            this._firstRender = true;
 	        },
@@ -35086,23 +35086,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	        },
 
 	        _updateController: function (seriesModel, api) {
-	            var controller = this._controller;
+	            var com.cafe24.ksmart30.team01.business.controller = this._controller;
 	            var group = this.group;
-	            controller.rectProvider = function () {
+	            com.cafe24.ksmart30.team01.business.controller.rectProvider = function () {
 	                var rect = group.getBoundingRect();
 	                rect.applyTransform(group.transform);
 	                return rect;
 	            };
 	            if (seriesModel.coordinateSystem.type !== 'view') {
-	                controller.disable();
+	                com.cafe24.ksmart30.team01.business.controller.disable();
 	                return;
 	            }
-	            controller.enable(seriesModel.get('roam'));
-	            controller.zoomLimit = seriesModel.get('scaleLimit');
+	            com.cafe24.ksmart30.team01.business.controller.enable(seriesModel.get('roam'));
+	            com.cafe24.ksmart30.team01.business.controller.zoomLimit = seriesModel.get('scaleLimit');
 	            // Update zoom from model
-	            controller.zoom = seriesModel.coordinateSystem.getZoom();
+	            com.cafe24.ksmart30.team01.business.controller.zoom = seriesModel.coordinateSystem.getZoom();
 
-	            controller
+	            com.cafe24.ksmart30.team01.business.controller
 	                .off('pan')
 	                .off('zoom')
 	                .on('pan', function (dx, dy) {
@@ -47911,10 +47911,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * @private
 	         */
-	        _onPan: function (coordInfo, controller, dx, dy) {
+	        _onPan: function (coordInfo, com.cafe24.ksmart30.team01.business.controller, dx, dy) {
 	            return (
 	                this._range = panCartesian(
-	                    [dx, dy], this._range, controller, coordInfo
+	                    [dx, dy], this._range, com.cafe24.ksmart30.team01.business.controller, coordInfo
 	                )
 	            );
 	        },
@@ -47922,7 +47922,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        /**
 	         * @private
 	         */
-	        _onZoom: function (coordInfo, controller, scale, mouseX, mouseY) {
+	        _onZoom: function (coordInfo, com.cafe24.ksmart30.team01.business.controller, scale, mouseX, mouseY) {
 	            var dataZoomModel = this.dataZoomModel;
 
 	            if (dataZoomModel.option.zoomLock) {
@@ -47932,14 +47932,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return (
 	                this._range = scaleCartesian(
 	                    1 / scale, [mouseX, mouseY], this._range,
-	                    controller, coordInfo, dataZoomModel
+	                    com.cafe24.ksmart30.team01.business.controller, coordInfo, dataZoomModel
 	                )
 	            );
 	        }
 
 	    });
 
-	    function panCartesian(pixelDeltas, range, controller, coordInfo) {
+	    function panCartesian(pixelDeltas, range, com.cafe24.ksmart30.team01.business.controller, coordInfo) {
 	        range = range.slice();
 
 	        // Calculate transform by the first axis.
@@ -47948,7 +47948,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return;
 	        }
 
-	        var directionInfo = getDirectionInfo(pixelDeltas, axisModel, controller);
+	        var directionInfo = getDirectionInfo(pixelDeltas, axisModel, com.cafe24.ksmart30.team01.business.controller);
 
 	        var percentDelta = directionInfo.signal
 	            * (range[1] - range[0])
@@ -47964,7 +47964,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return range;
 	    }
 
-	    function scaleCartesian(scale, mousePoint, range, controller, coordInfo, dataZoomModel) {
+	    function scaleCartesian(scale, mousePoint, range, com.cafe24.ksmart30.team01.business.controller, coordInfo, dataZoomModel) {
 	        range = range.slice();
 
 	        // Calculate transform by the first axis.
@@ -47973,7 +47973,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            return;
 	        }
 
-	        var directionInfo = getDirectionInfo(mousePoint, axisModel, controller);
+	        var directionInfo = getDirectionInfo(mousePoint, axisModel, com.cafe24.ksmart30.team01.business.controller);
 
 	        var mouse = directionInfo.pixel - directionInfo.pixelStart;
 	        var percentPoint = mouse / directionInfo.pixelLength * (range[1] - range[0]) + range[0];
@@ -47985,9 +47985,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return fixRange(range);
 	    }
 
-	    function getDirectionInfo(xy, axisModel, controller) {
+	    function getDirectionInfo(xy, axisModel, com.cafe24.ksmart30.team01.business.controller) {
 	        var axis = axisModel.axis;
-	        var rect = controller.rectProvider();
+	        var rect = com.cafe24.ksmart30.team01.business.controller.rectProvider();
 	        var ret = {};
 
 	        if (axis.dim === 'x') {
@@ -48027,12 +48027,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /***/ function(module, exports, __webpack_require__) {
 
 	/**
-	 * @file Roam controller manager.
+	 * @file Roam com.cafe24.ksmart30.team01.business.controller manager.
 	 */
 
 
-	    // Only create one roam controller for each coordinate system.
-	    // one roam controller might be refered by two inside data zoom
+	    // Only create one roam com.cafe24.ksmart30.team01.business.controller for each coordinate system.
+	    // one roam com.cafe24.ksmart30.team01.business.controller might be refered by two inside data zoom
 	    // components (for example, one for x and one for y). When user
 	    // pan or zoom, only dispatch one action for those data zoom
 	    // components.
@@ -48150,7 +48150,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 
 	    /**
-	     * Key: coordId, value: {dataZoomInfos: [], count, controller}
+	     * Key: coordId, value: {dataZoomInfos: [], count, com.cafe24.ksmart30.team01.business.controller}
 	     * @type {Array.<Object>}
 	     */
 	    function giveStore(api) {
@@ -48161,12 +48161,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    function createController(api, dataZoomInfo, newRecord) {
-	        var controller = new RoamController(api.getZr());
-	        controller.enable();
-	        controller.on('pan', curry(onPan, newRecord));
-	        controller.on('zoom', curry(onZoom, newRecord));
+	        var com.cafe24.ksmart30.team01.business.controller = new RoamController(api.getZr());
+	        com.cafe24.ksmart30.team01.business.controller.enable();
+	        com.cafe24.ksmart30.team01.business.controller.on('pan', curry(onPan, newRecord));
+	        com.cafe24.ksmart30.team01.business.controller.on('zoom', curry(onZoom, newRecord));
 
-	        return controller;
+	        return com.cafe24.ksmart30.team01.business.controller;
 	    }
 
 	    function cleanStore(store) {
@@ -48969,7 +48969,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        resetVisual: function (fillVisualOption) {
 	            var dataExtent = this.getExtent();
 
-	            doReset.call(this, 'controller', this.controllerVisuals);
+	            doReset.call(this, 'com.cafe24.ksmart30.team01.business.controller', this.controllerVisuals);
 	            doReset.call(this, 'target', this.targetVisuals);
 
 	            function doReset(baseAttr, visualMappings) {
@@ -48994,7 +48994,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	                        // Prepare a alpha for opacity, for some case that opacity
 	                        // is not supported, such as rendering using gradient color.
-	                        if (baseAttr === 'controller' && visualType === 'opacity') {
+	                        if (baseAttr === 'com.cafe24.ksmart30.team01.business.controller' && visualType === 'opacity') {
 	                            mappingOption = zrUtil.clone(mappingOption);
 	                            mappingOption.type = 'colorAlpha';
 	                            mappings.__hidden.__alphaForOpacity = new VisualMapping(mappingOption);
@@ -49021,18 +49021,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var base = {inRange: thisOption.inRange, outOfRange: thisOption.outOfRange};
 
 	            var target = thisOption.target || (thisOption.target = {});
-	            var controller = thisOption.controller || (thisOption.controller = {});
+	            var com.cafe24.ksmart30.team01.business.controller = thisOption.controller || (thisOption.controller = {});
 
 	            zrUtil.merge(target, base); // Do not override
-	            zrUtil.merge(controller, base); // Do not override
+	            zrUtil.merge(com.cafe24.ksmart30.team01.business.controller, base); // Do not override
 
 	            var isCategory = this.isCategory();
 
 	            completeSingle.call(this, target);
-	            completeSingle.call(this, controller);
+	            completeSingle.call(this, com.cafe24.ksmart30.team01.business.controller);
 	            completeInactive.call(this, target, 'inRange', 'outOfRange');
 	            completeInactive.call(this, target, 'outOfRange', 'inRange');
-	            completeController.call(this, controller);
+	            completeController.call(this, com.cafe24.ksmart30.team01.business.controller);
 
 	            function completeSingle(base) {
 	                // Compatible with ec2 dataRange.color.
@@ -49095,22 +49095,22 @@ return /******/ (function(modules) { // webpackBootstrap
 	                }
 	            }
 
-	            function completeController(controller) {
-	                var symbolExists = (controller.inRange || {}).symbol
-	                    || (controller.outOfRange || {}).symbol;
-	                var symbolSizeExists = (controller.inRange || {}).symbolSize
-	                    || (controller.outOfRange || {}).symbolSize;
+	            function completeController(com.cafe24.ksmart30.team01.business.controller) {
+	                var symbolExists = (com.cafe24.ksmart30.team01.business.controller.inRange || {}).symbol
+	                    || (com.cafe24.ksmart30.team01.business.controller.outOfRange || {}).symbol;
+	                var symbolSizeExists = (com.cafe24.ksmart30.team01.business.controller.inRange || {}).symbolSize
+	                    || (com.cafe24.ksmart30.team01.business.controller.outOfRange || {}).symbolSize;
 	                var inactiveColor = this.get('inactiveColor');
 
 	                each(this.stateList, function (state) {
 
 	                    var itemSize = this.itemSize;
-	                    var visuals = controller[state];
+	                    var visuals = com.cafe24.ksmart30.team01.business.controller[state];
 
-	                    // Set inactive color for controller if no other color
+	                    // Set inactive color for com.cafe24.ksmart30.team01.business.controller if no other color
 	                    // attr (like colorAlpha) specified.
 	                    if (!visuals) {
-	                        visuals = controller[state] = {
+	                        visuals = com.cafe24.ksmart30.team01.business.controller[state] = {
 	                            color: isCategory ? inactiveColor : [inactiveColor]
 	                        };
 	                    }
@@ -49196,7 +49196,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // newOption has anyone of these keys, all of these keys
 	        // will be reset. Otherwise, all keys remain.
 	        var visualKeys = [
-	            'inRange', 'outOfRange', 'target', 'controller', 'color'
+	            'inRange', 'outOfRange', 'target', 'com.cafe24.ksmart30.team01.business.controller', 'color'
 	        ];
 	        var has;
 	        zrUtil.each(visualKeys, function (key) {
@@ -50112,7 +50112,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	         * @param {string=} visualCluster Only can be 'color' 'opacity' 'symbol' 'symbolSize'
 	         * @param {Object} [opts]
 	         * @param {string=} [opts.forceState] Specify state, instead of using getValueState method.
-	         * @param {string=} [opts.convertOpacityToAlpha=false] For color gradient in controller widget.
+	         * @param {string=} [opts.convertOpacityToAlpha=false] For color gradient in com.cafe24.ksmart30.team01.business.controller widget.
 	         * @return {*} Visual value.
 	         */
 	        getControllerVisual: function (targetValue, visualCluster, opts) {
@@ -50368,9 +50368,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	                                        // When categories: {'cate1': false, 'cate3': true}
 	                                        // When selected === false, means all unselected.
 	            align: 'auto',              // 'auto', 'left', 'right'
-	            itemWidth: 20,              // When put the controller vertically, it is the length of
+	            itemWidth: 20,              // When put the com.cafe24.ksmart30.team01.business.controller vertically, it is the length of
 	                                        // horizontal side of each item. Otherwise, vertical side.
-	            itemHeight: 14,             // When put the controller vertically, it is the length of
+	            itemHeight: 14,             // When put the com.cafe24.ksmart30.team01.business.controller vertically, it is the length of
 	                                        // vertical side of each item. Otherwise, horizontal side.
 	            itemSymbol: 'roundRect',
 	            pieceList: null,            // Each item is Object, with some of those attrs:
@@ -54528,7 +54528,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    proto._createController = function (
 	        controllerGroup, featureModel, ecModel, api
 	    ) {
-	        var controller = this._controller = new SelectController(
+	        var com.cafe24.ksmart30.team01.business.controller = this._controller = new SelectController(
 	            'rect',
 	            api.getZr(),
 	            {
@@ -54538,21 +54538,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	                fill: 'rgba(0,0,0,0.2)'
 	            }
 	        );
-	        controller.on(
+	        com.cafe24.ksmart30.team01.business.controller.on(
 	            'selectEnd',
 	            zrUtil.bind(
-	                this._onSelected, this, controller,
+	                this._onSelected, this, com.cafe24.ksmart30.team01.business.controller,
 	                featureModel, ecModel, api
 	            )
 	        );
-	        controller.enable(controllerGroup, false);
+	        com.cafe24.ksmart30.team01.business.controller.enable(controllerGroup, false);
 	    };
 
 	    proto._disposeController = function () {
-	        var controller = this._controller;
-	        if (controller) {
-	            controller.off('selected');
-	            controller.dispose();
+	        var com.cafe24.ksmart30.team01.business.controller = this._controller;
+	        if (com.cafe24.ksmart30.team01.business.controller) {
+	            com.cafe24.ksmart30.team01.business.controller.off('selected');
+	            com.cafe24.ksmart30.team01.business.controller.dispose();
 	        }
 	    };
 
@@ -54589,13 +54589,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    /**
 	     * @private
 	     */
-	    proto._onSelected = function (controller, featureModel, ecModel, api, selRanges) {
+	    proto._onSelected = function (com.cafe24.ksmart30.team01.business.controller, featureModel, ecModel, api, selRanges) {
 	        if (!selRanges.length) {
 	            return;
 	        }
 	        var selRange = selRanges[0];
 
-	        controller.update(); // remove cover
+	        com.cafe24.ksmart30.team01.business.controller.update(); // remove cover
 
 	        var snapshot = {};
 

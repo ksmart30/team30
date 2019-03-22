@@ -1,5 +1,5 @@
-// Test the line controller
-describe('Line controller tests', function() {
+// Test the line com.cafe24.ksmart30.team01.business.controller
+describe('Line com.cafe24.ksmart30.team01.business.controller tests', function() {
 	
 	beforeEach(function() {
 		window.addDefaultMatchers(jasmine);

@@ -17,14 +17,14 @@ define(function (require) {
             var lineDraw = new LineDraw();
             var group = this.group;
 
-            var controller = new RoamController(api.getZr(), group);
+            var com.cafe24.ksmart30.team01.business.controller = new RoamController(api.getZr(), group);
 
             group.add(symbolDraw.group);
             group.add(lineDraw.group);
 
             this._symbolDraw = symbolDraw;
             this._lineDraw = lineDraw;
-            this._controller = controller;
+            this._controller = com.cafe24.ksmart30.team01.business.controller;
 
             this._firstRender = true;
         },
@@ -119,23 +119,23 @@ define(function (require) {
         },
 
         _updateController: function (seriesModel, api) {
-            var controller = this._controller;
+            var com.cafe24.ksmart30.team01.business.controller = this._controller;
             var group = this.group;
-            controller.rectProvider = function () {
+            com.cafe24.ksmart30.team01.business.controller.rectProvider = function () {
                 var rect = group.getBoundingRect();
                 rect.applyTransform(group.transform);
                 return rect;
             };
             if (seriesModel.coordinateSystem.type !== 'view') {
-                controller.disable();
+                com.cafe24.ksmart30.team01.business.controller.disable();
                 return;
             }
-            controller.enable(seriesModel.get('roam'));
-            controller.zoomLimit = seriesModel.get('scaleLimit');
+            com.cafe24.ksmart30.team01.business.controller.enable(seriesModel.get('roam'));
+            com.cafe24.ksmart30.team01.business.controller.zoomLimit = seriesModel.get('scaleLimit');
             // Update zoom from model
-            controller.zoom = seriesModel.coordinateSystem.getZoom();
+            com.cafe24.ksmart30.team01.business.controller.zoom = seriesModel.coordinateSystem.getZoom();
 
-            controller
+            com.cafe24.ksmart30.team01.business.controller
                 .off('pan')
                 .off('zoom')
                 .on('pan', function (dx, dy) {

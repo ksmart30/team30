@@ -109,7 +109,7 @@ describe('vsiaulMap_setOption', function() {
         expect(option.visualMap[0].controller.inRange.hasOwnProperty('color')).toEqual(false);
         expect(option.visualMap[0].inRange.symbolSize).toEqual([0.4, 0.6]);
         expect(option.visualMap[0].target.inRange.symbolSize).toEqual([0.4, 0.6]);
-        // Do not compare controller.inRange.symbolSize, which will be amplified to controller size.
+        // Do not compare com.cafe24.ksmart30.team01.business.controller.inRange.symbolSize, which will be amplified to com.cafe24.ksmart30.team01.business.controller size.
         // expect(option.visualMap[0].controller.inRange.symbolSize).toEqual([?, ?]);
     });
 
@@ -160,7 +160,7 @@ describe('vsiaulMap_setOption', function() {
 
         this.chart.setOption({
             visualMap: {
-                controller: {
+                com.cafe24.ksmart30.team01.business.controller: {
                     outOfRange: {
                         symbol: ['diamond']
                     }

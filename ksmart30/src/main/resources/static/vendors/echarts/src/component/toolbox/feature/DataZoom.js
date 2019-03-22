@@ -119,7 +119,7 @@ define(function(require) {
     proto._createController = function (
         controllerGroup, featureModel, ecModel, api
     ) {
-        var controller = this._controller = new SelectController(
+        var com.cafe24.ksmart30.team01.business.controller = this._controller = new SelectController(
             'rect',
             api.getZr(),
             {
@@ -129,21 +129,21 @@ define(function(require) {
                 fill: 'rgba(0,0,0,0.2)'
             }
         );
-        controller.on(
+        com.cafe24.ksmart30.team01.business.controller.on(
             'selectEnd',
             zrUtil.bind(
-                this._onSelected, this, controller,
+                this._onSelected, this, com.cafe24.ksmart30.team01.business.controller,
                 featureModel, ecModel, api
             )
         );
-        controller.enable(controllerGroup, false);
+        com.cafe24.ksmart30.team01.business.controller.enable(controllerGroup, false);
     };
 
     proto._disposeController = function () {
-        var controller = this._controller;
-        if (controller) {
-            controller.off('selected');
-            controller.dispose();
+        var com.cafe24.ksmart30.team01.business.controller = this._controller;
+        if (com.cafe24.ksmart30.team01.business.controller) {
+            com.cafe24.ksmart30.team01.business.controller.off('selected');
+            com.cafe24.ksmart30.team01.business.controller.dispose();
         }
     };
 
@@ -180,13 +180,13 @@ define(function(require) {
     /**
      * @private
      */
-    proto._onSelected = function (controller, featureModel, ecModel, api, selRanges) {
+    proto._onSelected = function (com.cafe24.ksmart30.team01.business.controller, featureModel, ecModel, api, selRanges) {
         if (!selRanges.length) {
             return;
         }
         var selRange = selRanges[0];
 
-        controller.update(); // remove cover
+        com.cafe24.ksmart30.team01.business.controller.update(); // remove cover
 
         var snapshot = {};
 
