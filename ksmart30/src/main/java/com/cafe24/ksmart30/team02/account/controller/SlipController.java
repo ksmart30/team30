@@ -7,6 +7,7 @@ public class SlipController {
 	//전표입력
 	@GetMapping("/acc/slip/in")
 	public String slipIn() {
+		System.out.println("전표입력 slipIn SlipController.java");
 		return "/account/slip/slip_in";
 	}
 	

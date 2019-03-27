@@ -6,12 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class SlipEndDayController {
 	//전표마감(일)
 	@GetMapping("/acc/slipendday/in")
-	public String slipenddayIn() {
+	public String slipEndDayIn() {
+		System.out.println("전표마감(일) slipEndDayIn SlipEndDayController.java");
 		return "/account/slip/endday/slipendday_in";
-	}
-	//전표마감(월)
-	@GetMapping("/acc/slipendmonth/in")
-	public String slipenddaySearch() {
-		return "/account/slip/endday/slipendday_search";
 	}
 }
