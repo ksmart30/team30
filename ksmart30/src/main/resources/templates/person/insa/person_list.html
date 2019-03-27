@@ -1,39 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorator="layout/main">
-<th:block layout:fragment="customHead">
-	<meta charset="UTF-8">
-	<title>직원검색</title>
-</th:block>
-<th:block layout:fragment="customBody">
-		  <div class="center_col" role="main">
-		<div class="">
-			<div class="page-title">
-				<div class="title_left">
-					<h3>직원 검색</h3>
-				</div>
-
-				<div class="title_right">
-					<div
-						class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-						<div class="input-group">
-							<input type="text" class="form-control"
-								placeholder="Search for..."> <span
-								class="input-group-btn">
-								<button class="btn btn-default" type="button">검색</button>
-							</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-	
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/main">
+	<th:block layout:fragment="customHead">
+		<meta charset="UTF-8">
+		<title>test</title>
+	</th:block>
+	<th:block layout:fragment="customBody">
+		
 	 <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>직원 LIST</small></h2>
+                    <h2>인사기록 LIST</small></h2>
                     <ul class="nav navbar-right panel_toolbox">
                       <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                       </li>
@@ -75,10 +51,16 @@
                           <td>010-8788-9999</td>
                         </tr>                     
                       </tbody>
+                      
+                      <a href="/person/insa/personnelRecord/in"><button type="button" class="btn btn-primary">인사기록카드 등록(신규)</button></a>
+                      
                     </table>
                   </div>
                 </div>
               </div>
-		</div>
-</th:block>
+              
+              
+     
+		
+	</th:block>
 </html>

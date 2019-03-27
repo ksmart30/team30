@@ -94,8 +94,8 @@
                   <li><a><i class="fa fa-money"></i> 외주 관리 <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
                     	<label style="font-size:14px; padding-left:10px">외주비 분석 현황</label>
-		                      <li><a href="/project/cooperation/dragon_hyunhwang">용도별 분석현황</a></li>
-		                      <li><a href="/project/cooperation/pjt_hyunhwang">프로젝트별 분석현황</a></li>
+		                      <li><a href="/project/cooperation/dragon/hyunhwang">용도별 분석현황</a></li>
+		                      <li><a href="/project/cooperation/pjt/hyunhwang">프로젝트별 분석현황</a></li>
                   		<label style="font-size:14px; padding-left:10px">외주협력사 관리</label>
 		                      <li><a href="/project/last/search">외주계약서 입력</a></li>
 		                      <li><a href="/project/cooperation/list">외주계약서 검색</a></li>
@@ -116,7 +116,7 @@
 		                      <li><a href="/person/yidong/list">이동자료 조회</a></li>
 		                      <li><a href="/person/yidong/register">인사발령대장</a></li>
                   		<label style="font-size:14px; padding-left:10px">이동관리</label>
-		                      <li><a href="/person/insapyeonga/list">인사평가항목</a></li>
+		                      <li><a href="/person/insapyeonga/cate">인사평가항목</a></li>
 		                      <li><a href="/person/insapyeonga/chart">인사평가표</a></li>
 		                      <li><a href="/person/insapyeonga/in">인사평가 입력</a></li>
 		                      <li><a href="/person/insapyeonga/result">인사평가 결과</a></li>
@@ -343,6 +343,9 @@
 
     <!-- Custom Theme Scripts -->
     <script src="/build/js/custom.min.js"></script>
+    
+    <th:block layout:fragment="customJquery">
+    </th:block>
 	
   </body>
 </html>
