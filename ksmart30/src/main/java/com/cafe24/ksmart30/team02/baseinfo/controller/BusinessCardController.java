@@ -10,6 +10,6 @@ public class BusinessCardController {
 	public String businessCardController() {
 		System.out.println("기업카드 businessCardController ControlItemCodeController.java");
 		
-		return "baseinfo/businessCard/businessCard";
+		return "baseInfo/businesscard/businesscard";
 	}
 }

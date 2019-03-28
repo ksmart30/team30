@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class AccountCodeController {
 	@GetMapping("/baseinfo/accountcode/in")
 	public String AccountCodeInsert(){
-		return "/baseinfo/accountcode/accountcode_in";
+		return "/baseInfo/accountcode/accountcode_in";
 	}
 
 }

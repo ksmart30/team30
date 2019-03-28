@@ -9,6 +9,6 @@ public class ControlItemCodeController {
 	@GetMapping("/baseinfo/controlitemcode/in")
 	public String ControlItemCode() {
 		System.out.println("관리항목코드등록 ControlItemCode ControlItemCodeController.java");
-		return "baseinfo/controllitemcode/controllitemcode";
+		return "baseInfo/controllitemcode/controllitemcode";
 	}
 }

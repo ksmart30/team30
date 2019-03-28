@@ -10,6 +10,6 @@ public class AssetClassfyCodeController {
 	@GetMapping("/baseinfo/assetclassifycode/in")
 	public String AssetClassfyCode() {
 		System.out.println("자산분류코드 AssetClassfyCode AssetClassfyCodeController.java");
-		return "baseinfo/assetclassfycode/assetclassfycode";
+		return "baseInfo/assetclassfycode/assetclassfycode";
 	}
 }
