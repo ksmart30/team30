@@ -1,15 +1,35 @@
+/*
+ * @file	ProjectManageRestController.java
+ * @brief   용역계약서 RestController
+ * @author  ksmart30 YDE
+ */
 package com.cafe24.ksmart30.team01.project.controller;
 
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.cafe24.ksmart30.team01.project.service.ProjectManageService;
 
 @RestController
 public class ProjectManageRestController {
+	@Autowired
+	ProjectManageService projectManageService;
+	
 	//3.1.1 용역계약서 입력 처리
+	/* @brief	"http://localhost/project/manage/in" 주소분기(post방식)
+	 *			화면에서 입력한 값을 ajax로 값을 넘기고 받기 위함
+	 *			@return List<Map<String, Object>>
+	 */
 	@PostMapping("/project/manage/in")
-	public String projectManageIn() {
-		return "project/manage/in";
+	public List<Map<String, Object>> projectManageAdd(String PJT_CD, String DEPT_CD, String YEAR) {
+		System.out.println("RestController projectManageAdd 메서드 실행");
+		return projectManageService.businessManagerSearch(PJT_CD, DEPT_CD, YEAR);
 	}
 	
 	//3.1.1 용역계약서 발주처 입력 처리
@@ -82,6 +102,12 @@ public class ProjectManageRestController {
 	@PostMapping("/project/manage/change/giseong_del")
 	public String projectManageChangeGiseongDel() {
 		return "project/manage/change/giseong_del";
+	}
+	
+	//3.1.3 용역계약서 변경 조회
+	@PostMapping("/project/manage/change/search")
+	public String projectManageSearch() {
+		return null;
 	}
 	
 	//3.1.4 용역계약서 검색(부서)
