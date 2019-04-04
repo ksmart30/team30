@@ -5,8 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class SlipAdminController {
-	@GetMapping("/acc/slipadmit/in")
-	public String slipAdmitIn() {
+	//전표승인
+	@GetMapping("/acc/slipAdmitView")
+	public String slipAdmitView() {
 		return "/account/slip/admit/slipadmit_in";
 	}
 }

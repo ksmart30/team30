@@ -1,5 +1,8 @@
 package ksmart30.team00.baseinfo.service;
 
-public class BusinessCardService {
+import org.springframework.stereotype.Service;
 
+@Service
+public class BusinessCardService {
+	
 }

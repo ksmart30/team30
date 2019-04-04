@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class PayCardController {
-	@GetMapping("/acc/paycard/in")
-	public String paycard() {
+	@GetMapping("/acc/payCardView")
+	public String payCardView() {
 		return "account/slip/paycard/paycard_in";
 	}
 }

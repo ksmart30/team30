@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class ExcostTransferController {
 	
 	//외주비 지급전표 이관
-	@GetMapping("/acc/excosttransfer/in")
-	public String excostTransfer() {
+	@GetMapping("/acc/excostTransferView")
+	public String excostTransferView() {
 		System.out.println("외주비 지급전표 이관 excostTransfer ExcostTransferController.java");
 		return "/account/excosttransfer/excosttransfer_in";
 	}

@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class SlipEndYearController {
 	
 	//전표마감(년)
-	@GetMapping("/acc/slipendyear/in")
-	public String slipEndYearIn(){
+	@GetMapping("/acc/slipEndYearView")
+	public String slipEndYearView(){
 		System.out.println("전표마감(년) slipEndYearIn SlipEndYearController.java");
 		return "/account/slip/endyear/slipendyear_in";
 	}

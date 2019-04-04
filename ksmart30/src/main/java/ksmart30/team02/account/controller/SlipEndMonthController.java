@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class SlipEndMonthController {
 
 		//전표마감(월)
-		@GetMapping("/acc/slipendmonth/in")
-		public String slipEndMonthIn() {
+		@GetMapping("/acc/slipEndMonthView")
+		public String slipEndMonthView() {
 			System.out.println("전표마감 (월) slipEndMonthIn SlipEndDayController.java");
 			return "/account/slip/endmonth/slipendmonth_in";
 		}

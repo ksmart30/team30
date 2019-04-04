@@ -2,3 +2,35 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ksmart30.team00.baseinfo.mapper.AccountCodeMapper">
+	<!-- 계정과목리스트 SELECT쿼리문 -->
+	<select id="selectAccountCodeList"
+			resultType="ksmart30.team00.baseinfo.domain.AccountCode">
+		SELECT 
+			ACC_CD as accCd,
+			ACC_DTL_CD as accDtlCd,
+			ACC_SHRT_NM as accShrtNm,
+			ACC_CLAS as accClas,
+			DRCR_GB as drcrGb,
+			ACC_LEVEL as accLevel,
+			SLIP_EXIST_YN as slipExistYn,
+			DR_FUND_CD as drFundCd,
+			CR_FUND_CD as crFundCd,
+			BUDG_YN as budgYn,
+			BK_CONT_CD1 as bkContCd1,
+			BK_CONT_CD2 as bkContCd2,
+			BK_CONT_CD3 as bkContCd3,
+			UN_MANA_YN as unManaYn,
+			UN_MANA_ST as unManaSt,
+			UN_CONT_CD1 as unContCd1,
+			UN_CONT_CD2 as unContCd2,
+			HIGH_ACC_CD1 as highAccCd1,
+			HIGH_ACC_CD2 as highAccCd2,
+			HIGH_ACC_CD3 as highAccCd3,
+			HIGH_ACC_CD4 as highAccCd4,
+			HIGH_ACC_CD5 as highAccCd5,
+			HIGH_ACC_CD6 as highAccCd6			
+		 FROM
+			T_AC0100
+	</select>
+</mapper>

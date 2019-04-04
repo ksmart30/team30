@@ -3,6 +3,7 @@
 	<th:block layout:fragment="customHead">
 		<meta charset="UTF-8">
 		<title>test</title>
+		<th:block th:include="layout/customHead"></th:block>
 	</th:block>
 	<th:block layout:fragment="customBody">
 		<font color="black">
@@ -72,7 +73,7 @@
 				                <div class="col-md-1 col-sm-12 col-xs-12 form-group">				                   
 				                </div>
 				                <div class="col-md-4 col-sm-12 col-xs-12 form-group">
-				                                               거 래 처 <input type="text" size="5"> <input type="text" size="2"> <button>ㅁ</button>
+				                                               거 래 처 &nbsp;<input type="text" size="5"> <input type="text" size="2"> <button>ㅁ</button>
 				                </div>								
 				                <div class="col-md-4 col-sm-12 col-xs-12 form-group">
 				                                               프로젝트 <input type="text" size="5"> <button>ㅁ</button>
@@ -197,4 +198,7 @@
 		</div>
      	</font>
 	</th:block>
+	<th:block layout:fragment="customJquery">
+		<th:block th:include="layout/customJquery"></th:block>
+    </th:block>
 </html>

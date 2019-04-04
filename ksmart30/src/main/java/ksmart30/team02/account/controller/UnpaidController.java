@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class UnpaidController {
-	@GetMapping("/acc/unpaid/in")
-	public String unpaidIn() {
+	@GetMapping("/acc/unpaidView")
+	public String unpaidView() {
 		return "/account/unpaid/unpaid_in";
 	}
 }

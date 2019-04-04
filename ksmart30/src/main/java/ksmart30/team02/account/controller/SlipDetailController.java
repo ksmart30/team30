@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class SlipDetailController {
 	
-	@GetMapping("/acc/slip/search/in")
-	public String slipDetailSearch() {
-		return ("account/slip/search/slipdetail_search.html");
+	@GetMapping("/acc/slipSearchView")
+	public String slipSearchView() {
+		return "account/slip/search/slipdetail_search";
 	}
 }

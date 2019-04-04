@@ -3,103 +3,91 @@
 	<th:block layout:fragment="customHead">
 		<meta charset="UTF-8">
 		<title>test</title>
+		<th:block th:include="layout/customHead"></th:block>
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+		<script>
+			$(document).ready(()=>{
+				$('#btnSlipAdmit').click(()=>{
+					$('#test').val('1234'); 
+				});
+			});
+		</script>
 	</th:block>
 	<th:block layout:fragment="customBody">
-		<font color="black">
+		<div class="col-md-12 col-xs-12" style="color:black;">
+			<div class="page-title">
+				<div class="title_left">
+					<h2><b>전표승인</b></h2>
+				</div>
+			</div>
+        </div>
+		
 		<div class="x_panel">
-        	<div class="x_title">           	
-                <h2>전 표 승 인 </h2>
-                <ul class="nav navbar-right panel_toolbox">
-                	<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                  	</li>
-                  	<li class="dropdown">
-                    	<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                    	<ul class="dropdown-menu" role="menu">
-                      		<li><a href="#">Settings 1</a>
-                      		</li>
-                      		<li><a href="#">Settings 2</a>
-                      		</li>
-                    	</ul>
-                  	</li>
-                  	<li><a class="close-link"><i class="fa fa-close"></i></a>
-                  	</li>
-                </ul>
-                <div class="clearfix"></div>
-          	</div>
-            <div class="x_content">
-            	<div class="row">
-              		<table class="table table-bordered">
-						<tr>
-							<th>
-	                  			<div class="col-md-12 col-sm-12 col-xs-12 form-group">          	
-	                  				검색조건                
-	                  			</div>                  
-	                  			<div class="col-md-3 col-sm-12 col-xs-12 form-group">
-	                  		 		회계단위 
-	                  		 		<select>
-								 		<option>ANU디자인그룹(주)</option>						
-							   		</select>
-	                  			</div>
-	                  			<div class="col-md-2 col-sm-12 col-xs-12 form-group">
-	                  				 전표유형 
-	                 				<select>
-										<option>일반전표</option>
-										<option>대금지불전표</option>
-										<option>결산전표</option>
-						  	  		</select>                 	  
-	                  			</div>
-	                  			<div class="col-md-4 col-sm-12 col-xs-12 form-group">
-	                                                                           전표일자 <input type="date"> ~ <input type="date">
-	                  			</div>                                    
-			                  	<div class="col-md-3 col-sm-12 col-xs-12 form-group">
-			                   	 	 전표번호 
-			                   	 		<input type="text" size="3">
-			                   	 	 	~ <input type="text" size="3">        	  
-			                 	</div>		
-			                  	<div class="col-md-3 col-sm-12 col-xs-12 form-group">
-			                     	 승인여부 <input type="radio" name="1">승인
-										  <input type="radio" name="1">미승인
-			                  	</div>		
-			                  	<div class="col-md-2 col-sm-12 col-xs-12 form-group">
-			                                                         발 의 자 <input type="text" size="5"><button>ㅁ</button>
-			                  	</div>				
-			                  	<div class="col-md-4 col-sm-12 col-xs-12 form-group">
-			                    	계정코드 <input type="text" size="5"> <input type="text" size="3"><button>ㅁ</button>
-			                  	</div>		
-			                  	<div class="col-md-3 col-sm-12 col-xs-12 form-group">
-			                    	발의부서 <input type="text" size="5"><button>ㅁ</button> ~ <input type="text" size="3"><button>ㅁ</button>
-			                  	</div> 		
-			                  	<div class="col-md-12 col-sm-12 col-xs-12 form-group">
-			                    	전표구분 <input type="radio" name="2">All
-										  <input type="radio" name="2">현금
-										  <input type="radio" name="2">대체
-			                  	</div>
-			             	</th>
-		          		</tr>
-             		</table>
-         		</div>                                  
+        	<div class="x_title">	               	                                    	
+            	<div class="x_content">
+            		<div class="row">
+              			<table class="table table-bordered">
+							<tr>
+								<th>
+	                  				<div class="col-md-12 col-sm-12 col-xs-12 form-group">          	
+	                  					검색조건                
+	                  				</div>                  
+	                  				<div class="col-md-3 col-sm-12 col-xs-12 form-group">
+	                  		 			회계단위 
+	                  		 			<select>
+								 			<option>ANU디자인그룹(주)</option>						
+							   			</select>
+	                  				</div>
+	                  				<div class="col-md-2 col-sm-12 col-xs-12 form-group">
+	                  					 전표유형 
+	                 					<select>
+											<option>일반전표</option>
+											<option>대금지불전표</option>
+											<option>결산전표</option>
+						  	  			</select>                 	  
+	                  				</div>
+	                  				<div class="col-md-4 col-sm-12 col-xs-12 form-group">
+	                                                                   	        전표일자 <input type="date"> ~ <input type="date">
+	                  				</div>                                    
+			                  		<div class="col-md-3 col-sm-12 col-xs-12 form-group">
+			                   		 	 전표번호 
+			                   		 		<input type="text" id="test" size="3">
+			                   	 		 	~ <input type="text" size="3">        	  
+			                 		</div>		
+			                  		<div class="col-md-3 col-sm-12 col-xs-12 form-group">
+			                   		  	 승인여부 <input type="radio" name="1">승인
+											  <input type="radio" name="1">미승인
+			                  		</div>		
+			                  		<div class="col-md-2 col-sm-12 col-xs-12 form-group">
+			                                             	            발 의 자 <input type="text" size="5"><button>ㅁ</button>
+			                  		</div>				
+			                  		<div class="col-md-4 col-sm-12 col-xs-12 form-group">
+			                  	 	 	계정코드 <input type="text" size="5"> <input type="text" size="3"><button>ㅁ</button>
+			                  		</div>		
+			                  		<div class="col-md-3 col-sm-12 col-xs-12 form-group">
+			                    		발의부서 <input type="text" size="5"><button>ㅁ</button> ~ <input type="text" size="3"><button>ㅁ</button>
+			                  		</div> 		
+			                  		<div class="col-md-10 col-sm-12 col-xs-12 form-group">
+			                    		전표구분 <input type="radio" name="2">All
+											  <input type="radio" name="2">현금
+											  <input type="radio" name="2">대체
+			                  		</div>
+			                  		<div class="col-md-2 col-sm-12 col-xs-12 form-group">
+			                    		<button id="btnSlipAdmit">조회</button>
+			                  		</div>
+			             		</th>
+		          			</tr>
+             			</table>
+         			</div>                                  
+       			</div>
        		</div>
-     	</div>	
+     	</div>
   		
-  		<div class="col-md-12 col-sm-12 col-xs-12">
-        	<div class="x_panel">
-            	<div class="x_title"> 
-           			<button>v전체선택</button> <button>v전체취소</button><span>조회건수 0건</span>
-            		<ul class="nav navbar-right panel_toolbox">
-              			<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-              			</li>
-              			<li class="dropdown">
-                			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                			<ul class="dropdown-menu" role="menu">
-                   			<li><a href="#">Settings 1</a>
-                   			</li>
-                   			<li><a href="#">Settings 2</a>
-                   			</li>
-                			</ul>
-              			</li>
-               		<li><a class="close-link"><i class="fa fa-close"></i></a>
-               		</li>
-            		</ul>
+  		
+        	<div class="x_panel">       		
+            	<div class="col-md-12 col-sm-12 col-xs-12">
+            	 	<div class="x_title">
+           				<button>v전체선택</button> <button>v전체취소</button><span>조회건수 0건</span>            		
             		<div class="clearfix"></div>
           		</div>
                	<div class="x_content">                   
@@ -210,27 +198,14 @@
                 	</div>															
              	</div>
           	</div>
-       	</div>
+        </div>	  	
+      
        	
-       	<div class="col-md-12 col-sm-12 col-xs-12">
+       	
          	<div class="x_panel">
-           		<div class="x_title"> 
-            		<font size="4">전표상세내역</font>
-             		<ul class="nav navbar-right panel_toolbox">
-               			<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-               			</li>
-               			<li class="dropdown">
-                 			<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                 			<ul class="dropdown-menu" role="menu">
-                   			<li><a href="#">Settings 1</a>
-                   			</li>
-                   			<li><a href="#">Settings 2</a>
-                   			</li>
-                 			</ul>
-               			</li>
-                		<li><a class="close-link"><i class="fa fa-close"></i></a>
-                		</li>
-             		</ul>
+         		<div class="col-md-12 col-sm-12 col-xs-12">
+           			<div class="x_title"> 
+            			<font size="4">전표상세내역</font>
              		<div class="clearfix"></div>
            		</div>
           		<div class="x_content">                   
@@ -322,4 +297,7 @@
 		</div>
 	</font>
 	</th:block>
+	<th:block layout:fragment="customJquery">
+		<th:block th:include="layout/customJquery"></th:block>
+    </th:block>
 </html>

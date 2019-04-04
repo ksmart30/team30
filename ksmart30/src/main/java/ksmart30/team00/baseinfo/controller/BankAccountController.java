@@ -4,8 +4,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class BankAccountController {
-	@GetMapping("/baseinfo/bankaccount/in")
-	public String bankAccount() {
+	//통장계좌
+	@GetMapping("/baseInfo/bankAccountView")
+	public String bankAccountView() {
 		return "baseInfo/bankaccount";
 	}
 }
