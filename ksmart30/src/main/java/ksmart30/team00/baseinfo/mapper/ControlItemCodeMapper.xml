@@ -3,9 +3,17 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ksmart30.team00.baseinfo.mapper.ControlItemCodeMapper">
+	<!--	10.2.6.관리항목코드
+		   @file     ControlItemCodeMapper.xml
+		   @brief    관리항목코드 XML
+		   @author  ksmart30 박찬업
+	-->
+	<!--  @brief    관리항목코드리스트 SELECT쿼리문
+		  @return  ksmart30.team00.baseinfo.domain.ControlItemCodeDomain
+	-->
 	<!-- 관리항목코드리스트 SELECT쿼리문 -->
 	<select id="ControlItemCodeList"
-			resultType="ksmart30.team00.baseinfo.domain.ControlItemCode">
+			resultType="ksmart30.team00.baseinfo.domain.ControlItemCodeDomain">
 		SELECT 
 			CONT_CD, 
 			CONT_NM, 
