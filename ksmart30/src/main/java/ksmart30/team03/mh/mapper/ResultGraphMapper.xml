@@ -4,8 +4,9 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="ksmart30.team03.mh.mapper.ResultGraphMapper">
-	<!--MH 계획,실적 리스트 출력 select문  -->
-	<select id="getResultGraphList" resultType="ksmart30.team03.mh.domain.ResultList">
+	<!--5.2.1 MH 계획,실적 리스트 출력 select문-->
+	<select id="getResultGraphList" 
+	resultType="ksmart30.team03.mh.domain.ResultList">
 		SELECT 
 			b.KOR_NM,
 			c.PJT_CD, 
@@ -16,12 +17,86 @@
 		FROM T_HM1000 AS b join T_P11000 AS a 
 		on b.EMP_NO=a.PM_EMP_NO join T_PS1000 AS c 
 		on c.PJT_CD=a.PJT_CD join T_SC1010 AS d on b.DEPT_CD=d.DEPT_CD
+		
 	</select>
-	<!--MH 계획,실적 차트 출력 select문  -->
-	<select id="">
+	
+	<!--5.2.1 MH 계획,실적 리스트 출력 select문  (날짜 검색)-->
+	<select id="getResultGraphListDate" 
+	resultType="ksmart30.team03.mh.domain.ResultList" parameterType="String">
+			SELECT 
+			b.KOR_NM,
+			c.PJT_CD, 
+			c.SVC,
+			c.CRT_DATE,
+			c.END_DATE,
+			d.DEPT_NM
+		FROM T_HM1000 AS b join T_P11000 AS a 
+		on b.EMP_NO=a.PM_EMP_NO join T_PS1000 AS c 
+		on c.PJT_CD=a.PJT_CD join T_SC1010 AS d on b.DEPT_CD=d.DEPT_CD
+		WHERE c.CRT_DATE <![CDATA[>=]]> #{crt_date} and c.END_DATE <![CDATA[<=]]> #{end_date};
+		
+		
+	</select>
+	
+	<!--5.2.1 MH 계획,실적 차트 출력 select문 (계획) -->
+	<select id="getResultGraph" 
+	resultType="ksmart30.team03.mh.domain.ResultList" parameterType="String">
+		SELECT 
+			PJT_CD, 
+			SUM(PLAN_A) as PLAN_A, 
+			SUM(PLAN_B) as PLAN_B, 
+			SUM(PLAN_C) as PLAN_C, 
+			SUM(PLAN_D) as PLAN_D,
+			SUM(PLAN_E) as PLAN_E, 
+			SUM(PLAN_F) as PLAN_F,
+			SUM(PLAN_G) as PLAN_G 
+		FROM T_P11050 
+		WHERE PJT_CD=#{PJT_CD} GROUP BY PJT_CD;	
+	</select>
+	
+	<!--5.2.1 MH 계획,실적 차트 출력 select문 (실적) -->
+	<select id="getResultGraph2"
+	resultType="ksmart30.team03.mh.domain.ResultList" parameterType="String">
+	SELECT 
+		sum(WORK_TIME) as WORK_TIME, 
+		PJT_CD, 
+		WORK_STEP
+	FROM t_pm1020  
+	WHERE PJT_CD=#{PJT_CD} 
+	GROUP BY PJT_CD, WORK_STEP;
+
+	</select>
+	
+	<!--5.2.1 MH 계획,실적 차트 출력 select문 (단계별 계획 인건비 누계 ) -->
+	<select id="getResultGraphPlanNugae"
+	resultType="ksmart30.team03.mh.domain.ResultCost" parameterType="String">
+		SELECT 
+			sum(PLAN_A*DANGA) as PLAN_A, 
+			sum(PLAN_B*DANGA) as PLAN_B,
+			sum(PLAN_C*DANGA) as PLAN_C,
+			sum(PLAN_D*DANGA) as PLAN_D,
+			sum(PLAN_E*DANGA) as PLAN_E,
+			sum(PLAN_F*DANGA) as PLAN_F,
+			sum(PLAN_G*DANGA) as PLAN_G
+		FROM T_P11050 
+		WHERE PJT_CD=#{PJT_CD};
+	</select>
+	
+	<!--5.2.1 MH 계획,실적 차트 출력 select문 (단계별 실적  인건비 누계 ) -->
+	<select id="getResultGraphResultNugae"
+	resultType="ksmart30.team03.mh.domain.ResultCost" parameterType="String">
+		SELECT 
+			SUM(A.WORK_TIME*B.DANGA) TOTAL, 
+			WORK_STEP
+		FROM T_PM1020 A JOIN T_P11050 B ON A.JIKGUP_CD=B.JIKGUB
+		WHERE A.PJT_CD=B.PJT_CD AND 
+			  A.PJT_CD=#{PJT_CD} 
+		GROUP BY A.WORK_STEP 
+		ORDER BY WORK_STEP;
+	</select>
 	
 	
-	</select>
+	
 	
 	
 </mapper>

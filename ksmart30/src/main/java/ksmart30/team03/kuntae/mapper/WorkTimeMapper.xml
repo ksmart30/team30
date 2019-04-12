@@ -1,1 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ksmart30.team03.kuntae.mapper.WorkTimeMapper">
+	<!-- <select id="getRecordSingleList"
+			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList">
+		SELECT 
+			a.KOR_NM,
+			a.EMP_NO,
+			b.WORK_DT,
+			b.START_TIME,
+			b.END_TIME
+		FROM 
+			T_PM1010 AS b join T_HM1000 AS a 
+		on b.EMP_NO=a.EMP_NO 
+		WHERE a.EMP_NO='20190007' 
+	</select> -->
+	
+	<!-- 출,퇴근 기록부(개인별) 사원번호 검색 -->
+	<select id="getRecordSingleNoSearch"
+			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList"
+			parameterType="String">
+		SELECT 
+			a.KOR_NM,
+			a.EMP_NO,
+			b.WORK_DT,
+			b.START_TIME,
+			b.END_TIME
+		FROM 
+			T_PM1010 AS b join T_HM1000 AS a 
+		on b.EMP_NO=a.EMP_NO 
+		WHERE a.EMP_NO=#{EMP_NO}
+	</select>
+	
+	<!-- 이름검색 -->
+	<select id="getRecordSingleNameSearch"
+			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList"
+			parameterType="String">
+		SELECT 
+			a.KOR_NM,
+			a.EMP_NO,
+			b.WORK_DT,
+			b.START_TIME,
+			b.END_TIME
+		FROM 
+			T_PM1010 AS b join T_HM1000 AS a 
+		on b.EMP_NO=a.EMP_NO 
+		WHERE a.KOR_NM=#{KOR_NM}
+	</select>
+	
+	<!-- 날짜 검색 -->
+	<select id="getRecordSingleDateSearch"
+			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList"
+			parameterType="String">
+		SELECT 
+			a.KOR_NM,
+			a.EMP_NO,
+			b.WORK_DT,
+			b.END_DT,
+			b.START_TIME,
+			b.END_TIME
+		FROM 
+			T_PM1010 AS b join T_HM1000 AS a 
+		on b.EMP_NO=a.EMP_NO 
+		<!-- WHERE b.WORK_DT ='20120305' AND b.END_DT='20120305' -->
+		WHERE b.WORK_DT <![CDATA[>=]]> #{WORK_DT} and b.END_DT <![CDATA[<=]]> #{END_DT};
+	</select>
+	
+	<!-- 출,퇴근 기록부(개인별) 사원번호 검색 -->
+	<select id="getRecordTotalNoSearch"
+			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList"
+			parameterType="String">
+		SELECT X.*   
+  			FROM (
+ 				SELECT
+ 					DEPT_NM,
+ 					A.DEPT_CD,
+ 					(SELECT LEVEL2_NM FROM T_SC9100 WHERE BUSI_GB = 'H' AND LEVEL1_CD = '110' AND LEVEL2_CD = A.JIKGUP_CD) JIKGUP_NM,
+				   (SELECT LEVEL2_NM FROM T_SC9100 WHERE BUSI_GB = 'H' AND LEVEL1_CD = '120' AND LEVEL2_CD = A.JIKCHK_CD) JIKCHK_NM,
+					A.KOR_NM,
+					A.EMP_NO,
+					B.WORK_DT,
+				 	B.START_TIME,
+				 	B.END_TIME
+   				FROM T_HM1000 A , T_PM1010 B JOIN T_SC1010 D ON b.DEPT_CD=d.DEPT_CD 
+      			WHERE A.DEPT_CD = B.DEPT_CD AND A.EMP_NO=#{EMP_NO}		
+  		) X
+	</select>
+	
+	<select id="getRecordTotalList"
+			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList">
+		SELECT 
+				 DEPT_NM,
+				 b.LEVEL2_NM AS JIKGUP_NM,
+				 a.EMP_NO,
+				 a.KOR_NM,
+				 e.WORK_DT,
+				 e.START_TIME,
+				 e.END_TIME,
+				 e.END_DT
+		FROM T_HM1000 a 
+		JOIN T_SC9100 b ON a.JIKGUP_CD=b.LEVEL2_CD
+		JOIN T_SC9100 c ON a.JIKCHK_CD=c.LEVEL2_CD 
+		JOIN T_SC1010 d ON a.DEPT_CD=d.DEPT_CD 
+		JOIN T_PM1010 e ON a.EMP_NO=e.EMP_NO,
+		(Select Convert(varchar(10),Getdate(),112) o) o 
+		WHERE b.LEVEL1_CD='110' AND c.LEVEL1_CD='120' AND e.work_dt=o.o
+
+	</select> 
+	
+
+</mapper>

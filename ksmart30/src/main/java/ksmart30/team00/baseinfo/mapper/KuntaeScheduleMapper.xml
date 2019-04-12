@@ -1,1 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ksmart30.team00.baseinfo.mapper.KuntaeScheduleMapper">
+    <!-- 10.3.5.1 근태월력표 리스트와 달력 -->
+    <select id="getKuntaeScheduleList"
+            resultType="ksmart30.team00.baseinfo.domain.KuntaeSchedule">
+            SELECT 
+              DAY_YM,
+              DAY_DD, 
+              DAY_WEEK,
+              HOLID_GB,
+              HOLID_NM,
+              AUDIT_ID,
+              AUDIT_TM
+            FROM T_SC9200
+            WHERE DAY_YM = CONVERT(VARCHAR(6), GETDATE() , 112)
+    </select>
+    <!-- 10.3.5.2 근태월력표 검색 -->
+    <select id="getKuntaeScheduleSearch"
+            parameterType="ksmart30.team00.baseinfo.domain.KuntaeSchedule"
+            resultType="ksmart30.team00.baseinfo.domain.KuntaeSchedule">
+            SELECT 
+              DAY_YM,
+              DAY_DD, 
+              DAY_WEEK,
+              HOLID_GB,
+              HOLID_NM,
+              AUDIT_ID,
+              AUDIT_TM
+            FROM T_SC9200
+            WHERE DAY_YM = #{DAY_YM}
+    </select>
+</mapper>

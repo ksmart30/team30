@@ -21,43 +21,44 @@ public class LoginService {
     @Autowired
     private Ip ip;
 
-    // 로그인 처리
-    public int login(HttpSession session, HttpServletRequest request, Login login) throws UnknownHostException {
+    // 0.2 로그인 처리
+    public int getLogin(HttpSession session, HttpServletRequest request, Login login) throws UnknownHostException {
         System.out.println("(S) login() : 로그인 처리");
-        // 리턴값 초기화
+        // 1. 리턴값 초기화
         int result = 0;
-        // 출력확인
-        System.out.println("(S)입력 받은 ID :" + login.getEMP_NO());
-		System.out.println("(S)입력 받은 PW :" + login.getPASS_WD());
-        // Mapper를 이용한 로그인 처리
-        loginResult = loginMapper.addLogin(login);
-        System.out.println("값 : " + loginResult);
-        System.out.println("(M) 로그인처리 쿼리 실행완료");
-        // 로그인 성공여부에 따른 처리 (1:성공 0:실패)
+        // 3. Mapper를 이용한 사용자 등록정보 (SELECT)
+        loginResult = loginMapper.getLogin(login);
+        System.out.println("Login객체 주소값 : " + loginResult);
+        System.out.println("(M) 등록정보 조회 쿼리 실행완료");
+        // 4.1 로그인 성공여부에 따른 처리
         if (loginResult != null) {
             System.out.println("로그인 성공 !");
-            // 접속 IP정보 가져오기
+            // 4.1.2 접속 IP정보 가져오기
             InetAddress catchIp = InetAddress.getLocalHost();
             String connentIp = catchIp.getHostAddress();
             System.out.println("가져온 IP정보 : " + connentIp);
-            // id, ip정보를 loginIP객체에 Set (접속 기록을 남기기 위해서)
+            // 4.1.3 id, ip정보를 loginIP객체에 Set (접속 기록을 남기기 위해서)
             ip.setUSER_ID(loginResult.getEMP_NO());
             ip.setIP(connentIp);
-            // 접속 기록 남기기
+            // 4.1.4 접속 기록 남기기
             int connect = loginMapper.addConnect(ip);
-            System.out.println("접속 기록 성공여부 (1:성공, 0:실패) : " + connect);
-            // 로그인 정보 세션 처리
-            session.setAttribute("id", login.getEMP_NO());
-            session.setAttribute("pw", login.getPASS_WD());
+            System.out.println("접속기록 등록처리 (1:성공, 0:실패) : " + connect);
+            // 4.1.5 로그인 정보 세션 처리
+            session.setAttribute("EMP_NO", loginResult.getEMP_NO());
+            System.out.println("ID :" + session.getAttribute("EMP_NO"));
+            session.setAttribute("PASS_WD", loginResult.getPASS_WD());
+            System.out.println("PW :" + session.getAttribute("PASS_WD"));
+            session.setAttribute("KOR_NM", loginResult.getKOR_NM());
+            System.out.println("이름 :" + session.getAttribute("KOR_NM"));
             result = 1;
         }else {
-            // 로그인 실패
+            // 4.2 로그인 실패
             System.out.println("로그인 실패 !");
         }
         return result;
     }
 
-    // 로그아웃 처리
+    // 0.3 로그아웃 처리
     public void logout(HttpSession session) {
         System.out.println("(S) logout() : 로그아웃 처리");
         session.invalidate();

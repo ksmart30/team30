@@ -22,13 +22,60 @@ public class ResultList {
 	private String SVC;
 	private String DEPT_NM;
 	private String PJT_NM;
+	private int WORK_TIME;
+	private String WORK_STEP;
+	private String WORK_NM;
+	private int TOT_PLAN;
+	private String YEA_MD;//계획(예산)MH
+	private String SIL_TM;//실적MH
+	
 	
 	public String getPJT_NM() {
 		return PJT_NM;
 	}
 
+	public String getYEA_MD() {
+		return YEA_MD;
+	}
+
+	public void setYEA_MD(String yEA_MD) {
+		YEA_MD = yEA_MD;
+	}
+
+	public String getSIL_TM() {
+		return SIL_TM;
+	}
+
+	public void setSIL_TM(String sIL_TM) {
+		SIL_TM = sIL_TM;
+	}
+
+	public int getTOT_PLAN() {
+		return TOT_PLAN;
+	}
+
+	public void setTOT_PLAN(int tOT_PLAN) {
+		TOT_PLAN = tOT_PLAN;
+	}
+
 	public void setPJT_NM(String pJT_NM) {
 		PJT_NM = pJT_NM;
+	}
+
+	public String getWORK_STEP() {
+		return WORK_STEP;
+	}
+
+	public void setWORK_STEP(String wORK_STEP) {
+		WORK_STEP = wORK_STEP;
+	}
+
+	public String getWORK_NM() {
+		return WORK_NM;
+	}
+
+	public void setWORK_NM(String wORK_NM) {
+		WORK_NM = wORK_NM;
 	}
 
 	public int getTOT_MD() {
@@ -48,7 +95,7 @@ public class ResultList {
 	}
 
 
-	private int WORK_TIME;
+	
 	public int getWORK_TIME() {
 		return WORK_TIME;
 	}
@@ -186,7 +233,9 @@ public class ResultList {
 				+ ", PLAN_B=" + PLAN_B + ", PLAN_C=" + PLAN_C + ", PLAN_D=" + PLAN_D + ", PLAN_E=" + PLAN_E
 				+ ", PLAN_F=" + PLAN_F + ", PLAN_G=" + PLAN_G + ", TOT_MD=" + TOT_MD + ", DEPT_NAME=" + DEPT_NAME
 				+ ", KOR_NM=" + KOR_NM + ", END_DATE=" + END_DATE + ", SVC=" + SVC + ", DEPT_NM=" + DEPT_NM
-				+ ", PJT_NM=" + PJT_NM + ", WORK_TIME=" + WORK_TIME + ", CRT_DATE=" + CRT_DATE + "]";
+				+ ", PJT_NM=" + PJT_NM + ", WORK_TIME=" + WORK_TIME + ", WORK_STEP=" + WORK_STEP + ", WORK_NM="
+				+ WORK_NM + ", TOT_PLAN=" + TOT_PLAN + ", YEA_MD=" + YEA_MD + ", SIL_TM=" + SIL_TM + ", CRT_DATE="
+				+ CRT_DATE + "]";
 	}
 
 }

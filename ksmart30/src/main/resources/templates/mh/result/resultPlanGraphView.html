@@ -6,164 +6,389 @@
 	<th:block th:include="layout/customHead"></th:block>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>M/H 계획/실적(그래프)</title>
-
+	<title>M/H 계획/실적(그래프)</title>	
 	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+
 	<!-- 리스트뿌려주기 -->
 	<head>
 <script>
-	$(document).ready(function(){
-		console.log('프로젝트 리스트 출력')
-	    $('#btn_list').on('click',function(){
-	        $.ajax({
-	            url:'/manHour/manHourResultGraphList',
-	            type:'GET',
-	            dataType:'json',
-	            contentType:'application/json',
-	            success:(data)=>{
-	            	console.log(data);
-	                $('#list').empty();
-	                $(data).each(function(index,item){ //each = foreach (반복문)
-	                    $('#list').append('<tr>');
-	                    $('#list').append('<td>'+item.kor_NM+'</td>');
-	                    $('#list').append('<td>'+item.pjt_CD+'</td>');
-	                    $('#list').append('<td>'+item.svc+'</td>');
-	                    $('#list').append('<td>'+item.crt_DATE+'</td>'); 
-	                    $('#list').append('<td>'+item.end_DATE+'</td>');
-	                    $('#list').append('</tr>');
-	                    
-	                }); 
-	                            
-	            }
-	        });
-	    });
-		
-	/* 	$("#list").bind("click", function(){
-            var list2 = $('#list').val();
-			console.log(list2);
-            alert("클릭 이벤트 발생");
-                             
-        }); */
-		
-		$("#example-table-1 tr").click(function(){
-			//문자열 저장할 변수 선언
-			var str=""
-			//배열선언
-			var tdArr = new Array();
-			
-			//현재 클릭된 행<tr>
-			var tr = $(this);
-			var td = tr.children();
-			console.log("row : "+tr.text());
-			
-			var pjt_cd = td.eq(2).text();
-			
-			console.log("pjt_cd : "+pjt_cd);			
-			/* 
-			td.each(function(i){
-				tdArr.push(td.eq(i).test());
-				
-			}) */
-			//console.log("tdArr : "+tdArr.text());					
-			$.ajax({
-				url:'/chart',
-				type:'GET',
-				data: {pjt_cd:pjt_cd},
-				success:function(row){
-					alter('차트야나와라');
-					console.log("???");
-				}							
-			}) 		
-		})
-		function init_charts() {
-			
-			console.log('run_charts  typeof [' + typeof (Chart) + ']');
-			
-			if( typeof (Chart) === 'undefined'){ return; }
-			
-			console.log('init_charts');
 
-			
+function searchResult(crt_date, end_date){
+	
+	console.log("날짜별 검색 시작");	
+	$.ajax({
+		url:'/manHour/manHourResultGraphSearchView',
+		data:{CRT_DATE:CRT_DATE,END_DATE:END_DATE},	
+	});	
+};
+
+$(document).ready(function() {	
+	
+	$("#btn-search").click(function(){		
+		let crt_date_format = $('#crt_date').val();
+		let end_date_format = $('#end_date').val();
+		
+		let CRT_DATE = crt_date_format.substr(0,4)+crt_date_format.substr(5,2)+crt_date_format.substr(8,2);
+		let END_DATE = end_date_format.substr(0,4)+end_date_format.substr(5,2)+end_date_format.substr(8,2);
+		
+		console.log("시작날짜 : "+CRT_DATE+"종료 날짜: " + END_DATE);		
+		searchResult(CRT_DATE,END_DATE);		
+	});
+	
+		init_charts();
+		console.log('프로젝트 리스트 출력');
+
+		function init_charts() {
+			console.log('run_charts  typeof [' + typeof (Chart)
+					+ ']');
+			if (typeof (Chart) === 'undefined') {
+				return;
+			}
+			console.log('init_charts');
 			Chart.defaults.global.legend = {
-				enabled: false
+				enabled : false
 			};
 			
-		if ($('#mybarChart').length ){ 
-			  
-			  var ctx = document.getElementById("mybarChart");
-			  var mybarChart = new Chart(ctx, {
-				type: 'bar',
-				data: {
-				  labels: ["기획", "심의", "허가", "착공", "실시", "A/S", "준공"],
-				  datasets: [{
-					label: '# of Votes',
-					backgroundColor: "#3366FF",
-					data: [20, 30, 40, 28, 92, 50, 45]
-				  }, {
-					label: '# of Votes',
-					backgroundColor: "#FF0000",
-					data: [41, 56, 25, 48, 72, 34, 12]
-				  }]
-				},
+		//차트호출 함수시작
+		function barchart() {
+			let time_a = 0;
+			let time_b = 0;
+			let time_c = 0;
+			let time_d = 0;
+			let time_e = 0;
+			let time_f = 0;
+			let time_g = 0;
+			let time_z = 0;	
+			let result_nugae_a =0;
+			let result_nugae_b =0;
+			let result_nugae_c =0;
+			let result_nugae_d =0;
+			let result_nugae_e =0;
+			let result_nugae_f =0;
+			let result_nugae_g =0;
+			let result_nugae_z =0;			
+			$("#list_table tr").click(function() {//문자열 저장할 변수 선언		
+				let str = ""
+				//배열선언
+				let tdArr = new Array();
+				//현재 클릭된 행<tr>
+				let tr = $(this);
+				let td = tr.children();
+				console.log("row : "+ tr.text());
+				//선택한 행의 색을 바꿔주기 위한 것
+				$("#list_table tr").css("background-color", "#ffffff");
+				$(this).css( "background-color", "#f4f4f4" );
+				//선택한 행중에서 인덱스 번호가 2인 값을 가져옴 (pjt_cd)
+				let pjt_cd = td.eq(2).text();
+				console.log("pjt_cd : "+ pjt_cd);	
+				//계획 그래프 값 가져오기 시작!
+				
+				$.ajax({
+						url : '/manHour/manHourResultGraph',
+						type : 'GET',
+						dataType : "json",
+						async:false,
+						data : {pjt_cd : pjt_cd},
+						//ajax 배열 값을 전역변수로 선언
+						success : function(data) {
+							//테이블의 행 클릭시 해당하는 값 출력
+							$('#chart').empty();
+							$(data).each(function(index,item) { //each = foreach (반복문)
+									plan_a = item.plan_A;
+									plan_b = item.plan_B;
+									plan_c = item.plan_C;
+									plan_d = item.plan_D;
+									plan_e = item.plan_E;
+									plan_f = item.plan_F;
+									plan_g = item.plan_G;
+									$('#chart').append('<tr>');
+									$('#chart').append('<td>'+plan_a+ '</td>');
+									$('#chart').append('<td>'+plan_b+ '</td>');
+									$('#chart').append('<td>'+plan_c+ '</td>');
+									$('#chart').append('<td>'+plan_d+ '</td>');
+									$('#chart').append('<td>'+plan_e+ '</td>');
+									$('#chart').append('<td>'+plan_f+ '</td>');
+									$('#chart').append('<td>'+plan_g+ '</td>');
+									$('#chart').append('</tr>');
+									console.log("A : "+plan_a+ " B : "+ plan_b+ " C : "+ plan_c+" D : "+ plan_d+ " E: "+ plan_e+ " F : "+ plan_f+ " G : "+ plan_g);
+						});
+							
+					}
+									
+				});
+				//계획 그래프 값 가져오기 끝!
+				
+				//실적 그래프 값 가져오기 시작!
+				$.ajax({
+					url:'/manHour/manHourResultGraph2',
+					type:'GET',
+					dataType : "json",
+					data : {pjt_cd : pjt_cd},
+					success : function(data) {
+						console.log("실적그래프 값들 출력");
+						console.log(data);						
+						$(data).each(function(index,item){
+							$('#chart2').empty();
+							console.log("work_time : "+item.work_TIME +"    work_STEP :  "+item.work_STEP);								
+							//WORK_STEP에 따른 WORK_TIME을 가져오기 위한 조건문							
+							if(item.work_STEP =='A'){
+								time_a = item.work_TIME;	
+								console.log("time_a : "+time_a);								
+							}
+							if(item.work_STEP =='B'){
+								time_b = item.work_TIME;
+								console.log("time_b : "+time_b);								
+							}							
+							if(item.work_STEP =='C'){
+								time_c = item.work_TIME;
+								console.log("time_c : "+time_c);								
+							}
+							if(item.work_STEP =='D'){
+								time_d = item.work_TIME;
+								console.log("time_d : "+time_d);								
+							}
+							if(item.work_STEP =='E'){
+								time_e = item.work_TIME;
+								console.log("time_e : "+time_e);								
+							}
+							if(item.work_STEP =='F'){
+								time_f = item.work_TIME;
+								console.log("time_f : "+time_f);								
+							}
+							if(item.work_STEP =='G'){
+								time_g = item.work_TIME;
+								console.log("time_g : "+time_g);								
+							}
+							if(item.work_STEP =='Z'){
+								time_z = item.work_TIME;
+								console.log("time_z : "+time_z);								
+							}
+							$('#chart2').empty();
+							$('#chart2').append('<tr>');
+							$('#chart2').append('<td>'+time_a+ '</td>');
+							$('#chart2').append('<td>'+time_b+ '</td>');
+							$('#chart2').append('<td>'+time_c+ '</td>');
+							$('#chart2').append('<td>'+time_d+ '</td>');	
+							$('#chart2').append('<td>'+time_e+ '</td>');
+							$('#chart2').append('<td>'+time_f+ '</td>');	
+							$('#chart2').append('<td>'+time_g+ '</td>');	
+							$('#chart2').append('<td>'+time_z+ '</td>');
+							$('#chart2').append('</tr>');														
+						});																	
+					}					
+				});						
+				 console.log(time_a +" / "+time_b+" / "+time_c+" / "+time_d+" / "+time_e+" / "+time_f+" / "+time_g); 
+				
+				//실적 그래프 값 가져오기 끝!			
+				
+				//인건비(계획) 그래프 값 가져오기 시작!		
+				$.ajax({
+					url:'/manHour/manHourResultGraphPlanNugae',
+					data:{pjt_cd:pjt_cd},
+					type:'GET',
+					async:false,
+					dataType : "json",
+					success:function(data){
+						console.log("인건비 계획 값들  "+data);
+						$(data).each(function(index,item){
+							$('#chart3').empty();							
+							plan_nugae_a = item.plan_A;
+							plan_nugae_b = item.plan_B;
+							plan_nugae_c = item.plan_C;
+							plan_nugae_d = item.plan_D;
+							plan_nugae_e = item.plan_E;
+							plan_nugae_f = item.plan_F;
+							plan_nugae_g = item.plan_G;		
+							$('#chart3').append('<tr>');
+							$('#chart3').append('<td>'+plan_nugae_a+ '</td>');
+							$('#chart3').append('<td>'+plan_nugae_b+ '</td>');
+							$('#chart3').append('<td>'+plan_nugae_c+ '</td>');
+							$('#chart3').append('<td>'+plan_nugae_d+ '</td>');
+							$('#chart3').append('<td>'+plan_nugae_e+ '</td>');
+							$('#chart3').append('<td>'+plan_nugae_f+ '</td>');
+							$('#chart3').append('<td>'+plan_nugae_g+ '</td>');
+							$('#chart3').append('</tr>');
+							console.log("A : "+plan_nugae_a+ " B : "+ plan_nugae_b+ " C : "+ plan_nugae_c+" D : "+ plan_nugae_d+ " E: "+ plan_nugae_e+ " F : "+ plan_nugae_f+ " G : "+ plan_nugae_g);
+						});
+						
+					}
+										
+				});	
 
-				options: {
-				  scales: {
-					yAxes: [{
-					  ticks: {
-						beginAtZero: true
-					  }
-					}]
-				  }
-				}
-			  });
-			  
-			} 
+				//인건비(계획) 그래프 값 가져오기 끝! */
+				
+				//인건비(실적) 그래프 값 가져오기 시작!		
+				$.ajax({
+					url:'/manHour/manHourResultGraphResultNugae',
+					data:{pjt_cd:pjt_cd},
+					type:'GET',
+					async:false,
+					dataType : "json",
+					success:function(data){
+						console.log("인건비 실적 값들  "+data);
+						$(data).each(function(index,item){
+							
+							if(item.work_STEP =='A'){
+								result_nugae_a = item.total;	
+								console.log("result_nugae_a : "+result_nugae_a);								
+							}
+							if(item.work_STEP =='B'){
+								result_nugae_b = item.total;
+								console.log("result_nugae_b : "+result_nugae_b);								
+							}							
+							if(item.work_STEP =='C'){
+								result_nugae_c = item.total;
+								console.log("result_nugae_c : "+result_nugae_c);								
+							}
+							if(item.work_STEP =='D'){
+								result_nugae_d = item.total;
+								console.log("result_nugae_d : "+result_nugae_d);								
+							}
+							if(item.work_STEP =='E'){
+								result_nugae_e = item.total;
+								console.log("result_nugae_e : "+result_nugae_e);								
+							}
+							if(item.work_STEP =='F'){
+								result_nugae_f = item.total;
+								console.log("result_nugae_f : "+result_nugae_f);								
+							}
+							if(item.work_STEP =='G'){
+								result_nugae_g = item.total;
+								console.log("result_nugae_g : "+result_nugae_g);								
+							}
+							if(item.work_STEP =='Z'){
+								result_nugae_z = item.total;
+								console.log("result_nugae_z : "+result_nugae_z);								
+							}
+							$('#chart4').empty();
+							$('#chart4').append('<tr>');
+							$('#chart4').append('<td>'+result_nugae_a+ '</td>');
+							$('#chart4').append('<td>'+result_nugae_b+ '</td>');
+							$('#chart4').append('<td>'+result_nugae_c+ '</td>');
+							$('#chart4').append('<td>'+result_nugae_d+ '</td>');	
+							$('#chart4').append('<td>'+result_nugae_e+ '</td>');
+							$('#chart4').append('<td>'+result_nugae_f+ '</td>');	
+							$('#chart4').append('<td>'+result_nugae_g+ '</td>');	
+							$('#chart4').append('<td>'+result_nugae_z+ '</td>');
+							$('#chart4').append('</tr>');
+
+							console.log("A : "+plan_nugae_a+ " B : "+ plan_nugae_b+ " C : "+ plan_nugae_c+" D : "+ plan_nugae_d+ " E: "+ plan_nugae_e+ " F : "+ plan_nugae_f+ " G : "+ plan_nugae_g);
+						});
+						
+					}
+										
+				});	
+
+				//인건비(실적) 그래프 값 가져오기 끝! */
+				
+	
+			
+				//차트 시작
+				let ctx = document.getElementById("mybarChart3");
+				let mybarChart = new Chart(ctx,{						
+						type : 'bar',
+						data : {
+						labels : [ "기획", "심의", "허가","착공", "실시", "A/S", "준공" ], //X축의 제목
+						datasets : [{			
+								backgroundColor : "#3366FF",
+								data : [ plan_a, plan_b, plan_c, plan_d, plan_e, plan_f, plan_g ]},{ // 변수들->AJAX 실행 후 호출된 값
+								//label : '# of Votes',
+								backgroundColor : "#FF0000",
+								data : [time_a,time_b,time_c,time_d,time_e,time_f,time_g]}
+								]},
+									options : {
+										scales : {
+											yAxes : [ {
+												ticks : {
+													beginAtZero : true //Y축의 값이 0부터 시작
+												}
+											} ]
+										}
+									}
+								});
+				
+				//차트 끝
+				
+				//인건비 차트 시작
+				let ctx2 = document.getElementById("mybarChart4");
+				let mybarChart2 = new Chart(ctx2,{						
+						type : 'bar',
+						data : {
+						labels : [ "기획", "심의", "허가","착공", "실시", "A/S", "준공" ], //X축의 제목
+						datasets : [{			
+								backgroundColor : "#3366FF",
+								data : [plan_nugae_a, plan_nugae_b, plan_nugae_c, plan_nugae_d, plan_nugae_e, plan_nugae_f, plan_nugae_g ]},{ // 변수들->AJAX 실행 후 호출된 값
+								//label : '# of Votes',
+								backgroundColor : "#FF0000",
+								data : [result_nugae_a,result_nugae_b,result_nugae_c,result_nugae_d,result_nugae_e,result_nugae_f,result_nugae_g]}
+								]},
+									options : {
+										scales : {
+											yAxes : [ {
+												ticks : {
+													beginAtZero : true //Y축의 값이 0부터 시작
+												}
+											} ]
+										}
+									}
+								});
+				
+				//인건비 차트 끝				
+			
+			
+			});					
 		}
-
-		$(document).ready(function() {						
-			init_charts();					
-		});							
-	});	
+		//차트호출 함수끝!	
+		let ccc = barchart();
+		
+	}
+		
+});
 </script>
 
 
 	</head>
 </th:block>
 <th:block layout:fragment="customBody">
- 
+	<font color="black">
 
-	<h1>M/H 계획/실적(그래프)</h1>
-
-	<!-- <font color="black"> -->
+	<div class="page-title">
+				<div class="title_left">
+					
+					<h2><b>M/H 계획,실적(그래프)</b></h2>
+					<h5><font color="gray"><b>5.M/H 실적관리&nbsp;>&nbsp;&nbsp;5.2프로젝트진행관리</b></font></h5>
+					
+				</div>
+			</div>
+			
 	<div class="x_panel">
+				
 		<div class="x_content">
+
 			<div class="col-md-12 col-sm-6 col-xs-12" style="width: 100%">
 				<div class="x_panel">
 					<br>
 					<div class="x_content">
-						<form>
+						<form action="/manHour/manHourResultGraphSearchView">
 							<table class="table table-bordered">
 								<thead>
 									<tr style="font-size: 15px">
 										<th>◎검색조건 &emsp;</th>
-										<th>마감년월 &emsp;&emsp;&emsp; <input type="date"
-											name=amount value=2019> &emsp;&emsp; <select>
-												<option>&emsp;&emsp;&emsp;</option>
-												<option>전
-													&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;사</option>
-										</select>
+										<th>시작년월 &emsp;&emsp;&emsp; 
+										<input type="date" name="crt_date" id="crt_date"> &emsp;&emsp;										
 										</th>
-									</tr>
+										<th>마감년월 &emsp;&emsp;&emsp; 
+										<input type="date" name="end_date" id="end_date"> &emsp;&emsp;										
+											<button id="btn-search" class="btn" style="color:black">검색</button>
+										</th>
+									</tr>									
 								</thead>
 							</table>
 						</form>
@@ -180,11 +405,8 @@
 					<div class="x_content">
 
 						<div class="table-responsive">
-							<div
-								style="overflow: scroll; width: 100%; height: 650px; padding: 10px; background-color:;">
-
-								
-										<table id="example-table-1" class="table table-striped jambo_table bulk_action">
+							<div style="overflow: scroll; width: 100%; height: 650px; padding: 10px; background-color:;">
+								<table class="table jambo_table bulk_action">
 									<thead>
 										<tr class="headings">
 											<th class="column-title">PM</th>
@@ -195,45 +417,29 @@
 											<th class="column-title">종료일</th>
 										</tr>
 									</thead>
-									
-									<tbody style="font-size: 14px; line-height: 25px">
+									<tbody  id="list_table" style="font-size: 14px; line-height: 25px">
 										<!-- 화면에 뿌려줄 것! -->
-											<tr th:each="g : ${graphList}" >
-												<td th:text="${g.KOR_NM}"></td>
-												<td th:text="${g.DEPT_NM}"></td>
-												<td th:text="${g.PJT_CD}"></td>
-												<td th:text="${g.SVC}"></td>
-												<td th:text="${g.CRT_DATE}"></td>
-												<td th:text="${g.END_DATE}"></td>												
-											</tr>
-
+										<tr th:each="g : ${graphList}">
+											<td th:text="${g.KOR_NM}"></td>
+											<td th:text="${g.DEPT_NM}"></td>
+											<td th:text="${g.PJT_CD}"></td>
+											<td th:text="${g.SVC}"></td>
+											<td th:text="${g.CRT_DATE}"></td>
+											<td th:text="${g.END_DATE}"></td>
+										</tr>
 									</tbody>
+							
+									<!-- 차트에 뿌릴 데이터 테이블에 연습 시작 -->
 								</table>
 
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
-								<br>
+								<!-- 차트에 뿌릴 데이터 테이블에 연습 끝!-->
+
+
+
+								<br> <br> <br> <br> <br> <br> <br>
+								<br> <br> <br> <br> <br> <br> <br>
+								<br> <br> <br> <br> <br> <br> <br>
+								<br> <br> <br>
 							</div>
 						</div>
 					</div>
@@ -246,10 +452,11 @@
 					<!-- 추가 입력할 정보 창 -->
 					<form>
 						<div class="col-md-12 col-sm-13 col-xs-12">
-							<div class="x_panel">
+							
 								<div class="x_content">
 									<div class="clearfix">
 										<h4>그래프</h4>
+									
 									</div>
 								</div>
 
@@ -257,61 +464,34 @@
 								<div id="graph_bar" style="width: 100%; height: 60px;"></div>
 								<!-- end of user-activity-graph -->
 
-								<div class="" role="tabpanel" data-example-id="togglable-tabs">
+								<div class="" data-example-id="togglable-tabs">
 									<ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
-										<li role="presentation" class="active"><a
-											href="#tab_content1" id="home-tab" role="tab"
-											data-toggle="tab" aria-expanded="true">설계1</a></li>
-										<li role="presentation" class=""><a href="#tab_content2"
-											role="tab" id="profile-tab" data-toggle="tab"
-											aria-expanded="false">설계2</a></li>
-										<li role="presentation" class=""><a href="#tab_content3"
-											role="tab" id="profile-tab2" data-toggle="tab"
-											aria-expanded="false">PD전략부</a></li>
-										<li role="presentation" class=""><a href="#tab_content4"
-											role="tab" id="profile-tab4" data-toggle="tab"
-											aria-expanded="false">설계지원</a></li>
+										<li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">HR</a></li>
+										<li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">인건비</a></li>	
 									</ul>
 
 
 									<div id="myTabContent" class="tab-content">
 										<!-- 학력사항 -->
-										<div role="tabpanel" class="tab-pane fade active in"
-											id="tab_content1" aria-labelledby="home-tab">
+										<div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
 											<div class="col-md-12 col-sm-6 col-xs-12">
-												<div class="x_panel">
-													<div class="x_title">
-														<h4>설계1</h4>
-													</div>
-													<div class="clearfix"></div>
-													<div class="x_content" style="text-align: right">
-														<button type="button" class="btn btn-round btn-primary">입력</button>
-														<button type="button" class="btn btn-round btn-primary">저장</button>
-													</div>
+												<div class="x_panel">	
 
 													<!-- 차트 연습 시작 -->
-
 													<table>
 														<div class="col-md-12 col-sm-12 col-xs-20">
 															<div class="x_panel">
 																<div class="x_title">
 																	<h2>
-																		Bar graph <small>Sessions</small>
+																		Bar graph <small>MH 계획/실적 그래프 (계획:파 실적:빨)</small>
+																		
+																		
 																	</h2>
-																	<ul class="nav navbar-right panel_toolbox">
-																		<li><a class="collapse-link"><i
-																				class="fa fa-chevron-up"></i></a></li>
-																		<li class="dropdown"><a href="#"
-																			class="dropdown-toggle" data-toggle="dropdown"
-																			role="button" aria-expanded="false"><i
-																				class="fa fa-wrench"></i></a>
-																		<li><a class="close-link"><i
-																				class="fa fa-close"></i></a></li>
-																	</ul>
+																	
 																	<div class="clearfix"></div>
 																</div>
 																<div class="x_content">
-																	<canvas id="mybarChart" width="20" height="10"></canvas>
+																	<canvas id="mybarChart3" width="20" height="10"></canvas>
 																</div>
 
 															</div>
@@ -321,187 +501,126 @@
 
 
 
-
-
-
-
-
 													<!-- 차트 연습 끝 -->
-													<table class="table table-bordered">
+													<table class="table table-striped jambo_table bulk_action">
 														<thead>
-															<tr>
-																<th>NO</th>
-																<th>구분</th>
-																<th>입학일자</th>
-																<th>졸업일자</th>
-																<th>학교명</th>
-																<th>전공</th>
-																<th>학위</th>
-																<th>이수</th>
+															<tr class="headings">
+																<th class="column-title">기획</th>
+																<th class="column-title">심의</th>
+																<th class="column-title">허가</th>
+																<th class="column-title">착공</th>
+																<th class="column-title">실시</th>
+																<th class="column-title">A/S</th>
+																<th class="column-title">준공</th>
 															</tr>
 														</thead>
-														<tbody>
-															<tr>
-																<th>1</th>
-																<td>고등학교</td>
-																<td>1994/03</td>
-																<td>1997/02</td>
-																<td>장훈고등학교</td>
-																<td>건축공학</td>
-																<td>건축디자인</td>
-																<td>졸업</td>
-															</tr>
-															<tr>
-																<th>2</th>
-																<td>대학교</td>
-																<td>1994/03</td>
-																<td>1997/02</td>
-																<td>장훈고등학교</td>
-																<td>건축공학</td>
-																<td>건축디자인</td>
-																<td>졸업</td>
-															</tr>
+
+														<tbody id="chart" style="font-size: 14px; line-height: 25px">
 														</tbody>
 													</table>
+													
+													
+														<table class="table table-striped jambo_table bulk_action">
+														<thead>
+															<tr class="headings">
+																<th class="column-title">기획</th>
+																
+																<th class="column-title">심의</th>																
+																<th class="column-title">허가</th>																
+																<th class="column-title">착공</th>																
+																<th class="column-title">실시</th>																
+																<th class="column-title">A/S</th>
+																<th class="column-title">준공</th>
+																<th class="column-title">기타</th>														
+															</tr>
+														</thead>
+
+														<tbody id="chart2" style="font-size: 14px; line-height: 25px">
+
+
+														</tbody>
+													</table>						
 												</div>
 											</div>
 										</div>
 
 
 										<!-- 가족사항 -->
-										<div role="tabpanel" class="tab-pane fade in"
-											id="tab_content2" aria-labelledby="tab">
+										<div role="tabpanel" class="tab-pane fade in" id="tab_content2" aria-labelledby="tab">
+											
 											<div class="col-md-12 col-sm-6 col-xs-12">
-												<div class="x_panel">
-													<div class="x_title">
-														<h4>설계2</h4>
-													</div>
-													<div class="clearfix"></div>
-													<div class="x_content" style="text-align: right">
-														<button type="button" class="btn btn-round btn-primary">입력</button>
-														<button type="button" class="btn btn-round btn-primary">저장</button>
-													</div>
-													<table class="table table-bordered">
-														<thead>
-															<tr>
-																<th>NO</th>
-																<th>관계</th>
-																<th>성명</th>
-																<th>직업</th>
-																<th>소재지(시/도)</th>
-															</tr>
-														</thead>
-														<tbody>
-															<tr>
-																<th>1</th>
-																<td>배우자</td>
-																<td>김**</td>
-																<td>전업주부</td>
-															</tr>
-															<tr>
-																<th>2</th>
-																<td>자녀</td>
-																<td>김**</td>
-																<td>자영업</td>
-															</tr>
-														</tbody>
+												<div class="x_panel">	
+
+													<!-- 차트 연습 시작 -->
+													<table>
+														<div class="col-md-12 col-sm-12 col-xs-20">
+															<div class="x_panel">
+																<div class="x_title">
+																	<h2>
+																		Bar graph <small>MH 계획/실적 그래프 (계획:파 실적:빨)</small>
+																		
+																		
+																	</h2>
+																	
+																	<div class="clearfix"></div>
+																</div>
+																<div class="x_content">
+																	<canvas id="mybarChart4" width="20" height="10"></canvas>
+																</div>
+
+															</div>
+														</div>
+
 													</table>
 
 
 
-												</div>
-											</div>
-										</div>
-
-										<!-- 자격,면허사항 -->
-										<div role="tabpanel" class="tab-pane fade in"
-											id="tab_content3" aria-labelledby="tab">
-											<div class="col-md-12 col-sm-6 col-xs-12">
-												<div class="x_panel">
-													<div class="x_title">
-														<h4>PD전략부</h4>
-													</div>
-													<div class="clearfix"></div>
-													<div class="x_content" style="text-align: right">
-														<button type="button" class="btn btn-round btn-primary">입력</button>
-														<button type="button" class="btn btn-round btn-primary">저장</button>
-													</div>
-													<table class="table table-bordered">
+													<!-- 차트 연습 끝 -->
+													<table class="table table-striped jambo_table bulk_action">
 														<thead>
-															<tr>
-																<th>NO</th>
-																<th>자격증</th>
-																<th>Last Name</th>
-																<th>Username</th>
+															<tr class="headings">
+																<th class="column-title">기획</th>
+																<th class="column-title">심의</th>
+																<th class="column-title">허가</th>
+																<th class="column-title">착공</th>
+																<th class="column-title">실시</th>
+																<th class="column-title">A/S</th>
+																<th class="column-title">준공</th>
 															</tr>
 														</thead>
-														<tbody>
-															<tr>
-																<th scope="row">1</th>
-																<td>Mark</td>
-																<td>Otto</td>
-																<td>@mdo</td>
-															</tr>
-															<tr>
-																<th scope="row">2</th>
-																<td>Jacob</td>
-																<td>Thornton</td>
-																<td>@fat</td>
-															</tr>
+
+														<tbody id="chart3" style="font-size: 14px; line-height: 25px">
 														</tbody>
 													</table>
-
-
-
-												</div>
-											</div>
-										</div>
-
-
-										<!-- 외국어사항 -->
-										<div role="tabpanel" class="tab-pane fade in"
-											id="tab_content4" aria-labelledby="tab">
-											<div class="col-md-12 col-sm-6 col-xs-12">
-												<div class="x_panel">
-													<div class="x_title">
-														<h4>외국어</h4>
-													</div>
-													<div class="clearfix"></div>
-													<div class="x_content" style="text-align: right">
-														<button type="button" class="btn btn-round btn-primary">입력</button>
-														<button type="button" class="btn btn-round btn-primary">저장</button>
-													</div>
-													<table class="table table-bordered">
+													
+													
+														<table class="table table-striped jambo_table bulk_action">
 														<thead>
-															<tr>
-																<th>NO</th>
-																<th>외국어</th>
-																<th>Last Name</th>
-																<th>Username</th>
+															<tr class="headings">
+																<th class="column-title">기획</th>																
+																<th class="column-title">심의</th>																
+																<th class="column-title">허가</th>																
+																<th class="column-title">착공</th>																
+																<th class="column-title">실시</th>																
+																<th class="column-title">A/S</th>
+																<th class="column-title">준공</th>
+																<th class="column-title">기타</th>
+																														
 															</tr>
 														</thead>
-														<tbody>
-															<tr>
-																<th scope="row">1</th>
-																<td>Mark</td>
-																<td>Otto</td>
-																<td>@mdo</td>
-															</tr>
-															<tr>
-																<th scope="row">2</th>
-																<td>Jacob</td>
-																<td>Thornton</td>
-																<td>@fat</td>
-															</tr>
-														</tbody>
-													</table>
 
+														<tbody id="chart4" style="font-size: 14px; line-height: 25px">
+
+
+														</tbody>
+													</table>						
 												</div>
 											</div>
 										</div>
+
 									</div>
 								</div>
-							</div>
+							
 						</div>
 					</form>
 
@@ -510,7 +629,9 @@
 				</div>
 			</div>
 		</div>
-		<!--   </font>   -->
+		</div>
+	</font>
+		
 </th:block>
 <th:block layout:fragment="customJquery">
 
