@@ -16,11 +16,27 @@ import ksmart30.team02.account.domain.SlipHeaderDomain;
 @Mapper
 public interface SlipMapper {
 	//8.1.전표입력.getSlipInfo메서드
-	/* @param  String slip_DATE, String slip_NO 
+	/* @param  SlipDetailDomain slipDetailDomain 
 	 * @brief   getSlipInfo추상메서드 선언	   		 	  
-	 * @return  List<Slip>
+	 * @return List<SlipDetailDomain>
 	 */
 	List<SlipDetailDomain> getSlipInfo(SlipDetailDomain slipDetailDomain);
+	//8.1.전표입력.getSlipHeaderInfo메서드
+		/* @param  SlipDetailDomain slipDetailDomain 
+		 * @brief   getSlipInfo추상메서드 선언	   		 	  
+		 * @return  SlipHeaderDomain
+		 */
 	SlipHeaderDomain getSlipHeaderInfo(SlipDetailDomain slipDetailDomain);
+	//8.1.전표입력.getControlItemInfo메서드
+		/* @param  SlipDetailDomain slipDetailDomain 
+		 * @brief   getSlipInfo추상메서드 선언	   		 	  
+		 * @return  SlipHeaderDomain
+		 */
 	SlipDetailDomain getControlItemInfo(SlipDetailDomain slipDetailDomain);
+	//8.1.전표입력.getSlipNoInfo메서드
+		/* @param  SlipHeaderDomain slipHeaderDomain 
+		 * @brief   getSlipInfo추상메서드 선언	   		 	  
+		 * @return  SlipHeaderDomain
+		 */
+	List<SlipHeaderDomain> getSlipNoInfo(SlipHeaderDomain slipHeaderDomain);
 }
