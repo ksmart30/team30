@@ -40,7 +40,17 @@ public class ProjectYesanService {
 		List<Map<String,Object>> projectYesanSangseCustNm = projectYesanMapper.getProjectYesanSangseCustNm(PJT_CD);
 		projectYesanSangseAll.put("projectYesanSangseCustNm", projectYesanSangseCustNm);
 		
+		//2.2.1.3. 일정계획
+		List<Map<String,Object>> projectYesanSangseWorkStep = projectYesanMapper.getProjectYesanSangseWorkStep(PJT_CD);
+		projectYesanSangseAll.put("projectYesanSangseWorkStep",projectYesanSangseWorkStep);
 		return projectYesanSangseAll;
+	}
+
+	//2.2.3.1 프로젝트예산 출력을 위한 프로젝트코드 조회
+	public List<Map<String, Object>> projectYesanOutputPjtSearch(String CONTRACT_DATE, String selectedOption, String inputValue) {
+		System.out.println("projectYesanOutputPjtSearch 서비스 확인");
+		List<Map<String, Object>> pjtList = projectYesanMapper.getProjectYesanOutputPjtList(CONTRACT_DATE, selectedOption, inputValue);
+		return pjtList;
 	}
 	
 	

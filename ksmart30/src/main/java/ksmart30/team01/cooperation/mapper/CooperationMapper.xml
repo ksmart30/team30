@@ -5,7 +5,7 @@
 <mapper namespace="ksmart30.team01.cooperation.mapper.CooperationMapper">
 
  <!-- 외주관리 - 외주계약서 관리 - 외주계약서 검색 쿼리 -->
-	<select id="cooperationList" 
+	<select id="getCooperationList" 
 		parameterType="ksmart30.team01.cooperation.domain.CooperationSearchRequest" 
 		resultType="java.util.Map">
 		SELECT 
@@ -92,26 +92,152 @@
 
 	</select>
 <!-- 외주관리 - 외주계약서 관리 - 외주계약서 검색 쿼리 -->
-	<select id="cooperationInPJTSelect"
+	<!--입력 위한 PJT별 용역 계약현황 검색-->
+	<select id="getCooperationPJT"
 		parameterType="String"
 		resultType="java.util.Map">
-	<!--입력 위한 PJT별 용역 역계약서 검색-->
+	
 		SELECT 
 			 C.LEVEL2_NM as OUT_ITEM_NM <!-- 부문 -->
-			,B.CUST_NM as CUST_NM <!-- 외주처 -->
+			,A.OUT_ITEM
+			,B.CUST_NM as CUST_NM <!-- 외주처 이름 -->
 		 	,A.contract_amt as CONTRACT_AMT <!-- 계약액 -->
-		from 
+		 	,PJT_CD as PJT_CD
+		 	,A.OUT_CORP as OUT_CORP <!-- 외주처 코드 -->
+		FROM 
 			 T_P12000 A <!-- 외주계약서  -->
 			,T_AC0300 B <!-- 계약처(외주처) -->
 			,(SELECT * FROM T_SC9100 WHERE BUSI_GB = 'J' AND LEVEL1_CD = '160')C <!-- 부문  -->
 		WHERE 
 			A.out_corp *= B.CUST_CD
-			and
+			AND
 			A.OUT_ITEM *= C.LEVEL2_CD
-			and
-			a.pjt_cd LIKE '%'+#{PJT_CD}+'%'
+			AND
+			A.pjt_cd LIKE '%'+#{PJT_CD}+'%'
 		ORDER BY
 			OUT_ITEM
 	</select>
+	<!--입력 위한 PJT별 예산현황 검색-->
+	<select id="getCooperationYesan"
+		parameterType="String"
+		resultType="java.util.Map">
 	
+		SELECT
+		 	B.LEVEL2_NM as SCV_NM <!-- 부문 -->
+		 	,A.EX_AMT as EX_AMT <!-- 계약예산 -->
+		 	,ISNULL(A.EX_WORK_AMT,0) as EX_WORK_AMT <!-- 실행예산 -->
+		FROM 
+		 	T_P11070 A <!-- 외주용역 -->
+		 	,(SELECT * FROM T_SC9100 WHERE BUSI_GB = 'J' AND LEVEL1_CD = '160')B <!-- 부문출력 -->
+		WHERE 
+			A.SCV_PART *= B.LEVEL2_CD
+			AND
+			A.PJT_CD LIKE '%'+#{PJT_CD}+'%'
+		ORDER BY
+			SCV_PART
+	</select>
+	<!-- 계약프로젝트 기본 정보 검색(프로젝트,수행부서,PM) -->
+	<select id="getCooperationPJTPM"
+		parameterType="String"
+		resultType="java.util.Map">
+		SELECT 
+			A.PJT_CD as PJT_CD <!-- 프로젝트코드 -->
+			,B.PJT_NM as PJT_NM <!-- 프로젝트 한글명 -->
+			,D.DEPT_CD as DEPT_CD <!-- 수행부서 코드 -->
+			,D.DEPT_NM as DEPT_NM <!-- 수행부서 한글명 -->
+			,C.KOR_NM as PM_NM <!-- PM 한글명 -->
+		FROM 
+			 T_P11000_H A <!-- 프로젝트 히스토리(상세?) -->
+			,T_SM3000 B <!-- 프로젝트 대장 -->
+			,T_HM1000 C <!-- 사원정보 -->
+			,T_SC1010 D <!-- 수행부서 -->
+		WHERE
+			 A.PJT_CD *= B.PJT_CD
+			AND
+			 A.PM_EMP_NO *= C.EMP_NO
+			AND
+			 A.DEPT_CD *= D.DEPT_CD
+			AND
+		  	 A.PJT_CD = #{PJT_CD}
+			AND 
+			 PJT_SEQ = (SELECT max(PJT_SEQ)from T_P11000_H WHERE PJT_CD = #{PJT_CD})
+	</select>
+	<!-- 용역계약서 본문 출력  -->
+	<select id="getCooperationPJTSangse"
+		parameterType="ksmart30.team01.cooperation.domain.CooperationSangseRequest"
+		resultType="java.util.Map">
+		SELECT
+		 	OUT_ITEM	<!-- 부문 -->
+			,A.OUT_CORP AS OUT_CORP <!-- 외주처 -->
+			,B.CUST_NM AS OUT_CORP_NM<!-- 외주처 이름 -->
+			,CONTRACT_NM <!-- 용역명 -->
+			,CONVERT (DATE, A.CONTRACT_DATE) AS CONTRACT_DATE <!-- 계약일자 -->
+			,CONVERT (DATE, A.S_DATE) AS S_DATE <!-- 계약기간 시작 -->
+			,CONVERT (DATE, A.E_DATE) AS E_DATE <!-- 계약기간 끝 -->
+			,E_RMK <!-- 종료구문(까지) -->
+			,CON_DOC_YN <!-- 계약서 유무 0 없음 1 있음 -->
+			,CONTRACT_AMT <!-- 계약액 -->
+			,VAT_YN <!-- VAT여부 -->
+			,D.VAT_YN_NM
+			,C.E_RMK_NM
+			,E.OUT_ITEM_NM
+		FROM 
+		 	T_P12000 A
+		 	,(SELECT CUST_CD,CUST_NM FROM T_AC0300) B <!-- 거래처(외주처,발주처) -->
+		 	,(SELECT LEVEL2_CD,LEVEL2_NM as E_RMK_NM FROM T_SC9100 WHERE busi_gb = 'j' and level1_cd = '130') C <!-- 종료구문(계약기간~까지) -->
+		 	,(SELECT LEVEL2_CD,LEVEL2_NM as VAT_YN_NM FROM T_SC9100 WHERE busi_gb = 'j' and level1_cd = '340') D <!-- VAT여부 -->
+		 	,(SELECT LEVEL2_CD,LEVEL2_NM as OUT_ITEM_NM FROM T_SC9100 WHERE BUSI_GB = 'J' AND LEVEL1_CD = '160') E <!-- 부문 -->
+		WHERE
+			 A.OUT_ITEM *= E.LEVEL2_CD
+			AND
+			 A.OUT_CORP *= B.CUST_CD
+			AND
+			 A.E_RMK *= C.LEVEL2_CD	
+			AND
+			 A.VAT_YN *= D.LEVEL2_CD
+			AND
+		 	 PJT_CD = #{PJT_CD} 
+			AND 
+		 	 OUT_CORP = #{OUT_CORP} <!-- 외주처 검색이 안될경우에도 출력하기 위해 LIKE절 사용 -->
+		 	AND
+	 		 OUT_ITEM = #{OUT_ITEM}
+	</select>
+	<!-- 용역계약서 기성단계 출력  -->
+	<select id="getCooperationPJTGisung"
+		parameterType="ksmart30.team01.cooperation.domain.CooperationSangseRequest"
+		resultType="java.util.Map">
+		SELECT
+		 	* 
+		FROM 
+		 	T_P12010 A
+		 	,(SELECT LEVEL2_CD,LEVEL2_NM AS GI_GBN_NM FROM T_SC9100 WHERE busi_gb = 'j' and level1_cd = '150') B <!-- 기성단계 -->
+		WHERE
+			 A.GI_GBN *= B.LEVEL2_CD
+			AND
+		 	 PJT_CD = #{PJT_CD} 
+			AND 
+		 	 OUT_CORP = #{OUT_CORP} <!-- 외주처 검색이 안될경우에도 출력하기 위해 LIKE절 사용 -->
+		 	AND
+	 		 OUT_ITEM = #{OUT_ITEM}
+	</select>
+	<!-- 용역계약서 용역내용 출력  -->
+	<select id="getCooperationPJTDragon"
+		parameterType="ksmart30.team01.cooperation.domain.CooperationSangseRequest"
+		resultType="java.util.Map">
+		SELECT
+		 	* 
+		FROM 
+		 	T_P12020 A
+		 	,(SELECT LEVEL2_CD,LEVEL2_NM AS CONTRACT_MEMO_NM FROM T_SC9100 WHERE busi_gb = 'j' and level1_cd = '410') B <!-- 용역내용 -->
+		WHERE
+			 A.CONTRACT_MEMO *= B.LEVEL2_CD
+			AND
+		 	 PJT_CD = #{PJT_CD} 
+			AND 
+		 	 OUT_CORP = #{OUT_CORP} <!-- 외주처 검색이 안될경우에도 출력하기 위해 LIKE절 사용 -->
+		 	AND
+	 		 OUT_ITEM = #{OUT_ITEM}
+	</select>
+
+
 </mapper>

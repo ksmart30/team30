@@ -20,6 +20,7 @@
 					for(let i=0; i<data.length; i++) {
 						$('#pjtHistoryDetailList').append('<tr id="test" onclick="pjtSangseBtn('+data[i].PJT_CD+','+data[i].PJT_SEQ+')"><td>'+data[i].PJT_DATE+'</td><td>'+data[i].LEVEL2_NM+'</td></tr>');
 					}
+					// 결과 중 맨 처음 row의 상세 내용 자동 출력
 					pjtSangseBtn(data[0].PJT_CD, data[0].PJT_SEQ);
 				}
 			});
@@ -140,7 +141,7 @@
 
 		// 전체 document ready
 		$(document).ready(function(){
-			$('#pjtSearchBtn').click(function(){
+			$('#Search').click(function(){
 				let PJT_CD = $('#pjtCd').val();
 				let YEAR = $('#pjtYear').val();
 				let DEPT_CD = $('#pjtDept').val();
@@ -156,13 +157,14 @@
 						for(let i=0; i<data.length; i++) {
 							$('#pjtHistoryList').append('<tr><td style="background-color:#fff9df">'+data[i].PJT_CD+'</td><td onclick="pjtOneBtn('+data[i].PJT_CD+')">'+data[i].PJT_NM+'</td></tr>');
 						}
+						// 결과 중 맨처음 row의 PJT_CD 자동 선택
 						pjtOneBtn(data[0].PJT_CD);
 					}
 				});
 			});
 			
-			// 모달 테스트 (사용방법 연구중 ㅜㅜ)
-			$('#PjtSearchBtn').click(()=>{
+			// 모달 테스트
+			$('#pjtSearchBtn').click(()=>{
     			let column = $('#selectedPjtItem option:selected').val();
     			let columnValue = $('#pjtValue').val();
     			let subvalue = columnValue.substr(0,1);
@@ -173,7 +175,7 @@
     			}else{
     				console.log('검색 값 : ');
 	    			console.log(columnValue);
-	    			$.ajax({
+	    			/* $.ajax({
 						url:'/project/projectManageSearchProcess',
 				        type:'POST',
 						data:{column:column, columnValue:columnValue},
@@ -187,16 +189,9 @@
 								$('#custModal').click();
 				    		});
 						}
-	    			});
+	    			}); */
 				}
 			});
-			$('#pjtSearchList').delegate('tr', 'click', function(){
-				let tr = $(this);
-				let td = tr.children();
-				$('#CUST_CD').val(td.eq(0).text());
-				$('#CUST_NM').text(td.eq(1).text());
-				$('#custModal').click();
-    		});
 		});
 		</script>
 	</th:block>
@@ -212,7 +207,7 @@
     
     <div class="x_content" style="text-align:right">
 		<div class="btn-group" >
-			<button class="btn btn-default" type="submit" id="pjtSearchBtn">조회</button>
+			<button class="btn btn-default" type="submit" id="Search">조회</button>
 			<button class="btn btn-default" type="reset">입력</button>
 			<button class="btn btn-default" type="button">수정</button>
 			<button class="btn btn-default" type="button">삭제</button>
@@ -256,7 +251,7 @@
 						코드명
 					</td>
 					<td>
-						<input type="text" id="PJT_CD">
+						<input type="text" id="pjtCd">
 					</td>
 					<td>
 						<button type="button" data-toggle="modal" data-target=".bs-example-modal-lg1"><i class="fa fa-search"></i></button>
@@ -299,7 +294,7 @@
 																			<td><label class="control-label">검색조건</label></td>
 																			<td>
 																				<input type="text" id="pjtValue">
-																				<button type="button" id="PjtSearchBtn"><i class="fa fa-search"></i></button>																	
+																				<button type="button" id="pjtSearchBtn"><i class="fa fa-search"></i></button>																	
 																			</td>
 																		</tr>
 																	</tbody>																	

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ksmart30.team01.project.domain.Project;
 import ksmart30.team01.project.domain.ProjectHistory;
 import ksmart30.team01.project.service.ProjectManageService;
 
@@ -21,23 +22,64 @@ import ksmart30.team01.project.service.ProjectManageService;
 public class ProjectManageRestController {
 	@Autowired
 	ProjectManageService projectManageService;
-	
-	// 전체 프로젝트 검색
+	// 모달에서 전체 프로젝트 검색
 	@PostMapping("/project/projectManageSearchProcess")
-	public List<Map<String, Object>> projectManageSearchProcess(String PJT_CD, String PJT_NM) {
+	public List<Map<String, Object>> projectManageSearchProcess(String column, String columnValue) {
 		System.out.println("RestController projectManageSearchProcess 메서드 실행");
-		return null;
+		return projectManageService.getProjectManageSearchProject(column, columnValue);
 	}
 	
-	//3.1.1 용역계약서 입력 처리
+	// 전체 발주처 검색
+	@PostMapping("/project/projectManageCustSearchProcess")
+	public List<Map<String, Object>> projectManageCustSearchProcess(String column, String columnValue) {
+		System.out.println("RestController projectManageCustSearchProcess 메서드 실행");
+		return projectManageService.getCustList(column, columnValue);
+	}
+	
+	//3.1.1 용역계약서 입력을 위한 프로젝트 리스트 검색
 	/* @brief	"http://localhost/project/manage/in" 주소분기(post방식)
 	 *			화면에서 입력한 값을 ajax로 값을 넘기고 받기 위함
 	 *			@return List<Map<String, Object>>
 	 */
 	@PostMapping("/project/projectManageListProcess")
-	public List<Map<String, Object>> projectManageListProcess(String PJT_CD, String DEPT_CD, String YEAR) {
+	public List<Map<String, Object>> projectManageListProcess(String PJT_CD, String DEPT_CD, String YEAR, String pjtRadioValue) {
 		System.out.println("RestController projectManageListProcess 메서드 실행");
-		return projectManageService.getBusinessManagerList(PJT_CD, DEPT_CD, YEAR);
+		return projectManageService.getProjectManageList(PJT_CD, DEPT_CD, YEAR, pjtRadioValue);
+	}
+	
+	//3.1.1 용역계약서 상세 데이터 출력
+	@PostMapping("/project/projectManageSangseProcess")
+	public Map<String, Object> projectManageSangseProcess(Project project) {
+		System.out.println("RestController projectManageSangseProcess 메서드 실행");
+		return projectManageService.getProjectManageSangse(project);
+	}
+	
+	//3.1.1 용역게약서 발주처 데이터 출력
+	@PostMapping("/project/projectManageOwnerListProcess")
+	public List<Map<String, Object>> projectManageOwnerListProcess(Project project) {
+		System.out.println("RestController projectManageOwnerListProcess 메서드 실행");
+		return projectManageService.getProjectManageOwnerList(project);
+	}
+	
+	//3.1.1 용역게약서 기성단계 데이터 출력
+		@PostMapping("/project/projectManageGiseongListProcess")
+		public List<Map<String, Object>> projectManageGiseongListProcess(Project project) {
+			System.out.println("RestController projectManageGiseongListProcess 메서드 실행");
+			return projectManageService.getProjectManageGiseongList(project);
+		}
+
+
+	//3.1.1 용역계약서 입력 전 수주심의결정서 정보 출력
+	@PostMapping("/project/BusinessManageSangseProcess")
+	public Map<String, Object> BusinessManageSangseProcess(String PJT_CD) {
+		System.out.println("RestController BusinessManageSangseListProcess 메서드 실행");
+		return projectManageService.getBusinessManageSangse(PJT_CD);
+	}
+
+	//3.1.1 용역계약서 기본사항 입력 처리
+	@PostMapping("/project/projectManageWriteProcess")
+	public String projectManageWriteProcess(Project project) {
+		return null;
 	}
 	
 	//3.1.1 용역계약서 발주처 입력 처리
@@ -165,5 +207,11 @@ public class ProjectManageRestController {
 	@PostMapping("/project/manage/hyunhwang")
 	public String projectManageHyunhwang(Model model) {
 		return "project/manage/hyunhwang";
+	}
+
+	//3.1.6 용역계약서 현황 값을 가져옴 View
+	@PostMapping("/project/projectManageHyunhwangData")
+	public List<Map<String, Object>> projectManageHyunhwangData(String YEAR) {
+		return projectManageService.getProjectManageOwnerHyunhwangCount(YEAR);
 	}
 }
