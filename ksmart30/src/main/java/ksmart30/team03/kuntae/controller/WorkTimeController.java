@@ -6,10 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import ksmart30.team03.kuntae.domain.WorkTimeSingleList;
 import ksmart30.team03.kuntae.service.WorkTimeService;
 
@@ -17,13 +15,8 @@ import ksmart30.team03.kuntae.service.WorkTimeService;
 public class WorkTimeController {
 	@Autowired private WorkTimeService workTimeService;
 	
-	// 일일 근무 현황 (조회)
-	@GetMapping("/kuntae/daySearchView")
-	public String daySearchView() {
-		return "/kuntae/daySearchView";
-	}
 	
-	// 출, 퇴근 기록부 (Total)
+	// 출 퇴근 기록부(Total) 당일 출 퇴근 명단 출력
 	@GetMapping("/kuntae/recordTotalView")
 	public String recordTotalView(Model model) {
 		System.out.println("C : Total 기록부 화면 먼저 호출");
@@ -40,7 +33,15 @@ public class WorkTimeController {
 		System.out.println("C : Total EMP_NO data 정보  =>" +data);
 		return data;
 	}
-	
+ 	
+ 	// 출,퇴근기록부(Total) 전체 검색
+ 	@GetMapping("/kuntae/recordTotalSearch")
+ 	public @ResponseBody List<WorkTimeSingleList> recordTotalSearch(@RequestParam(value="WORK_DT") String WORK_DT, @RequestParam(value="END_DT")String END_DT, @RequestParam(value="EMP_NO")String EMP_NO){
+ 		System.out.println("C : Total 전체 검색");
+ 		List<WorkTimeSingleList> data = workTimeService.getRecordTotalSearch(WORK_DT, END_DT, EMP_NO);
+ 		System.out.println("C : Total data 정보=>"+data);
+ 		return data;
+ 	}
 	
 	/*
 	 * // 출, 퇴근 기록부 (개인별)
@@ -83,14 +84,13 @@ public class WorkTimeController {
 	}
 	
 	// 출, 퇴근 기록부 (개인별) 날짜 검색
-	@GetMapping("/kuntae/recordSingleDateSearchProcess")
-	public String recordSingleDateSearchProcess(Model model, @RequestParam(value = "WORK_DT") String WORK_DT, @RequestParam(value="END_DT")String END_DT){
+	@GetMapping("/kuntae/recordDateSearchProcess")
+	public @ResponseBody List<WorkTimeSingleList> recordTotalDateSearchProcess( @RequestParam(value = "WORK_DT") String WORK_DT, @RequestParam(value="END_DT")String END_DT){
 		System.out.println("C : 날짜 검색 ");
 		System.out.println("C : WORK_DT 요청 =>" + WORK_DT+" END_DT 요청 =>" +END_DT);
-		List<WorkTimeSingleList> data = workTimeService.getRecordSingleDateSearch(WORK_DT, END_DT);			
-		System.out.println("dayData =>" + data);
-		model.addAttribute("Day =>",data);
-		return "/kuntae/recordSingleView";
+		List<WorkTimeSingleList> data2 = workTimeService.getRecordSingleDateSearch(WORK_DT, END_DT);			
+		System.out.println("dayData =>" + data2);
+		return data2;
 	}
 	 
 	// 화면 호출
@@ -101,22 +101,23 @@ public class WorkTimeController {
 	}
 	
 	
-	// 출, 퇴근 정정 신청
+	// 출, 퇴근 정정 신청 
 	@GetMapping("/kuntae/workTimeView")
-	public String workTimeView() {
+	public String workTimeView(Model model) {
+		System.out.println("C : workTimeView 화면먼저호출");
+		List<WorkTimeSingleList> data = workTimeService.getWorkTimeView();
+		model.addAttribute("data", data);
 		return "/kuntae/workTimeView";
 	}
 	
-	// 출, 퇴근 정정 신청 처리
-	@PostMapping("/kuntae/workTimeIn")
-	public String workTimeInsertAction() {
-		return "";
+	// 출퇴근 정정 신청 List 이름 검색
+	@GetMapping("/kuntae/workTimeNameSearch")
+	public @ResponseBody List<WorkTimeSingleList> workTimeNameSearchView(@RequestParam(value="KOR_NM")String KOR_NM){
+		System.out.println("C : workTimeView List 검색");
+		List<WorkTimeSingleList> data = workTimeService.getWorkTimeNameSearchView(KOR_NM);
+		System.out.println("C : 이름 검색 data =>"+ data);
+		return data;
 	}
-	
-	// 출, 퇴근 기록부 (검색 처리)
-	@PostMapping("/kuntae/workTimeRecord")
-	public String workTimeRecordSearch() {
-		return "kuntae/worktime_record_search";
-	}	
+
 	
 }

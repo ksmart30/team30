@@ -14,33 +14,34 @@
 	<th:block th:include="layout/customHead"></th:block>
 	
 	<script>
+	
+	function searchResult(KOR_NM){
+		console.log('직원 검색 시작 : '+KOR_NM);
+		
+		$.ajax({
+			url:'/person/personYidongListSearch',
+			data:{KOR_NM:KOR_NM}
+			
+		});
+	};
 		$(document).ready(function(){
-		    // 목록
-		    console.log('직원list 출력해보자')
-		    $('#btn_list').on('click',window.onload=function(){
-		        $.ajax({
-		            url:'/person/personYidongList',
-		            type:'GET',
-		            success:(data)=>{
-		                $('#list').empty();
-		                $(data).each(function(index,item){ //each = foreach (반복문)
-		                    $('#list').append('<tr>');
-		                    $('#list').append('<td>'+item.emp_NO+'</td>');
-		                    $('#list').append('<td>'+item.kor_NM+'</td>');
-		                    $('#list').append('</tr>');
-		                });
-		            }
-		        });
+		    
+		    
+		    $("#btn_list").click(function(){
+		    	let KOR_NM=$('#KOR_NM').val();
+		    	console.log('직원 검색 (사원명) : '+KOR_NM);
+		      	searchResult(KOR_NM);
+
 		    });
 		    
-		    $("#yidongTable tr").click(function() {//문자열 저장할 변수 선언		
+		    $("#list tr").click(function() {//문자열 저장할 변수 선언		
 
 				//현재 클릭된 행<tr>
 				var tr = $(this);
 				var td = tr.children();
 				console.log("row : "+ tr.text());
 				//선택 행의 색 바꾸기
-				$("#yidongTable tr").css("background-color", "#ffffff");
+				$("#list tr").css("background-color", "#ffffff");
 				$(this).css( "background-color", "#f4f4f4" );
 				//선택 행 중에서 인덱스 번호 0인 값 가져옴(emp_no)
 				var emp_no = td.eq(0).text();
@@ -74,6 +75,7 @@
 				});
 			
 			});
+		   
 		});
 		
 
@@ -109,23 +111,37 @@
 				<h2>
 					직원 list 
 				</h2>
-				<ul class="nav navbar-right panel_toolbox">
-					<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-					</li>
-					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown" role="button" aria-expanded="false"><i
-							class="fa fa-wrench"></i></a>
-						<ul class="dropdown-menu" role="menu">
-							<li><a href="#">Settings 1</a></li>
-							<li><a href="#">Settings 2</a></li>
-						</ul></li>
-					<li><a class="close-link"><i class="fa fa-close"></i></a></li>
-				</ul>
+			
 		<div class="clearfix"></div>
 			</div>
 			<div class="x_content" style="overflow:scroll; width:100%; height:450px; background-color:;">
-
+					
+					<form action="/person/personYidongListSearch">
+						<table>
+						
+						<tr>
+							<th class="sorting_asc" aria-controls="datatable-responsive" aria-sort="ascending">
+											&nbsp;사원명
+							</th>
+							<th class="sorting" aria-controls="datatable-responsive">
+								<input type="text" name="KOR_NM" id="KOR_NM" style="width:50%;">
+							</th>
+						
+					
+						
+							<th>
+							<div style="text-align: right">
+								 <button class="btn" style="color:black" id="btn_list">검색</button>
+							</div>
+							</th>
+						</tr>
+						</table>
+					</form>
+					
+					
+					
 				<table class="table table-striped jambo_table bulk_action" >
+					
 					<thead>
 						<tr>
 							
@@ -134,7 +150,7 @@
 							
 						</tr>
 					</thead>
-					<tbody  id = "yidongTable">
+					<tbody  id = "list">
 						
 						<tr th:each="y : ${yidongList}">
 							<td th:text="${y.EMP_NO}"></td>
@@ -142,27 +158,30 @@
 						</tr>
 						
 					</tbody>
+					
 				</table>
+				
+				
 
 			</div>
 		</div>
 	</div>
 	
 	<!-- 
-              이동자료 insertForm 시작
+              발령 등록 insertForm 시작
                -->
     <div class="col-md-6 col-sm-6 col-xs-12" style="color:black;">           
 	<div class="x_panel">
 
 			<div class="title_left">
-				<h3>이동 자료 insert form</h3>
+				<h3>발령 등록 insert form</h3>
 			</div>
 			<div class="col-md-12 col-xs-12" style="color: black;"></div>
 			<!----------------------------------- 조건별검색(부장님)----------------------------------------- -->
 
 			<div class="col-md-12 col-xs-12">
 				<form class="form-horizontal form-label-left input_mask" >
-					<table id="datatable-responsive" class="table table-bordered" >
+					<table id="datatable-responsive" class="table table-bordered"  >
 						<thead>
 							<tr>
 								<th>사원번호</th>
@@ -180,10 +199,7 @@
 				</form>
 			</div>
 		
-		<div class="x_content" >
-		
-				<button type="submit" class="btn btn-primary">등록</button>
-		</div>
+	
 	</div>
 	</div>
 	<!--
@@ -195,16 +211,7 @@
                 <h3> <!-- <small>Some examples to get you started</small> --></h3>
               </div>
 
-              <div class="title_right">
-                <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-                  <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for...">
-                    <span class="input-group-btn">
-                      <button class="btn btn-default" type="button">Go!</button>
-                    </span>
-                  </div>
-                </div>
-              </div>
+              
             </div>
 
             <div class="clearfix"></div>
@@ -245,20 +252,7 @@
                         
                       </tbody>
                     </table>
-                    <div class="x_content" style="text-align: left" >
-	                    <a href="">
-	                    <button type="button" class="btn btn-success btn-sm" >수정</button>
-						</a>
-					
-					
-	                    <a href="">
-	                    <button type="button" class="btn btn-danger btn-sm" >삭제</button>
-						</a>
-						&emsp;
-						<a href="">
-	                    <button type="button" class="btn btn-primary btn-sm" >승인</button>
-						</a>
-					</div>
+                    
                     
                     
                     <div class="x_content" style="text-align: right" >

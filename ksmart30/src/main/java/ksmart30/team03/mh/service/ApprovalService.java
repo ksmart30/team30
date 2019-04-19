@@ -19,17 +19,18 @@ public class ApprovalService {
 		return approvalMapper.getApprovalSearchView();	
 	}
 	//5.2 실적 승인(List) 날짜검색
-	public List<Map<String, Object>> getApprovalSearchDate(Result result) {
+	public List<Map<String,Object>> getApprovalSearchDate(Result result) {
 		System.out.println("실적승인 getApprovalSearchDate 날짜검색요청");
-		List<Map<String,Object>> WORK_DT =approvalMapper.getApprovalSearchDate(result);
+		List<Map<String,Object>> vo = approvalMapper.getApprovalSearchDate(result);
+		if(result.getWORK_DT() =="" && result.getWORK_DT2()=="" || 
+		   result.getWORK_DT()!= "" && result.getWORK_DT2()=="" ||
+		   result.getWORK_DT() =="" && result.getWORK_DT2()!= "" ) {
+			vo = approvalMapper.getApprovalSearchDate2(result);
+		}else {
+			 vo = approvalMapper.getApprovalSearchDate(result); 
+		}
+		return vo ;
 		
-		/*
-		 * String Search_WORK_DT =
-		 * WORK_DT.substring(0,4)+WORK_DT.substring(5,7)+WORK_DT.substring(8, 10);
-		 * System.out.println(Search_WORK_DT);
-		 */
-		 
-		return WORK_DT;
 	}
 	
 }

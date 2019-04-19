@@ -3,25 +3,12 @@
   PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ksmart30.team03.kuntae.mapper.WorkTimeMapper">
-	<!-- <select id="getRecordSingleList"
-			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList">
-		SELECT 
-			a.KOR_NM,
-			a.EMP_NO,
-			b.WORK_DT,
-			b.START_TIME,
-			b.END_TIME
-		FROM 
-			T_PM1010 AS b join T_HM1000 AS a 
-		on b.EMP_NO=a.EMP_NO 
-		WHERE a.EMP_NO='20190007' 
-	</select> -->
-	
+
 	<!-- 출,퇴근 기록부(개인별) 사원번호 검색 -->
 	<select id="getRecordSingleNoSearch"
 			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList"
 			parameterType="String">
-		SELECT 
+		SELECT TOP 100 
 			a.KOR_NM,
 			a.EMP_NO,
 			b.WORK_DT,
@@ -37,7 +24,7 @@
 	<select id="getRecordSingleNameSearch"
 			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList"
 			parameterType="String">
-		SELECT 
+		SELECT TOP 100
 			a.KOR_NM,
 			a.EMP_NO,
 			b.WORK_DT,
@@ -53,41 +40,44 @@
 	<select id="getRecordSingleDateSearch"
 			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList"
 			parameterType="String">
-		SELECT 
-			a.KOR_NM,
-			a.EMP_NO,
-			b.WORK_DT,
-			b.END_DT,
-			b.START_TIME,
-			b.END_TIME
-		FROM 
-			T_PM1010 AS b join T_HM1000 AS a 
-		on b.EMP_NO=a.EMP_NO 
-		<!-- WHERE b.WORK_DT ='20120305' AND b.END_DT='20120305' -->
-		WHERE b.WORK_DT <![CDATA[>=]]> #{WORK_DT} and b.END_DT <![CDATA[<=]]> #{END_DT};
+	SELECT TOP 200 a.EMP_NO,
+				 a.KOR_NM,
+				 b.LEVEL2_NM AS JIKGUP_NM,
+				 DEPT_NM,
+				 e.WORK_DT,				 
+				(CASE WHEN e.start_time IS NULL THEN '출근미입력' WHEN e.START_TIME='' THEN '출근미입력' ELSE e.START_TIME END ) START_TIME,
+				(CASE WHEN e.END_TIME IS NULL THEN '출근미입력' WHEN e.END_TIME='' THEN '퇴근미입력' ELSE e.END_TIME END) END_TIME,
+				(CASE WHEN e.END_DT IS NULL THEN '퇴근미입력' when e.END_DT= '' THEN '퇴근미입력' else e.END_DT end) END_DT				
+		FROM T_HM1000 a 
+		JOIN T_SC9100 b ON a.JIKGUP_CD=b.LEVEL2_CD
+		JOIN T_SC9100 c ON a.JIKCHK_CD=c.LEVEL2_CD 
+		JOIN T_SC1010 d ON a.DEPT_CD=d.DEPT_CD 
+		JOIN T_PM1010 e ON a.EMP_NO=e.EMP_NO
+		WHERE b.LEVEL1_CD='110' AND c.LEVEL1_CD='120' AND e.work_dt <![CDATA[>=]]> #{WORK_DT} AND e.end_dt <![CDATA[<=]]> #{END_DT} 
+		<!-- WHERE b.LEVEL1_CD='110' AND c.LEVEL1_CD='120' AND e.work_dt >= '201903' AND e.end_dt <= '201905' -->
 	</select>
 	
-	<!-- 출,퇴근 기록부(개인별) 사원번호 검색 -->
+	<!-- 출,퇴근 기록부(Total) 사원번호 검색 -->
 	<select id="getRecordTotalNoSearch"
 			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList"
 			parameterType="String">
-		SELECT X.*   
-  			FROM (
- 				SELECT
- 					DEPT_NM,
- 					A.DEPT_CD,
- 					(SELECT LEVEL2_NM FROM T_SC9100 WHERE BUSI_GB = 'H' AND LEVEL1_CD = '110' AND LEVEL2_CD = A.JIKGUP_CD) JIKGUP_NM,
-				   (SELECT LEVEL2_NM FROM T_SC9100 WHERE BUSI_GB = 'H' AND LEVEL1_CD = '120' AND LEVEL2_CD = A.JIKCHK_CD) JIKCHK_NM,
-					A.KOR_NM,
-					A.EMP_NO,
-					B.WORK_DT,
-				 	B.START_TIME,
-				 	B.END_TIME
-   				FROM T_HM1000 A , T_PM1010 B JOIN T_SC1010 D ON b.DEPT_CD=d.DEPT_CD 
-      			WHERE A.DEPT_CD = B.DEPT_CD AND A.EMP_NO=#{EMP_NO}		
-  		) X
+		SELECT TOP 100 a.EMP_NO,
+				 a.KOR_NM,
+				 b.LEVEL2_NM AS JIKGUP_NM,
+				 DEPT_NM,
+				 e.WORK_DT,
+				(CASE WHEN e.START_TIME IS NULL THEN '퇴근미입력' WHEN e.START_TIME='' THEN '출근미입력' ELSE e.START_TIME END ) START_TIME,
+				(CASE WHEN e.END_TIME IS NULL THEN '퇴근미입력' when e.END_TIME= '' then '퇴근미입력' else e.END_TIME end) END_TIME,
+				(CASE WHEN e.END_DT IS NULL THEN '퇴근미입력' when e.END_DT= '' then '퇴근미입력' else e.END_DT end) END_DT
+		FROM T_HM1000 a 
+		JOIN T_SC9100 b ON a.JIKGUP_CD=b.LEVEL2_CD
+		JOIN T_SC9100 c ON a.JIKCHK_CD=c.LEVEL2_CD 
+		JOIN T_SC1010 d ON a.DEPT_CD=d.DEPT_CD 
+		JOIN T_PM1010 e ON a.EMP_NO=e.EMP_NO
+		WHERE b.LEVEL1_CD='110' AND c.LEVEL1_CD='120' AND a.EMP_NO LIKE '%%'
 	</select>
 	
+	<!-- 출 퇴근 기록부(Total) 당일 출 퇴근 명단 출력 -->
 	<select id="getRecordTotalList"
 			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList">
 		SELECT 
@@ -96,9 +86,9 @@
 				 a.EMP_NO,
 				 a.KOR_NM,
 				 e.WORK_DT,
-				 e.START_TIME,
-				 e.END_TIME,
-				 e.END_DT
+				(CASE WHEN e.START_TIME IS NULL THEN '퇴근미입력' WHEN e.START_TIME='' THEN '출근미입력' ELSE e.START_TIME END ) START_TIME,
+				(CASE WHEN e.END_TIME IS NULL THEN '퇴근전' when e.END_TIME= '' then '퇴근전' else e.END_TIME end) END_TIME,
+				(CASE WHEN e.END_DT IS NULL THEN '퇴근전' when e.END_DT= '' then '퇴근전' else e.END_DT end) END_DT
 		FROM T_HM1000 a 
 		JOIN T_SC9100 b ON a.JIKGUP_CD=b.LEVEL2_CD
 		JOIN T_SC9100 c ON a.JIKCHK_CD=c.LEVEL2_CD 
@@ -106,8 +96,98 @@
 		JOIN T_PM1010 e ON a.EMP_NO=e.EMP_NO,
 		(Select Convert(varchar(10),Getdate(),112) o) o 
 		WHERE b.LEVEL1_CD='110' AND c.LEVEL1_CD='120' AND e.work_dt=o.o
-
 	</select> 
 	
+	<!-- 출퇴근(Total) 전체 검색 -->
+	<select id="getRecordTotalSearch"
+			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList"
+			parameterType="String">
+
+		SELECT  a.EMP_NO,
+				 a.KOR_NM,
+				 b.LEVEL2_NM AS JIKGUP_NM,
+				 DEPT_NM,
+				 e.WORK_DT,
+				(CASE WHEN e.START_TIME IS NULL THEN '퇴근미입력' WHEN e.START_TIME='' THEN '출근미입력' ELSE e.START_TIME END ) START_TIME,
+				(CASE WHEN e.END_TIME IS NULL THEN '퇴근미입력' WHEN e.END_TIME= '' then '퇴근미입력' else e.END_TIME end) END_TIME,
+				(CASE WHEN e.END_DT IS NULL THEN '퇴근미입력' when e.END_DT= '' then '퇴근미입력' else e.END_DT end) END_DT
+		FROM T_HM1000 a 
+		JOIN T_SC9100 b ON a.JIKGUP_CD=b.LEVEL2_CD
+		JOIN T_SC9100 c ON a.JIKCHK_CD=c.LEVEL2_CD 
+		JOIN T_SC1010 d ON a.DEPT_CD=d.DEPT_CD 
+		JOIN T_PM1010 e ON a.EMP_NO=e.EMP_NO
+		WHERE b.LEVEL1_CD='110' AND c.LEVEL1_CD='120' AND a.EMP_NO LIKE '%'+#{EMP_NO}+'%' AND e.WORK_DT <![CDATA[>=]]> #{WORK_DT} AND e.END_DT <![CDATA[<=]]> #{END_DT}
+	</select>
+	
+	<select id="getDayList1"
+			resultType="ksmart30.team03.kuntae.domain.WorkTimeDay"
+			parameterType="String">
+		SELECT SYS_COD,
+		       SORT_DEPT,
+		       GUBUN,
+		       DEPT_CD,
+		       DEPT_NM,
+		       DEPT_TITLE,
+		       TOT_INWON,
+		       CHUL_INWON,
+		       JIGAK_INWON,
+		       SAGO_INWON,
+		       SAGO_01, SAGO_02, SAGO_03, SAGO_04, SAGO_05,
+		       SAGO_06, SAGO_07, SAGO_08, SAGO_09, SAGO_10,
+		       T_TOT_INWON,
+		       T_CHUL_INWON,
+		       T_JIGAK_INWON,
+		       T_SAGO_INWON,
+		       T_SAGO_01, T_SAGO_02, T_SAGO_03, T_SAGO_04, T_SAGO_05,
+		       T_SAGO_06, T_SAGO_07, T_SAGO_08, T_SAGO_09, T_SAGO_10,
+				 '20170102' DATA,
+		       CONVERT(VARCHAR(12), GETDATE(),102)   YYYYMMDD 
+		  FROM DBO.SF_KUNTAE_TODAY_PJT('20190417','','')
+		 ORDER BY SORT_DEPT, GUBUN
+	</select>
+	
+	<!-- 근태정정 신청 List 가져오기-->
+	<select id="getWorkTimeView"
+			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList">
+		SELECT 
+				 DEPT_NM,
+				 b.LEVEL2_NM AS JIKGUP_NM,
+				 a.EMP_NO,
+				 a.KOR_NM,
+				 e.WORK_DT,
+				(CASE WHEN e.START_TIME IS NULL THEN '출근미입력' WHEN e.START_TIME='' THEN '출근미입력' ELSE e.START_TIME END ) START_TIME,
+				(CASE WHEN e.END_TIME IS NULL THEN '퇴근미입력' when e.END_TIME= '' then '퇴근미입력' else e.END_TIME end) END_TIME,
+				(CASE WHEN e.END_DT IS NULL THEN '퇴근미입력' when e.END_DT= '' then '퇴근미입력' else e.END_DT end) END_DT
+		FROM T_HM1000 a 
+		JOIN T_SC9100 b ON a.JIKGUP_CD=b.LEVEL2_CD
+		JOIN T_SC9100 c ON a.JIKCHK_CD=c.LEVEL2_CD 
+		JOIN T_SC1010 d ON a.DEPT_CD=d.DEPT_CD 
+		JOIN T_PM1010 e ON a.EMP_NO=e.EMP_NO,
+		(Select Convert(varchar(10),DATEADD(week,-1,GETDATE()),112) o) o 
+		WHERE b.LEVEL1_CD='110' AND c.LEVEL1_CD='120' AND e.work_dt>=o.o AND E.END_DT=''
+	</select>
+	
+	<!-- 근태정정 신청 List 이름 검색 -->
+	<select id="getWorkTimeNameSearchView"
+			resultType="ksmart30.team03.kuntae.domain.WorkTimeSingleList"
+			parameterType="String">
+			SELECT 
+				 DEPT_NM,
+				 b.LEVEL2_NM AS JIKGUP_NM,
+				 a.EMP_NO,
+				 a.KOR_NM,
+				 e.WORK_DT,
+				(CASE WHEN e.START_TIME IS NULL THEN '출근미입력' WHEN e.START_TIME='' THEN '출근미입력' ELSE e.START_TIME END ) START_TIME,
+				(CASE WHEN e.END_TIME IS NULL THEN '퇴근미입력' when e.END_TIME= '' then '퇴근미입력' else e.END_TIME end) END_TIME,
+				(CASE WHEN e.END_DT IS NULL THEN '퇴근미입력' when e.END_DT= '' then '퇴근미입력' else e.END_DT end) END_DT
+		FROM T_HM1000 a 
+		JOIN T_SC9100 b ON a.JIKGUP_CD=b.LEVEL2_CD
+		JOIN T_SC9100 c ON a.JIKCHK_CD=c.LEVEL2_CD 
+		JOIN T_SC1010 d ON a.DEPT_CD=d.DEPT_CD 
+		JOIN T_PM1010 e ON a.EMP_NO=e.EMP_NO,
+		(Select Convert(varchar(10),DATEADD(week,-1,GETDATE()),112) o) o 
+		WHERE b.LEVEL1_CD='110' AND c.LEVEL1_CD='120' AND e.work_dt>=o.o AND E.END_DT='' AND a.KOR_NM LIKE '%'+#{KOR_NM}+'%'		
+	</select>
+
 
 </mapper>
