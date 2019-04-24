@@ -26,8 +26,6 @@ public class ProjectSonikRestController {
 	}
 	
 	
-	
-	
 	//상단의 검색기능에서 코드를 조건별로 검색하는 메서드
 	@PostMapping("/project/projectSonikSearch")
 	public List<Map<String,Object>> projectSonikSearch(SonikProjectCodeSearch jogun) {
@@ -37,11 +35,14 @@ public class ProjectSonikRestController {
 	}
 	
 	
+	
 	/*
-	 * 제조경비2 상세화면을 위한 메서드(계정과목, 예산)
-	 * @PostMapping("/project/projectSonikContrastJejo2View") public String
-	 * projectSonikContrastJejo2View(String jejo2) {
+	 * //제조경비2 상세화면을 위한 메서드(계정과목, 예산)
 	 * 
-	 * return projectSonikService.projectSonikContrastJejo2View(jejo2); }
+	 * @PostMapping("/project/projectSonikContrastJejo2View") public
+	 * List<Map<String,Object>> projectSonikContrastJejo2View(String jejo2) {
+	 * System.out.println("projectSonikContrastJejo2View확인"); return
+	 * projectSonikService.projectSonikContrastJejo2View(jejo2); }
 	 */
+	
 }

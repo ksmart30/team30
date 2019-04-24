@@ -11,9 +11,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ksmart30.team01.project.domain.DeptSearch;
 import ksmart30.team01.project.domain.Project;
 import ksmart30.team01.project.domain.ProjectHistory;
 import ksmart30.team01.project.service.ProjectManageService;
@@ -23,10 +23,10 @@ public class ProjectManageRestController {
 	@Autowired
 	ProjectManageService projectManageService;
 	// 모달에서 전체 프로젝트 검색
-	@PostMapping("/project/projectManageSearchProcess")
-	public List<Map<String, Object>> projectManageSearchProcess(String column, String columnValue) {
-		System.out.println("RestController projectManageSearchProcess 메서드 실행");
-		return projectManageService.getProjectManageSearchProject(column, columnValue);
+	@PostMapping("/project/getProjectManageCodeListProcess")
+	public List<Map<String, Object>> getProjectManageCodeListProcess(String column, String columnValue) {
+		System.out.println("RestController getProjectManageCodeListProcess 메서드 실행");
+		return projectManageService.getProjectManageCodeList(column, columnValue);
 	}
 	
 	// 전체 발주처 검색
@@ -34,6 +34,20 @@ public class ProjectManageRestController {
 	public List<Map<String, Object>> projectManageCustSearchProcess(String column, String columnValue) {
 		System.out.println("RestController projectManageCustSearchProcess 메서드 실행");
 		return projectManageService.getCustList(column, columnValue);
+	}
+	
+	// 전체 부서 검색
+	@PostMapping("/project/projectManageDeptListProcess")
+	public List<Map<String, Object>> projectManageDeptListProcess(String column, String columnValue) {
+		System.out.println("RestController projectManageDeptListProcess 메서드 실행");
+		return projectManageService.getDeptList(column, columnValue);
+	}
+	
+	// 전체 직원 검색
+	@PostMapping("/project/projectManageEmpListProcess")
+	public List<Map<String, Object>> projectManageEmpListProcess(String column, String columnValue) {
+		System.out.println("RestController projectManageEmpListProcess 메서드 실행");
+		return projectManageService.getEmpList(column, columnValue);
 	}
 	
 	//3.1.1 용역계약서 입력을 위한 프로젝트 리스트 검색
@@ -83,9 +97,10 @@ public class ProjectManageRestController {
 	}
 	
 	//3.1.1 용역계약서 발주처 입력 처리
-	@PostMapping("/project/manage/owner_in")
-	public String projectManageOwnerIn(Model model) {
-		return "project/manage/owner_in";
+	@PostMapping("/project/projectManageOwnerWriteProcess")
+	public String projectManageOwnerWriteProcess(String PJT_CD, String CUST_CD, String CUST_GBN, String N_RATE, String CONTRACT_AMT) {
+		System.out.println("RestController projectManageOwnerWriteProcess 메서드 실행");
+		return projectManageService.addProjectManageOwner(PJT_CD, CUST_CD, CUST_GBN, N_RATE, CONTRACT_AMT);
 	}
 
 	//3.1.1 용역계약서 발주처 삭제 처리
@@ -185,6 +200,14 @@ public class ProjectManageRestController {
 	 *			발주처, 기성단계 상세 포함
 	 *			@return List<Map<String, Object>>
 	 */
+
+	// 3.1.4 용역계약서 검색(부서)
+	@PostMapping("/project/projectManageDeptSearchProcess")
+	public List<Map<String, Object>> projectManageDeptSearchProcess(DeptSearch deptSearch) {
+		System.out.println("RestController projectManageDeptSearchProcess 메서드 실행");
+		System.out.println("안녕?널이면안돼"+deptSearch.getEND_DATE());
+		return projectManageService.getProjectManageDepartSearch(deptSearch);
+	}
 
 	//3.1.6 용역계약 현황 차트 값을 가져옴
 	@PostMapping("/project/projectManageHyunhwangProcess")

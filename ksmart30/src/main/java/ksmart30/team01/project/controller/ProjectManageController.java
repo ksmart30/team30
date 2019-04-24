@@ -16,9 +16,10 @@ public class ProjectManageController {
 	@Autowired
 	ProjectManageService projectManageService;
 	
-	//3.1.2 용역계약서 변경 입력 View
+	//3.1.2 용역계약서 입력 View
 	@GetMapping("/project/projectManageView")
 	public String projectManageView(Model model) {
+		model.addAttribute("dept", projectManageService.deptSelectList());
 		model.addAttribute("code", projectManageService.getProjectManageCode());
 		return "/project/projectManageView";
 	}
@@ -31,13 +32,16 @@ public class ProjectManageController {
 
 	//3.1.3 용역계약서 변경 조회 View
 	@GetMapping("/project/projectManageChangeListView")
-	public String projectManageChangeListView() {
+	public String projectManageChangeListView(Model model) {
+		model.addAttribute("dept", projectManageService.deptSelectList());
 		return "project/projectManageChangeListView";
 	}
 	
 	//3.1.4 용역계약서 검색(부서) View
 	@GetMapping("/project/projectManageDepartSearchView")
-	public String projectManageDepartSearchView() {
+	public String projectManageDepartSearchView(Model model) {
+		model.addAttribute("dept", projectManageService.deptSelectList());
+		model.addAttribute("code", projectManageService.getProjectManageDepartSearchCode());
 		return "project/projectManageDepartSearchView";
 	}
 

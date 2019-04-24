@@ -10,17 +10,33 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import ksmart30.team01.project.domain.DeptSearch;
 import ksmart30.team01.project.domain.Project;
 import ksmart30.team01.project.domain.ProjectHistory;
 
 @Mapper
 public interface ProjectManageMapper {
+	// ====================================================== 기본정보 START ======================================================
+	// 부서 리스트를 select option에 자동으로 출력하기 위한 메서드
+	List<Map<String, Object>> deptSelectList();
+	
 	// 용역계약서 입력 화면에서 쓰이는 종합코드 전체 검색 쿼리를 호출하는 메서드
 	List<Map<String, Object>> getProjectManageCode();
 	
+	// 전체 프로젝트
+	List<Map<String, Object>> getProjectManageCodeList(Map<String, Object> searchMap);
+
 	// 전체 발주처 검색 쿼리를 호출하는 메서드
-	List<Map<String, Object>> getCustList(Map<String, String> searchMap);
+	List<Map<String, Object>> getCustList(Map<String, Object> searchMap);
 	
+	// 전체 부서 검색 쿼리를 호출하는 메서드
+	List<Map<String, Object>> getDeptList(Map<String, Object> searchMap);
+	
+	// 전체 직원 검색 쿼리를 호출하는 메서드
+	List<Map<String, Object>> getEmpList(Map<String, Object> searchMap);
+	// ====================================================== 기본정보 END ======================================================
+
+	// ====================================================== 용역계약서 입력 START ======================================================
 	// 용역계약서 작성을 위해 전체 프로젝트 대장 검색 쿼리를 호출하는 메서드 (검토)
 	List<Map<String, Object>> getProjectManageGumList(Map<String, Object> searchMap);
 	
@@ -37,7 +53,7 @@ public interface ProjectManageMapper {
 	List<Map<String, Object>> getProjectManageOwnerList(Project project);
 	
 	// 용역계약서가 이미 작성되어 있는 경우 그 기성단계 리스트 조회 쿼리를 호출하는 메서드
-	List<Map<String, Object>> getProjectManageGiseongList(Project projectD);
+	List<Map<String, Object>> getProjectManageGiseongList(Project project);
 	
 	// 용역계약서가 이미 작성되어 있는 경우 그 을의 수급 리스트 조회 쿼리를 호출하는 메서드
 	List<Map<String, Object>> getProjectManageSugub(Project project);
@@ -47,7 +63,12 @@ public interface ProjectManageMapper {
 	
 	// 용역계약서가 한 번도 작성되지 않은 경우 수주심의결정서 조회 쿼리를 호출하는 메서드
 	Map<String, Object> getBusinessManageSangse(String PJT_CD);
+	
+	// 선택한 용역계약서의 발주처 추가 쿼리를 호출하는 메서드
+	String addProjectManageOwner(Map<String, Object> map);
 
+	// ====================================================== 용역계약서 변경 조회 START ======================================================
+	
 	// 변경된 용역계약서 리스트를 검색 쿼리를 호출하는 메서드
 	List<Map<String, ProjectHistory>> getProjectHistoryList(Map<String, Object> searchMap);
 	
@@ -73,6 +94,13 @@ public interface ProjectManageMapper {
 	// 변경된 용역계약서 상세 중 변경 후 기성단계 출력 쿼리를 호출하는 메서드
 	List<Map<String, Object>> getProjectManageChangeGiseongAfter(Map<String, Object> map);
 	
+	// ====================================================== 용역계약서 검색(부서) START ======================================================
+	// 화면에서 쓰이는 종합코드 전체 검색 쿼리를 호출하는 메서드
+	List<Map<String, Object>> getProjectManageDepartSearchCode();
+	// 검색 조건에 따라 용역계약서 List 조회 쿼리를 호출하는 메서드
+	List<Map<String, Object>> getProjectManageDepartSearch(DeptSearch deptSearch);
+	// ====================================================== 용역계약서 검색(부서) END ======================================================
+
 	// ====================================================== 용역계약서 현황 START ====================================================== 
 	// 년도를 기준으로 월(Month)별로 계약 회수 조회 쿼리를 호출하는 메서드
 	List<Map<String, Object>> getProjectManageMonthHyunhwangCount(Map<String, Object> map);
