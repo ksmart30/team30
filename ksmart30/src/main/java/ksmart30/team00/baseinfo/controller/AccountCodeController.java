@@ -52,7 +52,7 @@ public class AccountCodeController {
 		  map.put("costTypeList", costTypeList);
 		  map.put("controlItemCodeList", controlItemCodeList);
 		  model.addAttribute("map", map);
-		  return "/baseinfo/accountCodeView";
+		  return "/baseInfo/accountCodeView";
 	}
 	
 	// 10.2.5.계정과목코드.조회버튼클릭시 조회
