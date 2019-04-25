@@ -14,16 +14,20 @@ public class BusinessSearch1 {
 	private String MARKET_NM;
 	private String DEPT_NM;
 	private String CUST_GBN_NM;
+	private String CUST_CD;
 	private String CUST_NM;
 	private String BIZ_GBN;
 	private String FORECAST_AMT;
+	private String FORECAST_AMT2;
 	private String END_EXP_DATE;
 	private String END_GBN;
+	private String END_GBN_NM;
 	private String CONTRACT_AMT;
 	private String AREA_P;
 	private String YAREA_P;
 	private String BUILD_TYPE_NM;
 	private String PRODUCT;
+	private String CLASS_GBN;
 	public String getPJT_CD() {
 		return PJT_CD;
 	}
@@ -102,6 +106,12 @@ public class BusinessSearch1 {
 	public void setCUST_GBN_NM(String cUST_GBN_NM) {
 		CUST_GBN_NM = cUST_GBN_NM;
 	}
+	public String getCUST_CD() {
+		return CUST_CD;
+	}
+	public void setCUST_CD(String cUST_CD) {
+		CUST_CD = cUST_CD;
+	}
 	public String getCUST_NM() {
 		return CUST_NM;
 	}
@@ -120,6 +130,12 @@ public class BusinessSearch1 {
 	public void setFORECAST_AMT(String fORECAST_AMT) {
 		FORECAST_AMT = fORECAST_AMT;
 	}
+	public String getFORECAST_AMT2() {
+		return FORECAST_AMT2;
+	}
+	public void setFORECAST_AMT2(String fORECAST_AMT2) {
+		FORECAST_AMT2 = fORECAST_AMT2;
+	}
 	public String getEND_EXP_DATE() {
 		return END_EXP_DATE;
 	}
@@ -131,6 +147,12 @@ public class BusinessSearch1 {
 	}
 	public void setEND_GBN(String eND_GBN) {
 		END_GBN = eND_GBN;
+	}
+	public String getEND_GBN_NM() {
+		return END_GBN_NM;
+	}
+	public void setEND_GBN_NM(String eND_GBN_NM) {
+		END_GBN_NM = eND_GBN_NM;
 	}
 	public String getCONTRACT_AMT() {
 		return CONTRACT_AMT;
@@ -162,15 +184,23 @@ public class BusinessSearch1 {
 	public void setPRODUCT(String pRODUCT) {
 		PRODUCT = pRODUCT;
 	}
+	public String getCLASS_GBN() {
+		return CLASS_GBN;
+	}
+	public void setCLASS_GBN(String cLASS_GBN) {
+		CLASS_GBN = cLASS_GBN;
+	}
 	@Override
 	public String toString() {
 		return "BusinessSearch1 [PJT_CD=" + PJT_CD + ", PJT_NM=" + PJT_NM + ", PJT_END_S=" + PJT_END_S + ", PJT_END_E="
 				+ PJT_END_E + ", PJT_END_G=" + PJT_END_G + ", PJT_END_T=" + PJT_END_T + ", ADDR=" + ADDR
 				+ ", PD_EMP_NM=" + PD_EMP_NM + ", EMP_NM=" + EMP_NM + ", PM_EMP_NM=" + PM_EMP_NM + ", MARKET_NM="
-				+ MARKET_NM + ", DEPT_NM=" + DEPT_NM + ", CUST_GBN_NM=" + CUST_GBN_NM + ", CUST_NM=" + CUST_NM
-				+ ", BIZ_GBN=" + BIZ_GBN + ", FORECAST_AMT=" + FORECAST_AMT + ", END_EXP_DATE=" + END_EXP_DATE
-				+ ", END_GBN=" + END_GBN + ", CONTRACT_AMT=" + CONTRACT_AMT + ", AREA_P=" + AREA_P + ", YAREA_P="
-				+ YAREA_P + ", BUILD_TYPE_NM=" + BUILD_TYPE_NM + ", PRODUCT=" + PRODUCT + "]";
+				+ MARKET_NM + ", DEPT_NM=" + DEPT_NM + ", CUST_GBN_NM=" + CUST_GBN_NM + ", CUST_CD=" + CUST_CD
+				+ ", CUST_NM=" + CUST_NM + ", BIZ_GBN=" + BIZ_GBN + ", FORECAST_AMT=" + FORECAST_AMT
+				+ ", FORECAST_AMT2=" + FORECAST_AMT2 + ", END_EXP_DATE=" + END_EXP_DATE + ", END_GBN=" + END_GBN
+				+ ", END_GBN_NM=" + END_GBN_NM + ", CONTRACT_AMT=" + CONTRACT_AMT + ", AREA_P=" + AREA_P + ", YAREA_P="
+				+ YAREA_P + ", BUILD_TYPE_NM=" + BUILD_TYPE_NM + ", PRODUCT=" + PRODUCT + ", CLASS_GBN=" + CLASS_GBN
+				+ "]";
 	}
 	
 	

@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/main">
 <th:block layout:fragment="customHead">
 	<meta charset="UTF-8">
-	<title>1.2.2 사업성검토 예산 승인</title>
+	<title>2.2.1 사업수행결정서 승인 List</title>
 	
 	<!-- Bootstrap -->
     <link href="/vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -21,13 +21,29 @@
    
     <!-- Custom Theme Style -->
     <link href="/build/css/custom.min.css" rel="stylesheet">
-	
+	<!-- <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet"> -->
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script>
-		/* =============================연도 초기화================================= */
+		/* =============================엔터키 방지================================= */
+		$(document).keypress((e)=>{
+			if (e.keyCode == 13){
+				e.preventDefault();
+			}
+		});
+		/* =============================날짜 초기화================================= */
 		let today = new Date();
+		let dd = today.getDate();
+		let mm = today.getMonth()+1; //January is 0!
 		let yyyy = today.getFullYear();
-		/* =============================연도 초기화 end================================= */
+		if(dd<10) {
+		    dd='0'+dd
+		} 
+		if(mm<10) {
+		    mm='0'+mm
+		} 
+		today = yyyy+'-' + mm + '-' + dd;
+		MonthInit = yyyy+'-' + mm + '-01';
+		/* =============================날짜 초기화 end================================= */
 		
 		/* =============================페이지 초기화================================= */
 		let pjtList = ()=>{
@@ -36,16 +52,264 @@
 			console.log($('#deptSelect option:selected').val());
 			console.log($('#PJT_CD').val());
 			console.log($('#PJT_NM').val());
-			/* $.ajax({
-				
-			}); */
+			$("input:radio[name=ACT_STAT]").click();
+			
 		}
 		
 		
 		/* =============================페이지 초기화 end================================= */
 		$(document).ready(()=>{
-			$('#year').val(yyyy);
-			pjtList();
+			
+			/* $('#ResultCount').text('0'); */
+			$('#FIRSTDATE').val(MonthInit);
+			$('#ENDDATE').val(today);
+			
+			
+			$("input:radio[name=ACT_STAT]").click(()=>{
+				/* console.log($(':radio[name="ACT_STAT"]:checked').val()); */
+				$('#btnBizSearch').click();
+			});
+			
+			/* =============================프로젝트 코드조회 모달 테이블================================= */
+			$('#btnProjectSearch').click(()=>{
+				let searchArr = {
+								column:$('#selectedProject option:selected').val(),
+								columnValue:$('#PJT_Value').val()
+							};
+				/* console.log(JSON.stringify(searchArr)); */
+				$.ajax({
+    				contentType:'application/json',
+    				dataType:'json',
+		            url:'/businessYesanAdmitGetProjectList',
+		            type:'POST',
+		            data:JSON.stringify(searchArr),
+		            success:(data)=>{
+		            	console.log(JSON.stringify(data));
+		            	$('#ProjectList').DataTable({
+		            		searching:false,
+							lengthChange:false,
+							responsive: true,
+		    				destroy: true,
+		    				data:data,
+		    				columns: [
+		    			        {data: 'PJT_CD'},
+		    			        {data: 'PJT_NM'}
+		    			    ]
+	        			});
+		            }
+				});
+			});
+			$('#ProjectList').delegate('tr','dblclick',function(){
+				let tr = $(this);
+				let td = tr.children();
+				$('#PJT_CD').val(td.eq(0).text());
+				$('#PJT_NM').val(td.eq(1).text());
+				$('#PJT_Value').val('');
+				$('#projectModal').click();
+			});
+			/* =============================프로젝트 코드조회 모달 테이블 end================================= */
+			
+			
+			/* =============================프로젝트 모달 테이블 초기화================================= */
+			/* $('#ProjectList').DataTable({
+				searching:false,
+				lengthChange:false,
+				responsive: true,
+				contentType:'application/json',
+				dataType:'json',
+				ajax: {
+					'url' : '/businessYesanGetProjectList',
+				},columns: [
+			        {"data": "PJT_CD"},
+			        {"data": "PJT_NM"}
+			    ]
+			});
+			$('#ProjectList').delegate('tr','dblclick',function(){
+				let tr = $(this);
+				let td = tr.children();
+				$('#PJT_CD').val(td.eq(0).text());
+				$('#PJT_NM').val(td.eq(1).text());
+				$('#PJT_Value').val('');
+				$('#projectModal').click();
+			}); */
+			/* =============================프로젝트 모달 테이블 초기화 end================================= */
+			
+			/* =============================조회버튼 클릭시 검색 결과 프로젝트 리스트 ================================= */
+			$('#btnBizSearch').click(()=>{
+				let subStringYear = $('#FIRSTDATE').val().substring(2,4);
+				let subStringDept = $('#deptSelect option:selected').val().substring(0,1);
+				 
+				let searchArr = {
+						DateYear: $('#FIRSTDATE').val(),
+						DEPT_CD:subStringDept,
+						PJT_CD:$('#PJT_CD').val(),
+						PJT_NM:$('#PJT_NM').val(),
+						ACT_STAT:$(':radio[name="ACT_STAT"]:checked').val(),
+						FIRSTDATE:$('#FIRSTDATE').val().replace(/-/gi, ''),
+						ENDDATE:$('#ENDDATE').val().replace(/-/gi, '')
+					};
+				console.log(JSON.stringify(searchArr));
+				$.ajax({
+    				contentType:'application/json',
+    				dataType:'json',
+		            url:'/businessYesanAdmitGetResultProjectList',
+		            type:'POST',
+		            data:JSON.stringify(searchArr),
+		            success:(list)=>{
+		            	console.log(JSON.stringify(list));
+		            	let tr = '';
+		            	let result = $(list).length;
+		            	$('#ResultCount').text(result);
+		            	$(list).each((index,item)=>{
+		            		$('#ResultProjectListBody').empty();
+		            		tr += '<tr>';
+		            		tr += '<td style="width:5%;"></td>';
+							tr += '<td style="width:30%;">'+item.PJT_CD+'</td>';
+							tr += '<td style="width:65%; overflow:hidden; text-overflow:ellipsis; color:'+item.COLOR+'" title="'+item.PJT_NM+'"><nobr>'+item.PJT_NM+'</nobr></td>';
+							tr += '</tr>';
+		            	});
+		            	$('#ResultProjectListBody').append(tr);
+	            	}
+				});
+			});
+			/* =============================조회버튼 클릭시 검색 결과 프로젝트 리스트 end================================= */
+			$('#ResultProjectList').delegate('tr','click',function(){
+				let tr = $(this);
+				let td = tr.children();
+				let PJT_CD = td.eq(1).text();
+				console.log(JSON.stringify(PJT_CD));
+				$.ajax({
+					contentType:'application/json',
+    				dataType:'json',
+		            url:'/businessYesanAdmitGetResultProject',
+		            type:'POST',
+		            data:PJT_CD,
+		            success:(result)=>{
+		            	console.log(JSON.stringify(result));
+		            	let convertDate = new Date(result.CD_REG_DATE);
+		            	let date = convertDate;
+		            	$('#LPJT_CD').text(result.PJT_CD);
+		            	$('#LPJT_NM').text(result.PJT_NM);
+		            	$('#LCRT_DATE').text(date);
+		            	$('#LACT_STAT').text(result.APPROVAL);
+		            	$('#LACT_STAT').css('color',result.COLOR);/* COLOR  */
+		            	$('#LCUST_NM').text(result.CUST_NM);
+		            	$('#LCUST_GBN').text(result.CUST_GBN);
+		            	$('#LZIP_CD').text(result.ZIP_CD);
+		            	$('#LADDR').text(result.ADDR);
+		            	$('#LREGION_NM').text(result.REGION1_NM +' / '+ result.REGION2_NM +' / '+ result.REGION3_NM);
+		            	$('#LZONE_NM').text(result.ZONE1_NM +' / '+ result.ZONE2_NM +' / '+ result.ZONE3_NM);
+		            	$('#LSCOPE_NM').text(result.SCOPE1_NM +' / '+ result.SCOPE2_NM +' / '+ result.SCOPE3_NM);
+		            	$('#LBIZ_TYPE').text(result.BIZ_TYPE);
+		            	$('#LBIZ_GBN').text(result.BIZ_GBN);
+		            	$('#LBUILD_GB').text(result.BUILD_GB);
+		            	$('#LBUILD_TYPE_NM').text(result.BUILD_TYPE);
+		            	$('#LAREA_M').text(result.AREA_M);
+		            	$('#LAREA_P').text(result.AREA_P);
+		            	$('#LDOWN_SU').text(result.DOWN_SU);
+		            	$('#LUP_SU').text(result.UP_SU);
+		            	$('#LH_CNT').text(result.H_CNT);
+		            	$('#LYAREA_M').text(result.YAREA_M);
+		            	$('#LYAREA_P').text(result.YAREA_P);
+		            	$('#LCOVERAGE').text(result.COVERAGE);
+		            	$('#LCAPACITY').text(result.CAPACITY);
+		            	$('#LDEPT_NM').text(result.DEPT_NM);
+		            	$('#LINFO_EMP_NO').text(result.INFO_EMP_NO);
+		            	$('#LCLASS_GBN').text(result.CLASS_GBN);
+		            	$('#PmName').val(result.PM_EMP_NO);
+		            	$('#PdName').val(result.DESIGN_MAN);
+		            	$('#LPRODUCT').val(result.PRODUCT);
+		            	$('#LFORECAST_AMT').text(result.FORECAST_AMT);
+		            	$('#LTOTAL_AMT').text(result.TOTAL_AMT);
+		            }
+				})
+				
+				
+			});
+			
+			
+			/* pjtList(); */
+			/* =============================PM 모달 테이블================================= */
+			$('#btnPMSearch').click(()=>{
+				let searchArr = {
+						column:$('#selectedEmpPMItem option:selected').val(),
+						columnValue:$('#PMValue').val(),
+						EMP_GB:$('#selectedEmpPMGB option:selected').val()
+						}; 
+				console.log(JSON.stringify(searchArr));
+				$.ajax({
+    				contentType:'application/json',
+    				dataType:'json',
+		            url:'/businessYesanAdmitGetResultEmpList',
+		            type:'POST',
+		            data:JSON.stringify(searchArr),
+		            success:(data)=>{
+		            	/* $('#accSearchList').destroy(); */
+		            	/* console.log(JSON.stringify(data)); */
+		    			$('#EmpPMList').DataTable({
+		    				searching:false,
+							lengthChange:false,
+							responsive: true,
+		    				destroy: true,
+		    				data:data,
+		    				columns: [
+		    			        {data: 'EMP_NO'},
+		    			        {data: 'KOR_NM'},
+		    			        {data: 'DEPT_NM'},
+		    			        {data: 'JIKGUP_NM'}
+		    			    ]
+	        			}); 
+	            	}
+				});
+			});
+			$('#EmpPMList').delegate('tr','dblclick',function(){
+				let tr = $(this);
+				let td = tr.children();
+				$('#PmName').val(td.eq(1).text());
+				$('#PmModal').click();
+			});
+			/* =============================PM 모달 테이블 end================================= */
+			
+			/* =============================PD 모달 테이블================================= */
+			$('#btnPDSearch').click(()=>{
+				let searchArr = {
+						column:$('#selectedEmpPDItem option:selected').val(),
+						columnValue:$('#PdValue').val(),
+						EMP_GB:$('#selectedEmpPDGB option:selected').val()
+						}; 
+				console.log(JSON.stringify(searchArr));
+				$.ajax({
+    				contentType:'application/json',
+    				dataType:'json',
+		            url:'/businessYesanAdmitGetResultEmpList',
+		            type:'POST',
+		            data:JSON.stringify(searchArr),
+		            success:(data)=>{
+		            	/* $('#accSearchList').destroy(); */
+		            	/* console.log(JSON.stringify(data)); */
+		    			$('#EmpPDList').DataTable({
+		    				searching:false,
+							lengthChange:false,
+							responsive: true,
+		    				destroy: true,
+		    				data:data,
+		    				columns: [
+		    			        {data: 'EMP_NO'},
+		    			        {data: 'KOR_NM'},
+		    			        {data: 'DEPT_NM'},
+		    			        {data: 'JIKGUP_NM'}
+		    			    ]
+	        			}); 
+	            	}
+				});
+			});
+			$('#EmpPDList').delegate('tr','dblclick',function(){
+				let tr = $(this);
+				let td = tr.children();
+				$('#PdName').val(td.eq(1).text());
+				$('#PdModal').click();
+			});
+			/* =============================PM 모달 테이블 end================================= */
 		});
 	</script>
 </th:block>
@@ -56,8 +320,8 @@
 		<div class="col-md-8 col-sm-12 col-xs-12" style="color:black;">
 			<div class="page-title">
 				<div class="title_left">
-					<h2><b>사업성검토 예산 승인</b></h2>
-					<h5><font color="gray"><b>1. 사업성검토 관리&nbsp;>&nbsp;&nbsp;1.2.2 사업성검토 예산 승인</b></font></h5>
+					<h2><b>사업성검토 예산 입력</b></h2>
+					<h5><font color="gray"><b>1. 사업성검토 관리&nbsp;>&nbsp;&nbsp;1.2.1 사업성검토 예산 입력</b></font></h5>
 					<br>
 				</div>
 			</div>
@@ -68,7 +332,7 @@
 			<div class="page-title">
 				<div class="btn-group">
 					<br>
-					<button class="btn btn-default" type="button" id="btnslipsearch">조회</button>
+					<button class="btn btn-default" type="button" id="btnBizSearch">조회</button>
 					<button class="btn btn-default" type="reset" disabled="disabled">입력</button>
 					<button class="btn btn-default" type="button" disabled="disabled">수정</button>
 					<button class="btn btn-default" type="button" disabled="disabled">삭제</button>
@@ -92,7 +356,10 @@
 								</tr>
 								<tr>
 									<td><label class="control-label">년도</label></td>
-									<td colspan="2"><input type="number" id="year" style="width: 25%; text-indent: 5px"></td>
+									<td colspan="2">
+										<input type="date" id="FIRSTDATE" max="2100-12-31"> <b>-</b> 
+										<input type="date" id="ENDDATE" max="2100-12-31">
+									</td>
 								</tr>
 								<tr>
 									<td><label class="control-label">부서</label></td>
@@ -100,7 +367,7 @@
 										<select class="form-control" id="deptSelect">
 											<option selected="selected" value="">전 사</option>
 											<th:block th:each="d : ${list}">
-												<option value="${d.DEPT_CD}">[[${d.DEPT_NM}]]</option>
+												<option th:value="${d.DEPT_CD}">[[${d.DEPT_NM}]]</option>
 											</th:block>
 										</select>
 									</td>
@@ -125,47 +392,33 @@
 																<tr>
 																	<td><label class="control-label">검색항목</label></td>
 																	<td>
-																		<select class="form-control" style="width: 40%" id="selectedAccount">
+																		<select class="form-control" style="width: 40%" id="selectedProject">
 																			<option value="PJT_CD">프로젝트코드</option>
-																			<option selected="selected" value="">프로젝트명</option>
+																			<option selected="selected" value="PJT_NM">프로젝트명</option>
 																		</select>
 																	</td>
 																</tr>
 																<tr>
 																	<td><label class="control-label">검색조건</label></td>
 																	<td>
-																		<input type="text" id="accountValue">
-																		<button id="btnAccountSearch" type="button"><i class="fa fa-search"></i></button>																	
+																		<input type="text" id="PJT_Value">
+																		<button id="btnProjectSearch" type="button"><i class="fa fa-search"></i></button>																	
 																	</td>
 																</tr>
 															</tbody>																	
 														</table>
 													</div>
 													<div class="modal-body">
-														<div class="table-responsive" style="overflow: auto; height: 400px;">
-															<table class="table table-striped table-bordered table-hover jambo_table">
-																<thead>
-																	<tr>
-																		<th>코드</th>
-																		<th>프로젝트명</th>
-																	</tr>
-																</thead>
-																<tbody>
-																	<tr>
-																		<td></td>
-																		<td></td>
-																	</tr>
-																	<tr>
-																		<td></td>
-																		<td></td>
-																	</tr>
-																	<tr>
-																		<td></td>
-																		<td></td>
-																	</tr>
-																</tbody>																	
-															</table>
-														</div>
+														
+														<table id="ProjectList" class="table table-striped table-bordered table-hover jambo_table" style="width: 100%">
+															<thead>
+																<tr>
+																	<th>코드</th>
+																	<th>프로젝트명</th>
+																</tr>
+															</thead>																	
+														</table>
+														
 													</div>
 												</div>
 											</div>
@@ -175,11 +428,11 @@
 								</tr>
 								<tr>
 									<td colspan="2" style="text-align: center;">
-										<input type="radio" name="ACT_STAT" checked="checked" value="1">미승인 &emsp;&emsp;
+										<input type="radio" name="ACT_STAT" value="1">미승인 &emsp;&emsp;
 										<input type="radio" name="ACT_STAT" value="2">진행 &emsp;&emsp;
 										<input type="radio" name="ACT_STAT" value="4">무산 &emsp;&emsp;
 										<input type="radio" name="ACT_STAT" value="5">계획 &emsp;&emsp;
-										<input type="radio" name="ACT_STAT">ALL
+										<input type="radio" name="ACT_STAT" checked="checked" value="">ALL
 									</td>
 								</tr>
 							</tbody>					
@@ -189,27 +442,27 @@
 			</div>
 			<div class="x_panel">
 				<div class="x_content" style="color:black;">
-					<form class="form-horizontal">
-						<table class="table table-striped table-bordered table-hover">
+					<form class="form-horizontal" style="overflow: auto; height: 870px;">
+						<table id="ResultProjectList" class="table table-striped table-bordered table-hover jambo_table" style="width: 100%; table-layout: fixed;">
 							<thead>
 								<tr>
-									<th></th>
-									<th>PJT코드</th>
-									<th>프로젝트명</th>
+									<th style="width: 5%"></th>
+									<th style="width: 30%">PJT코드</th>
+									<th style="width: 65%">프로젝트명</th>
 								</tr>
 							</thead>
-							<tbody>
-								<th:block th:each="num: ${#numbers.sequence(1,22)}">
+							<tbody id="ResultProjectListBody">
+								<!-- <th:block th:each="num: ${#numbers.sequence(1,22)}">
 									<tr>
 										<td><label class="control-label"> </label></td>
 										<td></td>
 										<td></td>
 									</tr>
-								</th:block>
+								</th:block> -->
 							</tbody>
-							<tfoot style="background-color: #FFFFB6">
+							<tfoot style="background-color: #FFFFB6" id="ResultProjectListFoot">
 								<tr>
-									<td colspan="3" style="text-align: right">0</td>
+									<td colspan="3" style="text-align: right"><label id="ResultCount"></label></td>
 								</tr>
 							</tfoot>
 						</table>
@@ -225,59 +478,50 @@
 							<tbody>
 								<tr>
 									<td style="background-color: #E8F0FA">프로젝트</td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td>미승인</td>
+									<td><label id="LPJT_CD"></label></td>
+									<td colspan="2"><label id="LPJT_NM"></label></td>
+									<td>(코트발행일: <label id="LCRT_DATE"></label>)</td>
+									<td style="background-color: #E8F0FA" id="LACT_STAT_COLOR"><label id="LACT_STAT"></label></td>
 								</tr>
 								<tr>
 									<td style="background-color: #E8F0FA">발주처</td>
-									<td>현대건설(주)</td>
-									<td></td>
-									<td></td>
-									<td>발주처 구분 : 기타</td>
-									<td></td>
+									<td colspan="3"><label id="LCUST_NM"></label></td>
+									<td colspan="2">(발주처 구분 : &emsp;<label id="LCUST_GBN"></label>&emsp;)</td>
 								</tr>
 								<tr>
 									<td style="background-color: #E8F0FA">대지위치</td>
-									<td>주소</td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
+									<td colspan="5">&emsp;( <label id="LZIP_CD"></label> )&emsp;&emsp;<label id="LADDR"></label></td>
 								</tr>
 								<tr>
 									<td style="background-color: #E8F0FA">지역/지구/구역</td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
+									<td colspan="5">
+										<label id="LREGION_NM"></label> &emsp;||&emsp;
+										<label id="LZONE_NM"></label> &emsp;||&emsp;
+										<label id="LSCOPE_NM"></label>
+									</td>
 								</tr>
 								<tr>
 									<td style="background-color: #E8F0FA">수주구분</td>
-									<td>민간</td>
-									<td>사업분류</td>
+									<td><label id="LBIZ_TYPE"></label> - <label id="LBIZ_GBN"></label></td>
+									<td>( 사업분류: <label id="LBUILD_GB"></label> )</td>
 									<td style="background-color: #E8F0FA">건축물용도</td>
-									<td>제1종 근린생활시설</td>
-									<td></td>
+									<td colspan="2"><label id="LBUILD_TYPE_NM"></label></td>
 								</tr>
 								<tr>
 									<td style="background-color: #E8F0FA">대지면적</td>
-									<td>메다</td>
-									<td>평</td>
+									<td><label id="LAREA_M"></label> ㎡</td>
+									<td><label id="LAREA_P"></label> 평</td>
 									<td style="background-color: #E8F0FA">규모</td>
-									<td>지하</td>
-									<td>세대수</td>
+									<td colspan="2">지하  &emsp;<label id="LDOWN_SU"></label> 층&emsp;&emsp; 지상 &emsp;<label id="LUP_SU"></label> 층 &emsp;&emsp;세대수&emsp;<label id="LH_CNT"></label></td>
+									
 								</tr>
 								<tr>
 									<td style="background-color: #E8F0FA">연면적</td>
-									<td>메다</td>
-									<td>평</td>
+									<td><label id="LYAREA_M"></label> ㎡</td>
+									<td><label id="LYAREA_P"></label> 평</td>
 									<td style="background-color: #E8F0FA">비율</td>
-									<td>건폐율</td>
-									<td>용적율</td>
+									<td>건폐율&emsp;&emsp;<label id="LCOVERAGE"></label>&emsp;%</td>
+									<td>용적율&emsp;&emsp;<label id="LCAPACITY"></label>&emsp;%</td>
 								</tr>
 							</tbody>
 						</table>
@@ -291,16 +535,16 @@
 							<tbody>
 								<tr>
 									<td style="background-color: #E8F0FA">수행부서</td>
-									<td>설계1본부 소</td>
+									<td><label id="LDEPT_NM"></label></td>
 									<td style="background-color: #E8F0FA">정보취득자</td>
-									<td style="width: 20%">김테스</td>
+									<td style="width: 20%"><label id="LINFO_EMP_NO"></label></td>
 									<td style="background-color: #E8F0FA">업무범위/수준</td>
-									<td>E</td>
+									<td><label id="LCLASS_GBN"></label></td>
 								</tr>
 								<tr>
 									<td style="background-color: #E8F0FA">PM</td>
 									<td>
-										<input type="text">
+										<input type="text" id="PmName">
 										<button type="button" data-toggle="modal" data-target=".bs-example-modal-lg2"><i class="fa fa-search"></i></button>
 										<!------------------------------------------ PM 조회 modal--------------------------------------------------- -->
 										
@@ -308,7 +552,7 @@
 											<div class="modal-dialog modal-lg">
 												<div class="modal-content">
 													<div class="modal-header">
-														<button type="button" class="close" data-dismiss="modal" id="projectModal"><span aria-hidden="true">×</span>
+														<button type="button" class="close" data-dismiss="modal" id="PmModal"><span aria-hidden="true">×</span>
 														</button>
 														<h4 class="modal-title" id="myModalLabel"><b>직원조회</b></h4><br>
 														<table class="table table-bordered">
@@ -316,36 +560,36 @@
 																<tr>
 																	<td><label class="control-label">구분</label></td>
 																	<td>
-																		<select class="form-control" style="width: 40%" id="selectedAccount">
-																			<option selected="selected" value="">재직자</option>
-																			<option value="">퇴직자</option>
+																		<select class="form-control" style="width: 40%" id="selectedEmpPMGB">
+																			<option selected="selected" value="재직">재직자</option>
+																			<option value="퇴직">퇴직자</option>
 																		</select>
 																	</td>
 																</tr>
 																<tr>
 																	<td><label class="control-label">검색항목</label></td>
 																	<td>
-																		<select class="form-control" style="width: 40%" id="selectedAccount">
-																			<option selected="selected" value="">성명</option>
-																			<option value="">사번</option>
-																			<option value="">부서명</option>
-																			<option value="">직급명</option>
+																		<select class="form-control" style="width: 40%" id="selectedEmpPMItem">
+																			<option selected="selected" value="KOR_NM">성명</option>
+																			<option value="EMP_NO">사번</option>
+																			<option value="DEPT_NM">부서명</option>
+																			<option value="JIKGUP_NM">직급명</option>
 																		</select>
 																	</td>
 																</tr>
 																<tr>
 																	<td><label class="control-label">검색조건</label></td>
 																	<td>
-																		<input type="text" id="accountValue">
-																		<button id="btnAccountSearch" type="button"><i class="fa fa-search"></i></button>																	
+																		<input type="text" id="PMValue">
+																		<button id="btnPMSearch" type="button"><i class="fa fa-search"></i></button>																	
 																	</td>
 																</tr>
 															</tbody>																	
 														</table>
 													</div>
 													<div class="modal-body">
-														<div class="table-responsive" style="overflow: auto; height: 400px;">
-															<table class="table table-striped table-bordered table-hover jambo_table">
+														<div class="table-responsive" style="overflow: auto; height: 450px;">
+															<table id="EmpPMList" class="table table-striped table-bordered table-hover jambo_table">
 																<thead>
 																	<tr>
 																		<th>사원번호</th>
@@ -353,27 +597,7 @@
 																		<th>부서명</th>
 																		<th>직급명</th>
 																	</tr>
-																</thead>
-																<tbody>
-																	<tr>
-																		<td></td>
-																		<td></td>
-																		<td></td>
-																		<td></td>
-																	</tr>
-																	<tr>
-																		<td></td>
-																		<td></td>
-																		<td></td>
-																		<td></td>
-																	</tr>
-																	<tr>
-																		<td></td>
-																		<td></td>
-																		<td></td>
-																		<td></td>
-																	</tr>
-																</tbody>																	
+																</thead>																
 															</table>
 														</div>
 													</div>
@@ -384,13 +608,13 @@
 									</td>
 									<td rowspan="2" style="background-color: #E8F0FA; vertical-align: middle;">납품성과물</td>
 									<td colspan="3" rowspan="2">
-										<textarea class="form-control" rows="2" style="width: 100%; overflow: scroll; resize: none;" ></textarea>
+										<textarea id="TPRODUCT" class="form-control" rows="2" style="width: 100%; overflow: scroll; resize: none;" ></textarea>
 									</td>
 								</tr>
 								<tr>
 									<td style="background-color: #E8F0FA">PD</td>
 									<td>
-										<input type="text">
+										<input type="text" id="PdName">
 										<button type="button" data-toggle="modal" data-target=".bs-example-modal-lg3"><i class="fa fa-search"></i></button>
 										<!------------------------------------------ PD 조회 modal--------------------------------------------------- -->
 										
@@ -398,7 +622,7 @@
 											<div class="modal-dialog modal-lg">
 												<div class="modal-content">
 													<div class="modal-header">
-														<button type="button" class="close" data-dismiss="modal" id="projectModal"><span aria-hidden="true">×</span>
+														<button type="button" class="close" data-dismiss="modal" id="PdModal"><span aria-hidden="true">×</span>
 														</button>
 														<h4 class="modal-title" id="myModalLabel"><b>직원</b></h4><br>
 														<table class="table table-bordered">
@@ -406,28 +630,28 @@
 																<tr>
 																	<td><label class="control-label">구분</label></td>
 																	<td>
-																		<select class="form-control" style="width: 40%" id="selectedAccount">
-																			<option selected="selected" value="">재직자</option>
-																			<option value="">퇴직자</option>
+																		<select class="form-control" style="width: 40%" id="selectedEmpPDGB">
+																			<option selected="selected" value="재직">재직자</option>
+																			<option value="퇴직">퇴직자</option>
 																		</select>
 																	</td>
 																</tr>
 																<tr>
 																	<td><label class="control-label">검색항목</label></td>
 																	<td>
-																		<select class="form-control" style="width: 40%" id="selectedAccount">
-																			<option selected="selected" value="">성명</option>
-																			<option value="">사번</option>
-																			<option value="">부서명</option>
-																			<option value="">직급명</option>
+																		<select class="form-control" style="width: 40%" id="selectedEmpPDItem">
+																			<option selected="selected" value="KOR_NM">성명</option>
+																			<option value="EMP_NO">사번</option>
+																			<option value="DEPT_NM">부서명</option>
+																			<option value="JIKGUP_NM">직급명</option>
 																		</select>
 																	</td>
 																</tr>
 																<tr>
 																	<td><label class="control-label">검색조건</label></td>
 																	<td>
-																		<input type="text" id="accountValue">
-																		<button id="btnAccountSearch" type="button"><i class="fa fa-search"></i></button>																	
+																		<input type="text" id="PdValue">
+																		<button id="btnPDSearch" type="button"><i class="fa fa-search"></i></button>																	
 																	</td>
 																</tr>
 															</tbody>																	
@@ -435,27 +659,15 @@
 													</div>
 													<div class="modal-body">
 														<div class="table-responsive" style="overflow: auto; height: 400px;">
-															<table class="table table-striped table-bordered table-hover jambo_table">
+															<table id="EmpPDList" class="table table-striped table-bordered table-hover jambo_table">
 																<thead>
 																	<tr>
-																		<th>코드</th>
-																		<th>프로젝트명</th>
+																		<th>사원번호</th>
+																		<th>성명</th>
+																		<th>부서명</th>
+																		<th>직급명</th>
 																	</tr>
-																</thead>
-																<tbody>
-																	<tr>
-																		<td></td>
-																		<td></td>
-																	</tr>
-																	<tr>
-																		<td></td>
-																		<td></td>
-																	</tr>
-																	<tr>
-																		<td></td>
-																		<td></td>
-																	</tr>
-																</tbody>																	
+																</thead>																
 															</table>
 														</div>
 													</div>
@@ -468,13 +680,13 @@
 								<tr>
 									<td colspan="2" rowspan="2"></td>
 									<td style="background-color: #E8F0FA">추정계약액</td>
-									<td colspan="2"></td>
+									<td colspan="2"><label id="LFORECAST_AMT"></label></td>
 									<td></td>
 								</tr>
 								<tr>
 									<td style="background-color: #E8F0FA">예산총계</td>
-									<td colspan="2"></td>
-									<td><button type="button" class="btn" style="color: black;">승인처리</button></td>
+									<td colspan="2"><label id="LTOTAL_AMT"></label></td>
+									<td><button type="button" class="btn" style="color: black;">예산pjt코드 입력</button></td>
 								</tr>
 							</tbody>
 						</table>
@@ -805,6 +1017,35 @@
 	</div>
 </th:block>
 <th:block layout:fragment="customJquery">
-	<th:block th:include="layout/customJquery"></th:block>
+	<!-- jQuery -->
+    <script src="/vendors/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="/vendors/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="/vendors/nprogress/nprogress.js"></script>
+    <!-- iCheck -->
+    <script src="/vendors/iCheck/icheck.min.js"></script>
+    <!-- Datatables -->
+	<script src="/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+	<script src="/vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+	<script src="/vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+	<script src="/vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+	<script src="/vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+	<script src="/vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+	<script src="/vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+	<script src="/vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+	<script src="/vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	<script src="/vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+	<script src="/vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+	<script src="/vendors/jszip/dist/jszip.min.js"></script>
+	<script src="/vendors/pdfmake/build/pdfmake.min.js"></script>
+	<script src="/vendors/pdfmake/build/vfs_fonts.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="/build/js/custom.min.js"></script>
+	<!-- <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script> -->
 </th:block>
 </html>

@@ -9,11 +9,11 @@
 	   @author  ksmart30 박찬업
 	-->
 	
-	<!-- 10.2.5.계정과목코드
+	<!-- 10.2.5.계정과목코드-계정과목리스트 조회
 		  @brief    계정과목리스트 SELECT쿼리문
 		  @return  ksmart30.team00.baseinfo.domain.AccountCodeDomain
 	-->
-	<select id="selectAccountCodeList"
+	<select id="getAccountCodeList"
 			resultType="ksmart30.team00.baseinfo.domain.AccountCodeDomain">
 		SELECT 
 			ACC_CD,
@@ -87,11 +87,11 @@
 			T_AC0100
 	</select>
 	
-	<!-- 10.2.5.계정과목코드
+	<!-- 10.2.5.계정과목코드-관리항목코드리스트 조회
 		  @brief    관리항목코드리스트 SELECT쿼리문
 		  @return  ksmart30.team00.baseinfo.domain.ControlItemCodeDomain
 	-->
-	<select id="selectControlItemCodeList"
+	<select id="getControlItemCodeList"
 			resultType="ksmart30.team00.baseinfo.domain.ControlItemCodeDomain">
 		SELECT 
 			CONT_CD, 
@@ -99,11 +99,11 @@
 		FROM t_ac0200
 	</select>
 	
-	<!-- 10.2.5.계정과목코드
+	<!-- 10.2.5.계정과목코드-계정코드조회
 		  @brief    계정코드 search SELECT쿼리문
-		  @return  ksmart30.team00.baseinfo.domain.ControlItemCodeDomain
+		  @return  ksmart30.team00.baseinfo.domain.AccountCodeDomain
 	-->
-	<select id="selectAccountCodeInfo"
+	<select id="getAccountCodeInfo"
 			resultType="ksmart30.team00.baseinfo.domain.AccountCodeDomain">
 		SELECT 
 			ACC_CD,
@@ -206,11 +206,11 @@
    		</if>		
 	</select>
 	
-	<!-- 10.2.5.계정과목코드.자산코드조회
+	<!-- 10.2.5.계정과목코드-자산코드조회
 		  @brief    자산코드 SELECT쿼리문
 		  @return  ksmart30.team00.baseinfo.domain.TotalCode
 	-->
-	<select id="selectAssetCodeInfo"
+	<select id="getAssetCodeInfo"
 			resultType="ksmart30.team00.baseinfo.domain.TotalCode">
 		SELECT 
 			LEVEL2_NM 
@@ -222,11 +222,11 @@
 			BUSI_GB = 'A'
 	</select>
 	
-	<!-- 10.2.5.계정과목코드.비용유형조회
+	<!-- 10.2.5.계정과목코드-비용유형조회
 		  @brief    자산코드 SELECT쿼리문
 		  @return  ksmart30.team00.baseinfo.domain.TotalCode
 	-->
-	<select id="selectCostTypeInfo"
+	<select id="getCostTypeInfo"
 			resultType="ksmart30.team00.baseinfo.domain.TotalCode">
 		SELECT 
 			LEVEL2_NM 

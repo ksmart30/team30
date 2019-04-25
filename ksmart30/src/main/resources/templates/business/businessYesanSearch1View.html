@@ -7,24 +7,60 @@
 	<meta charset="UTF-8">
 	<title>2.2.4 승인된 승인 사업성검토 검색 List</title>
 	<th:block th:include="layout/customHead"></th:block>
-
+	<link href="/build/css/selectCheck/fSelect.css" rel="stylesheet" type="text/css">
+	<!-- <link href="/SRC2/selectcheckbox/fSelect.css" rel="stylesheet" type="text/css"> -->
 	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
-
-
 	<script>
-	//사업성검토 검색1
-		$(document).ready(()=>{
+	//사업성검토 검색1(부서별,프로젝트코드,프로젝트명,주소,발주처)
+		$(document).keypress((e)=>{
+			//엔터키방지!!
+			if(e.keyCode == 13){
+				r.preventDefault();
+			}
+			//엔터키방지끝
+		}); 
+		$(document).ready(()=>{			
+			//셀렉트체크박스(수주구분)
+			/* $('.demo').fSelect(); */
+			
 			$('#searchList').click(()=>{
 				console.log('눌려라요오오오~');
 				const DEPT_NM = $('#DEPT_NM').val();
-				console.log(DEPT_NM+'DEPT_NM 받아라요~');
+				const pjCode = $('#pjCode').val();
+			 	const pjName = $('#pjName').val();
+			 	const ADDR = $('#ADDR').val();
+			 	const CUST_CD = $('#custCd').val();
+			 	const BIZ_GBN = $('#suju').val();
+			 	const LEVEL2_CD = $('#selectGun').val();
+			 	const LEVEL2_NM = $('#selectGubun').val();
+			 	const END_GBN_NM = $('#END_GBN_NM').val();
+			 	const FORECAST_AMT = $('#FORECAST_AMT').val();
+			 	const FORECAST_AMT2 = $('#FORECAST_AMT2').val();
+			 	const CLASS_GBN = $('#CLASS_GBN').val();
+			 	/* const suju =[];
+			 	
+			 	$('#suju option:checked').each((index,item)=>{
+			 		suju.push($(item).val());	
+			 	}); */
+			 	console.log(CLASS_GBN+' CLASS_GBN 나왔다요~~~!');
+			 	console.log(FORECAST_AMT+' FORECAST_AMT 나왔다요~~~!');
+			 	console.log(FORECAST_AMT2+' FORECAST_AMT2 나왔다요~~~!');
+			 	console.log(END_GBN_NM+' END_GBN_NM 나왔다요~~~!');
+			 	console.log(LEVEL2_NM+' LEVEL2_NM 나왔다요~~~!');
+			 	console.log(LEVEL2_CD+' LEVEL2_CD 나왔다요~~~!');
+			 	console.log(BIZ_GBN+' BIZ_GBN 나왔다요~~~!');
+			 	console.log(CUST_CD+'CUST_CD 받아라요~');
+			 	console.log(ADDR+'ADDR 받아라요~');
+			 	console.log(DEPT_NM+'DEPT_NM 받아라요~');
+			 	console.log(pjCode+'<--코드들어와라요~');
+			 	console.log(pjName+'<--이름들어와라요~');
 				$.ajax({
 					url : '/businessYesanSearchView',
 					type : 'GET',
-					data : {DEPT_NM:DEPT_NM},
+					data : {DEPT_NM:DEPT_NM,PJT_CD:pjCode,PJT_NM:pjName,ADDR:ADDR,CUST_CD:CUST_CD,BIZ_GBN:BIZ_GBN,BUILD_TYPE_NM:LEVEL2_CD,CUST_GBN_NM:LEVEL2_NM,END_GBN_NM:END_GBN_NM,FORECAST_AMT:FORECAST_AMT,FORECAST_AMT2:FORECAST_AMT2,CLASS_GBN:CLASS_GBN},
 					success : (list)=>{
 					 	console.log(list+'<--list');
-						let tr = '';					
+					 	let tr = '';					
 						$(list).each((index,item)=>{
 							const index1 = index+1;
 							$('#list').empty();
@@ -59,6 +95,7 @@
 					}
 				});
 			});
+			//프로젝트코드 리스트조회
 			$('#btnBusinessSearch').click(()=>{
 				console.log('눌려라요~~');
 				const PJT_CD = $('#PJT_CD').val();
@@ -110,18 +147,68 @@
 				$('#PJT_CD').val('');
 				$('#accountModal').click();
 			});
+			//발주처코드 리스트조회
+			$('#btnBusinessSearchCust').click(()=>{
+				console.log('눌려라요~~!!');
+				const CUST_CD = $('#CUST_CD').val();
+				const businessSelectCust = $('#businessSelectCust').val();
+				if(businessSelectCust == '거래처코드'){
+					$.ajax({
+						url : '/businessCustCdList',
+	 					type : 'GET',
+	 					data : {CUST_CD:CUST_CD},
+	 					success:(businessCustList)=>{
+							console.log(businessCustList);
+							let tr='';
+							$(businessCustList).each((index,item)=>{
+								$('#businessCustList').empty();
+								tr += '<tr>';
+								tr += '<td>'+item.cust_CD+'</td>';
+								tr += '<td>'+item.cust_NM+'</td>';
+								tr += '</tr>';
+							});
+							$('#businessCustList').append(tr);
+						}
+					});
+				}else if(businessSelectCust == '거래처명'){
+					$.ajax({
+						url : '/businessCustCdList',
+	 					type : 'GET',
+	 					data : {CUST_NM:CUST_CD},
+	 					success:(businessCustList)=>{
+							console.log(businessCustList);
+							let tr='';
+							$(businessCustList).each((index,item)=>{
+								$('#businessCustList').empty();
+								tr += '<tr>';
+								tr += '<td>'+item.cust_CD+'</td>';
+								tr += '<td>'+item.cust_NM+'</td>';
+								tr += '</tr>';
+							});
+							$('#businessCustList').append(tr);
+						}
+					});
+				}
+					
+			});
+			$('#businessCustList').delegate('tr', 'dblclick', function(){
+				let tr = $(this);
+				let td = tr.children();
+				$('#custCd').val(td.eq(0).text());
+				$('#custNM').val(td.eq(1).text());
+				$('#CUST_CD').val('');
+				$('#accountModal2').click();
+			});
 		});
 	</script>
 </th:block>
 <th:block layout:fragment="customBody">
-
-
-	<!-- 검색 폼 -->
+	<!-- 사업성검토검색1 시작 -->
 	<div class="col-md-9 col-xs-12" style="color:black;">
 		<div class="page-title">
 			<div class="title_left">
 				<h2><b>사업성검토 검색1</b></h2>
-				<h5><fontcolor="gray"><b>1.사업성검토 관리&nbsp;>&nbsp;&nbsp;1.2사업성검토예산 관리&nbsp;>&nbsp;&nbsp;1.2.3사업성검토 검색</b></font></h5>	
+				<h5><b>1.사업성검토 관리&nbsp;>&nbsp;&nbsp;1.2사업성검토예산 관리&nbsp;>&nbsp;&nbsp;1.2.3사업성검토 검색</b></h5>	
 			</div>
 		</div>
 	</div>
@@ -132,183 +219,219 @@
 			<button class="btn btn-default" type="button">수정</button>
 			<button class="btn btn-default" type="button">삭제</button>
 			<button class="btn btn-default" type="button">저장</button>
-			<button class="btn btn-default" type="button">출력</button>
+			<button class="btn btn-default" type="button" id="outPut" >출력</button>
+		
 		</div>
 	</div>
 	<div class="x_panel" style="color:black;">
-	<h4>검색 조건</h4>
-	<table class="table" border = "1">
-		<tr>
-			<td colspan="3">
+		<h4>검색 조건</h4>
+		<table class="table" border = "1">
+			<tr>
+				<td colspan="3">
 				⊙ 부　서 :
-				<select id="DEPT_NM">
-					<option value="">전　　　사</option>
-					<th:block th:each="d : ${searchDept}">
-						<option>[[${d.DEPT_NM}]]</option>
-					</th:block>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>
-			⊙ 코드명 :
+					<select id="DEPT_NM">
+						<option value="">전　　　사</option>
+						<th:block th:each="d : ${selectDept}">
+							<option>[[${d.DEPT_NM}]]</option>
+						</th:block>
+					</select>
+				</td>
+			</tr>
+			<tr>					<!-- 프로젝트코드,명 조회 -->
+				<td>
+					⊙ 코드명 :
 					<input type="text" name="test" id="pjCode" size="10">
-						<button type="button" data-toggle="modal" data-target=".bs-example-modal-lg1"><i class="fa fa-search"></i></button>
+					<button type="button" data-toggle="modal" data-target=".bs-example-modal-lg1"><i class="fa fa-search"></i></button>
 					<input type="text" name="test" id="pjName" size="40">
+				<!-- 프로젝트코드 조회내부 -->
 					<div class="modal fade bs-example-modal-lg1" tabindex="-1" role="dialog" aria-hidden="true">
 						<div class="modal-dialog modal-lg">
 							<div class="modal-content">
 								<form class="form-horizontal">
 									<div class="modal-header">
-										<button type="button" class="close" data-dismiss="modal" id="accountModal"><span aria-hidden="true">×</span>
-										</button>
+										<button type="button" class="close" data-dismiss="modal" id="accountModal"><span aria-hidden="true">×</span></button>
 										<h4 class="modal-title" id="myModalLabel"><b>프로젝트코드조회</b></h4><br>
-										<!-- <div class="table-responsive"> -->
-											<table class="table table-bordered">
-												<tbody>
-													<tr>
-														<td><label class="control-label">검색항목</label></td>
-														<td>
-															<select class="form-control" style="width: 40%" id="businessSelect">
-																<option>프로젝트코드</option>
-																<option>프로젝트명</option>
-															</select>
-														</td>
-													</tr>
-													<tr>
-														<td><label class="control-label">검색조건</label></td>
-														<td>
-															<input type="text" id="PJT_CD">
-															<button id="btnBusinessSearch" type="button"><i class="fa fa-search"></i></button>																	
-														</td>
-													</tr>
-												</tbody>																	
-											</table>
-										<!-- </div> -->
-									</div>
-									<div class="modal-body">
-										<div class="table-responsive" style="overflow: auto; height: 400px;">
-										<table class="table table-striped table-bordered table-hover jambo_table">
-											<thead>
+										<table class="table table-bordered">
+											<tbody>
 												<tr>
-													<th>코드</th>
-													<th>프로젝트명</th>
-												</tr>
-											</thead>
-											<tbody id="businessList">
-												<tr>
-													<td></td>
-													<td></td>
+													<td>
+														<label class="control-label">검색항목</label>
+													</td>
+													<td>
+														<select class="form-control" style="width: 40%" id="businessSelect">
+															<option>프로젝트코드</option>
+															<option>프로젝트명</option>
+													</select>
+													</td>
 												</tr>
 												<tr>
-													<td></td>
-													<td></td>
-												</tr>
-												<tr>
-													<td></td>
-													<td></td>
-												</tr>
-												<tr>
-													<td></td>
-													<td></td>
+													<td>
+														<label class="control-label">검색조건</label>
+													</td>
+													<td>
+													<input type="text" id="PJT_CD">
+													<button id="btnBusinessSearch" type="button"><i class="fa fa-search"></i></button>																	
+													</td>
 												</tr>
 											</tbody>																	
 										</table>
+									</div>
+									<div class="modal-body">
+										<div class="table-responsive" style="overflow: auto; height: 400px;">
+											<table class="table table-striped table-bordered table-hover jambo_table">
+												<thead>
+													<tr>
+														<th>
+															코드
+														</th>
+														<th>
+															프로젝트명
+														</th>
+													</tr>
+												</thead>
+												<tbody id="businessList">
+													
+												</tbody>																	
+											</table>
 										</div>
 									</div>
 								</form>
 							</div>
 						</div>
 					</div>
-			</td>
-			<td>
-			⊙ 수주구분　:
-					<select>
+				</td>
+				<td>
+					⊙ 수주구분　:
+					<select id="suju" ><!-- class="demo" multiple="multiple" -->
 						<option value=""></option>
-						<option value="1">발주의뢰</option>
-						<option value="2">저가심의</option>
-						<option value="3">적격심사</option>
-						<option value="1">현상설계</option>
-						<option value="2">지명현상</option>
-						<option value="3">TK</option>
-						<option value="3">기술제안</option>
+					<th:block th:each = "S : ${selectSuju}">
+						<option th:value="${S.LEVEL2_CD}">[[${S.LEVEL2_NM}]]</option>
+					</th:block>			
 					</select>
-			</td>
-			<td>		
-			⊙ 종료구분　　:
-				<select>
-					<option value=""></option>
-					<option value="1">진행</option>
-					<option value="2">무산</option>
-					<option value="3">계약</option>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td>
+				</td>
+				<td>		
+					⊙ 종료구분　　:
+					<select id="END_GBN_NM">
+						<option value=""></option>
+						<option value="2">진행</option>
+						<option value="4">무산</option>
+						<option value="5">계약</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
 				⊙ 지　번 :	
-				<input type="text" name="" size="60">
-			</td>
-			<td>
-			⊙ 건축물용도 :
-				<select>
-					<option value=""></option>
-					<option value="1">단독주택</option>
-					<option value="2">공동주택</option>
-					<option value="3">제1종 근린생황시설</option>
-					<option value="4">제2종 근린생황시설</option>
-					<option value="5">문화 및 잡화시설</option>
-					<option value="6">판매시설</option>
-					<option value="7">잡화시설</option>
-				</select>
-			</td>
-			<td>
-			⊙ 추정계약금액 :
-				<input type="text" name="test">
-				<input type="text" name="test">
-			</td>
-		</tr>
-		<tr>
-			<td>
+					<input type="text" name="" size="60" id="ADDR">
+				</td>
+				<td>
+				⊙ 건축물용도 :
+					<select id="selectGun">
+						<option value =""></option>
+						<th:block th:each="G : ${selectGun}">
+						<option th:value="${G.LEVEL2_CD}">[[${G.LEVEL2_NM}]]</option>
+						</th:block>
+					</select>
+				</td>
+				<td>
+				⊙ 추정계약금액 :
+					<input type="text" name="test" id="FORECAST_AMT" >
+					<input type="text" name="test" id="FORECAST_AMT2" >
+				</td>
+			</tr>
+			<tr>			<!-- 발주처 검색 -->
+				<td>
 				⊙ 발주처 :
-				<input type="text" name="test" size="10">
-				<button type="button" data-toggle="modal" data-target=".bs-example-modal-lg1"><i class="fa fa-search"></i></button>
-				<input type="text" name="test" size="40">
-			</td>
-			<td>
-			⊙ 발주처구분 :
-				<select>
-					<option value=""></option>
-					<option value="1">건설사</option>
-					<option value="2">시행사</option>
-					<option value="3">공사/공단</option>
-					<option value="3">정부기관</option>
-					<option value="1">건축설계사무소</option>
-					<option value="2">외주협력업체</option>
-					<option value="3">조합(재개발,재건축)</option>
-				</select>
-			</td>
-			<td>
-			⊙ 업무범위/수준 :
-				<select>
-					<option value=""></option>
-					<option value="1">A1</option>
-					<option value="2">A2</option>
-					<option value="3">A3</option>
-					<option value="2">A4</option>
-					<option value="3">A5</option>
-				</select>
-			</td>
-		</tr>
-	</table>
+					<input type="text" name="test" size="10" id="custCd">
+					<button type="button" data-toggle="modal" data-target=".bs-example-modal-lg2"><i class="fa fa-search"></i></button>
+					<input type="text" name="test" size="40" id="custNM">
+						<!-- 발주처 리스트 내부조회 -->
+					<div class="modal fade bs-example-modal-lg2" tabindex="-1" role="dialog" aria-hidden="true">
+						<div class="modal-dialog modal-lg">
+							<div class="modal-content">
+								<form class="form-horizontal">
+									<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal" id="accountModal2"><span aria-hidden="true">×</span></button>
+									<h4 class="modal-title" id="myModalLabel"><b>거래처코드조회</b></h4><br>
+										<table class="table table-bordered">
+											<tbody>
+												<tr>
+													<td>
+														<label class="control-label">검색항목</label>
+													</td>
+													<td>
+														<select class="form-control" style="width: 40%" id="businessSelectCust">
+														<option>거래처코드</option>
+														<option>거래처명</option>
+														</select>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<label class="control-label">검색조건</label>
+													</td>
+													<td>
+														<input type="text" id="CUST_CD">
+														<button id="btnBusinessSearchCust" type="button"><i class="fa fa-search"></i></button>																	
+													</td>
+												</tr>
+											</tbody>																	
+										</table>
+									</div>
+									<div class="modal-body">
+										<div class="table-responsive" style="overflow: auto; height: 400px;">
+											<table class="table table-striped table-bordered table-hover jambo_table">
+												<thead>
+													<tr>
+														<th>
+															거래처코드
+														</th>
+														<th>
+															거래처명
+														</th>
+													</tr>
+												</thead>
+											<tbody id="businessCustList">
+											</tbody>																	
+											</table>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</td>
+				<td>
+				⊙ 발주처구분 :
+					<select id="selectGubun">
+						<option value=""></option>
+						<th:block th:each="B : ${selectGubun}">
+						<option th:value="${B.LEVEL2_CD}">[[${B.LEVEL2_NM}]]</option>
+						</th:block>
+					</select>
+				</td>
+				<td>
+				⊙ 업무범위/수준 :
+					<select id="CLASS_GBN">
+						<option value=""></option>
+						<option value="11">A</option>
+						<option value="12">B</option>
+						<option value="13">C</option>
+						<option value="14">D</option>
+						<option value="15">X</option>
+					</select>
+				</td>
+			</tr>
+		</table>
 	</div>
 	<div class="x_panel"  style="color:black;">
 		<div class="x_content">
 			<div class="table-responsive">
-				<div style="overflow:scroll; width:2600px; height:600px; padding:10px; background-color:;">
-				<table class="table table-striped jambo_table bulk_action" border="1">
-					<thead>
-						<tr class="headings" >
+					<div style="overflow:scroll; width:2600px; height:600px; padding:10px; background-color:;">
+					
+					<table class="table table-striped jambo_table bulk_action" border="1" id="dataTable">
+						<thead>
+							<tr class="headings" >
 							<td class="column-title" style="width:50px;">NO</td>
 							<td class="column-title" style="width:300px;">프로젝트명</td>
 							<td class="column-title" style="width:50px;">당선</td>
@@ -333,18 +456,19 @@
 							<td class="column-title" style="width:100px;">건축물용도</td>
 							<td class="column-title" style="width:100px;">납품성과물</td>
 							<td class="column-title" style="width:100px;">결정서입력자</td>
-						</tr>
-					</thead>
-					<tbody id="list">
-					</tbody>
-				</table>
+							</tr>
+						</thead>
+						<tbody id="list">
+						</tbody>
+					</table>
+					
 				</div>
-				<!-- 결과 리스트 끝 -->
 			</div>
 		</div>
 	</div>
 </th:block>
 <th:block layout:fragment="customJquery">
 	<th:block th:include="layout/customJquery"></th:block>
+	<script src="/build/js/fSelect.js"></script>
 </th:block>
 </html>

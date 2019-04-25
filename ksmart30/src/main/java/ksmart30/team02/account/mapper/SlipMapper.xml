@@ -8,7 +8,8 @@
 	   @brief    전표입력 XML
 	   @author  ksmart30 박찬업
 	-->
-	<!-- 8.1.전표입력.전표리스트 조회
+	
+	<!-- 8.1.전표입력-전표리스트 조회
 	  @param  ksmart30.team02.account.domain.SlipDetailDomain 
 	  @brief    전표리스트 SELECT 쿼리문
 	  @return  ksmart30.team02.account.domain.SlipDetailDomain
@@ -63,7 +64,8 @@
 			SLIP_NO=#{SLIP_NO}
 		ORDER BY SLIP_SEQ				
 	</select>
-	<!-- 8.1.전표입력.전표상세내역 조회
+	
+	<!-- 8.1.전표입력-관리항목 조회
 	  @param  ksmart30.team02.account.domain.SlipDetailDomain 
 	  @brief    관리항목 SELECT 쿼리문
 	  @return  ksmart30.team02.account.domain.SlipDetailDomain
@@ -119,7 +121,7 @@
 			SLIP_NO=#{SLIP_NO}		
 	</select>
 	
-	<!-- 8.1.전표입력.전표헤더 조회
+	<!-- 8.1.전표입력-기본내역 조회
 	  @param  ksmart30.team02.account.domain.SlipDetailDomain 
 	  @brief    전표헤더 SELECT 쿼리문
 	  @return  ksmart30.team02.account.domain.SlipHeaderDomain
@@ -142,8 +144,9 @@
 		AND
 			SLIP_NO=#{SLIP_NO}		
 	</select>
-	<!-- 8.1.전표입력.전표번호 조회
-	  @param  ksmart30.team02.account.domain.SlipDetailDomain 
+	
+	<!-- 8.1.전표입력-전표번호 조회
+	  @param  ksmart30.team02.account.domain.SlipHeaderDomain 
 	  @brief    전표번호 SELECT 쿼리문
 	  @return  ksmart30.team02.account.domain.SlipHeaderDomain
 	-->

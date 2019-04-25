@@ -26,25 +26,25 @@ public class AccountCodeController {
 	@Autowired
 	AccountCodeService accountCodeService;
 	
-	// 10.2.5.계정과목코드.계정과목리스트 조회
+	// 10.2.5.계정과목코드-view
 	/* @param  Model model 	    
-	 * @brief  AccountCodeService내 AccountCodeList메서드 호출
+	 * @brief  AccountCodeService내 accountCodeList, controlItemCodeList, assetCodeList, costTypeList메서드 호출
 	 * 	       "http://localhost/baseInfo/accountCodeView" 주소분기(get방식)
-	 *          template폴더에 있는 accountcode_in forward
+	 *          template폴더에 있는 accountcodeView.html forward
 	 * 	                같은표현: @RequestMapping(value="/baseInfo/accountCodeView", method = RequestMethod.GET)
-	 * @return  String(/baseinfo/accountcode/accountcode_in)
+	 * @return  String(baseinfo/accountcodeView)
 	 */
 	@GetMapping("/baseInfo/accountCodeView")
 	public String accountCodeView(Model model){		
 		  Map<String, Object> map = new HashMap<String, Object>();
 		  System.out.println("01 accountCodeView 단위테스트");
-		  List<AccountCodeDomain> list = accountCodeService.getAccountCodeList(); 
+		  List<AccountCodeDomain> list = accountCodeService.accountCodeList(); 
 		  AccountCodeDomain firstList = list.get(0);
-		  List<ControlItemCodeDomain> controlItemCodeList = accountCodeService.getControlItemCodeList();
+		  List<ControlItemCodeDomain> controlItemCodeList = accountCodeService.controlItemCodeList();
 		  System.out.println("Returnlist1 : " + list);
 		  System.out.println("ReturncontrolItemCodeList : " + controlItemCodeList);
-		  List<TotalCode> assetCodeList = accountCodeService.assetCodeSearchProcess();
-		  List<TotalCode> costTypeList = accountCodeService.costTypeSearchProcess();
+		  List<TotalCode> assetCodeList = accountCodeService.assetCodeList();
+		  List<TotalCode> costTypeList = accountCodeService.costTypeList();
 		  map.put("list1", list);
 		  System.out.println("map : " + map.get("list1"));
 		  map.put("firstList", firstList);
@@ -52,10 +52,10 @@ public class AccountCodeController {
 		  map.put("costTypeList", costTypeList);
 		  map.put("controlItemCodeList", controlItemCodeList);
 		  model.addAttribute("map", map);
-		  return "/baseInfo/accountCodeView";
+		  return "baseInfo/accountCodeView";
 	}
 	
-	// 10.2.5.계정과목코드.조회버튼클릭시 조회
+	// 10.2.5.계정과목코드-조회버튼클릭시 조회
 		/* @param  Model model 	    
 		 * @brief  AccountCodeService내 accountCodeSearchProcess메서드 호출
 		 * 	       "http://localhost/baseInfo/accountCodeSearchProcess" 주소분기(get방식)

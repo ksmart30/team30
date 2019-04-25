@@ -31,7 +31,6 @@
 			$(document).ready(()=>{
 <!---------------------------------------------------------조회버튼 클릭시 전표리스트 & 기본내역 & 상세내역 & 관리항목---------------------------------------------------------->				
 				$('#search').click(()=>{	
-					$('#')
 					if($('#slipDate').val() == ''){
 						alert('전표일자를 입력하세요');
 					} else if($('#slipNo').val() == ''){
@@ -460,7 +459,7 @@
 									<tr>
 										<td><label class="control-label">전표일자</label></td>
 										<td>
-											<input type="date" id="slipDateModal">
+											<input type="date" id="slipDateModal"><span id="hong"></span>
 											<button id="btnSlipNoSearch" type="button"><i class="fa fa-search"></i></button>																	
 										</td>
 									</tr>

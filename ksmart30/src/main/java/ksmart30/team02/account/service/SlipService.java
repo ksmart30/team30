@@ -1,6 +1,6 @@
 /* 8.1.전표입력
  * @file      SlipService.java
- * @brief    전표입력 서비스 로직
+ * @brief    전표입력 서비스 계층
  * @author  ksmart30 박찬업
  */
 package ksmart30.team02.account.service;
@@ -20,9 +20,10 @@ import ksmart30.team02.account.mapper.SlipMapper;
 public class SlipService {
 @Autowired
 SlipMapper slipMapper;
-	//8.1.전표입력.전표조회
+	
+	//8.1.전표입력-전표조회
 	/* @param  SlipDetailDomain slipDetailDomain
-	 * @brief   SlipMapper객체 내 slipList메서드 호출, slip_DATE 데이터 '-' 제거 및 추가 작업 	   		 	  
+	 * @brief   SlipMapper객체 내 getSlipInfo메서드 호출, slip_DATE 데이터 '-' 제거 및 추가 작업 	   		 	  
 	 * @return  Map<String, Object> map
 	 */
 	public Map<String, Object> slipSearchProcess(SlipDetailDomain slipDetailDomain){
@@ -79,11 +80,11 @@ SlipMapper slipMapper;
 		System.out.println("slip : " + slip);
 		return map;
 	}
-	//8.1.전표입력.관리항목 조회
-		/* @param  SlipDetailDomain slipDetailDomain
-		 * @brief   SlipMapper객체 내 getControlItemInfo메서드 호출, slip_DATE 데이터 '-' 제거 	   		 	  
-		 * @return  SlipDetailDomain list
-		 */
+	//8.1.전표입력-관리항목 조회
+	/* @param  SlipDetailDomain slipDetailDomain
+	 * @brief   SlipMapper객체 내 getControlItemInfo메서드 호출, slip_DATE 데이터 '-' 제거 	   		 	  
+	 * @return  SlipDetailDomain list
+	 */
 	public SlipDetailDomain controlItemSearchProcess(SlipDetailDomain slipDetailDomain){	
 		System.out.println("02 controlItemSearchProcess 단위테스트");
 		String slip_DATE = slipDetailDomain.getSLIP_DATE();		
@@ -101,11 +102,12 @@ SlipMapper slipMapper;
 		System.out.println("list : " + list);
 		return list;
 	}
-	//8.1.전표입력.전표번호 조회
-			/* @param  SlipHeaderDomain slipHeaderDomain
-			 * @brief   SlipMapper객체 내 getSlipNoInfo메서드 호출, slip_DATE 데이터 '-' 제거 	   		 	  
-			 * @return  SlipHeaderDomain list
-			 */
+	
+	//8.1.전표입력-전표번호 조회
+	/* @param  SlipHeaderDomain slipHeaderDomain
+	 * @brief   SlipMapper객체 내 getSlipNoInfo메서드 호출, slip_DATE 데이터 '-' 제거, 숫자 값 문자 값으로 변환	   		 	  
+	 * @return  List<SlipHeaderDomain> list
+	 */
 	public List<SlipHeaderDomain> slipNoSearchProcess(SlipHeaderDomain slipHeaderDomain) {
 		System.out.println("02 slipNoSearchProcess 단위테스트");
 		String slip_DATE = slipHeaderDomain.getSLIP_DATE();		

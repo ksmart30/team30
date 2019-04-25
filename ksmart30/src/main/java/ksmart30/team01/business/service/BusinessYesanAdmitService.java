@@ -20,4 +20,24 @@ public class BusinessYesanAdmitService {
 		
 		return businessYesanAdmitMapper.getDeptList();
 	}
+
+	public List<Map<String, String>> getProjectList(Map<String, Object> searchMap) {
+		
+		return businessYesanAdmitMapper.getProjectList(searchMap);
+	}
+
+	public List<Map<String, String>> getResultProjectList(Map<String, Object> searchMap) {
+		
+		return businessYesanAdmitMapper.getResultProjectList(searchMap);
+	}
+
+	public List<Map<String, String>> getResultDeptList(Map<String, Object> searchMap) {
+		
+		return businessYesanAdmitMapper.getResultEmpList(searchMap);
+	}
+
+	public Map<String, Object> getResultProject(String PJT_CD) {
+		
+		return businessYesanAdmitMapper.getResultProject(PJT_CD);
+	}
 }

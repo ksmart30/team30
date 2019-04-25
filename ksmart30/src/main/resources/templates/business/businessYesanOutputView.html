@@ -8,11 +8,14 @@
 	<th:block th:include="layout/customHead"></th:block>
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script>
-		$(document).ready(()=>{
+		//엔터키방지!!
+		$(document).keypress((e)=>{
 			if(e.keyCode == 13){
 				r.preventDefault();
 			}
 		});
+		//엔터키방지끝
+		
 		//라디오버튼 클릭시 결과에맞는 값으로 리스트보기
 		$(document).ready(()=>{
 				$(':radio[name=radioSelect]').click(()=>{
@@ -20,7 +23,7 @@
 				const ACT_STAT = $(':radio[name=radioSelect]:checked').val();
 				const PRE_PJT_CD = $('#year').val();
 				const DEPT_NM = $('#DEPT_NM').val();
-				console.log('ACT_STAT~' + ACT_STAT);
+				console.log(ACT_STAT+' <--ACT_STAT~');
 				$.ajax({
 					url : '/businessYesanList2',
 					type : 'GET',
@@ -134,14 +137,12 @@
 	</script>
 </th:block>
 <th:block layout:fragment="customBody">
-
-	
 	<!-- 검색 폼 -->
 	<div class="col-md-9 col-xs-12" style="color:black;">
 		<div class="page-title">
 			<div class="title_left">
 				<h2><b>사업성검토 예산출력</b></h2>
-				<h5><fontcolor="gray"><b>1.사업성검토 관리&nbsp;>&nbsp;&nbsp;1.2사업성검토예산 관리&nbsp;>&nbsp;&nbsp;1.2.3사업성검토 예산출력</b></font></h5>	
+				<h5><b>1.사업성검토 관리&nbsp;>&nbsp;&nbsp;1.2사업성검토예산 관리&nbsp;>&nbsp;&nbsp;1.2.3사업성검토 예산출력</b></h5>	
 			</div>
 		</div>
 	</div>
@@ -152,7 +153,7 @@
 			<button class="btn btn-default" type="button">수정</button>
 			<button class="btn btn-default" type="button">삭제</button>
 			<button class="btn btn-default" type="button">저장</button>
-			<button class="btn btn-default" type="button">출력</button>
+			<button class="btn btn-default" type="button" id="outPut">출력</button>
 		</div>
 	</div>
 	<div class="col-md-12 col-xs-12" style="color:black;">
@@ -161,9 +162,7 @@
 				<div class="table-responsive">
 					⊙ 검색조건　　
 					⊙년도
-					<input type=text name=amount value=2019 id="year"> 
-					<input type=button value="↑" onClick="javascript:this.form.amount.value++;"> 
-					<input type=button value="↓" onClick="javascript:this.form.amount.value--;"> 
+					<input type="number" value="2019" id="year">
 					⊙ 부서 :
 					<select id="DEPT_NM">
 						<option value="">All</option>
@@ -216,22 +215,6 @@
 												</tr>
 											</thead>
 											<tbody id="businessList">
-												<tr>
-													<td></td>
-													<td></td>
-												</tr>
-												<tr>
-													<td></td>
-													<td></td>
-												</tr>
-												<tr>
-													<td></td>
-													<td></td>
-												</tr>
-												<tr>
-													<td></td>
-													<td></td>
-												</tr>
 											</tbody>																	
 										</table>
 										</div>
@@ -240,13 +223,11 @@
 							</div>
 						</div>
 					</div>
-					<!-- <div id="radioSelect" class="select">　 -->　　
 					<input type="radio" name="radioSelect" value="1">미승인　
 					<input type="radio" name="radioSelect" value="2">진행　
 					<input type="radio" name="radioSelect" value="4">무산　
 					<input type="radio" name="radioSelect" value="5">계약　
 					<input type="radio" name="radioSelect" value="">ALL　
-					<!-- </div> -->
 				</div>
 			</div>
 		</form>

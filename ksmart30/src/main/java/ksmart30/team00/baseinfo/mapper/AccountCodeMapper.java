@@ -16,33 +16,33 @@ import ksmart30.team00.baseinfo.domain.TotalCode;
 @Mapper
 public interface AccountCodeMapper {
 	
-	// 10.2.5.계정과목코드.계정과목리스트
-	/* @brief  selectAccountCodeList추상메서드 선언
-	 * @return  List<AccountCode>
+	// 10.2.5.계정과목코드-계정과목리스트조회
+	/* @brief  getAccountCodeList추상메서드 선언
+	 * @return  List<AccountCodeDomain>
 	 */
-	List<AccountCodeDomain> selectAccountCodeList();
+	List<AccountCodeDomain> getAccountCodeList();
 	
-	// 10.2.5.계정과목코드.관리항목조회
-	/* @brief  selectControlItemCodeList추상메서드 선언
-	 * @return  List<AccountCode>
+	// 10.2.5.계정과목코드-관리항목조회
+	/* @brief  getControlItemCodeList추상메서드 선언
+	 * @return  List<ControlItemCodeDomain>
 	 */
-	List<ControlItemCodeDomain> selectControlItemCodeList();
+	List<ControlItemCodeDomain> getControlItemCodeList();
 	
-	// 10.2.5.계정과목코드.계정코드조회
-	/* @brief  selectAccountCodeInfo추상메서드 선언
-	 * @return  List<AccountCode>
+	// 10.2.5.계정과목코드-계정코드조회
+	/* @brief  getAccountCodeInfo추상메서드 선언
+	 * @return  List<AccountCodeDomain>
 	 */
-	List<AccountCodeDomain> selectAccountCodeInfo(AccountCodeDomain accountCodeDomain);
+	List<AccountCodeDomain> getAccountCodeInfo(AccountCodeDomain accountCodeDomain);
 	
-	// 10.2.5.계정과목코드.자산코드조회
-	/* @brief  selectAccountCodeList추상메서드 선언
-	 * @return  List<AccountCode>
+	// 10.2.5.계정과목코드-자산코드조회
+	/* @brief  getAssetCodeInfo추상메서드 선언
+	 * @return  List<TotalCode>
 	 */	
-	List<TotalCode> selectAssetCodeInfo();
+	List<TotalCode> getAssetCodeInfo();
 	
-	// 10.2.5.계정과목코드.비용유형조회
-	/* @brief  selectCostTypeInfo추상메서드 선언
-	 * @return  List<AccountCode>
+	// 10.2.5.계정과목코드-비용유형조회
+	/* @brief  getCostTypeInfo추상메서드 선언
+	 * @return  List<TotalCode>
 	 */	
-	List<TotalCode> selectCostTypeInfo();
+	List<TotalCode> getCostTypeInfo();
 }

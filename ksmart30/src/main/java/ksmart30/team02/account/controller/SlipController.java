@@ -28,8 +28,9 @@ import ksmart30.team02.account.service.SlipService;
 public class SlipController {
 @Autowired
 SlipService slipService;
-	// 8.1.전표입력.화면출력
-	/*@brief    slipView.html 화면 출력
+	
+	// 8.1.전표입력-view
+	/*@brief    slipView.html 화면 출력, 날짜 데이터 모델영역에 세팅
 	* 	   "http://localhost/acc/slipView" 주소분기(get방식)
 	*             template폴더에 있는 slipView.html forward
 	* 	   같은표현: @RequestMapping(value="/acc/slipView", method = RequestMethod.GET)
@@ -45,7 +46,8 @@ SlipService slipService;
 		model.addAttribute("date", time);
 		return "/account/slipView";
 	}
-	// 8.1.전표입력.조회버튼 클릭시 전표조회
+	
+	// 8.1.전표입력-조회버튼 클릭시 전표조회
 	/* @param  SlipDetailDomain slipDetailDomain
 	 * @brief   조회버튼 클릭시 리스트 출력, SlipService객체 내 slipSearchProcess메서드 호출
 	 * 	   		"http://localhost/acc/slipSearchProcess" 주소분기(post방식)
@@ -59,13 +61,14 @@ SlipService slipService;
 		Map<String, Object> map =  slipService.slipSearchProcess(slipDetailDomain);
 		return map;
 	}
-	// 8.1.전표입력.전표리스트 클릭시 관리항목 조회
-		/* @param  SlipDetailDomain slipDetailDomain 
-		 * @brief   조회버튼 클릭시 리스트 출력, SlipService객체 내 slipSearchProcess메서드 호출
-		 * 	   		"http://localhost/acc/controlItemList" 주소분기(post방식)
-		 * 	   같은표현: @RequestMapping(value="/acc/slipSearchProcess", method = RequestMethod.POST)
-		 * @return  Map<String, Object> map
-		 */
+	
+	// 8.1.전표입력-전표리스트 클릭시 관리항목 조회
+	/* @param  SlipDetailDomain slipDetailDomain 
+	 * @brief   전표리스트 클릭시 리스트 출력, SlipService객체 내 controlItemSearchProcess메서드 호출
+	 * 	   		"http://localhost/acc/controlItemList" 주소분기(post방식)
+	 * 	   같은표현: @RequestMapping(value="/acc/controlItemList", method = RequestMethod.POST)
+	 * @return  SlipDetailDomain list
+	 */
 	@PostMapping("/acc/controlItemSearchProcess")
 	public @ResponseBody SlipDetailDomain controlItemSearchProcess(SlipDetailDomain slipDetailDomain) throws JsonProcessingException {
 		System.out.println("01 controlItemList 단위테스트");
@@ -74,6 +77,14 @@ SlipService slipService;
 		System.out.println("list : " + list);
 		return list;
 	}
+	
+	// 8.1.전표입력-전표번호 조회
+	/* @param  SlipHeaderDomain slipHeaderDomain 
+	 * @brief   전표리스트 클릭시 리스트 출력, SlipService객체 내 slipNoSearchProcess메서드 호출
+	 * 	   		"http://localhost/acc/slipNoSearch" 주소분기(post방식)
+	 * 	   같은표현: @RequestMapping(value="/acc/slipNoSearch", method = RequestMethod.POST)
+	 * @return  List<SlipHeaderDomain> list
+	 */
 	@PostMapping("/acc/slipNoSearch")
 	public @ResponseBody List<SlipHeaderDomain> slipNoSearchProcess(SlipHeaderDomain slipHeaderDomain) throws JsonProcessingException {
 		System.out.println("01 slipNoSearchProcess 단위테스트");

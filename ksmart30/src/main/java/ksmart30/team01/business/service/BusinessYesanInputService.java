@@ -1,5 +1,7 @@
 package ksmart30.team01.business.service;
 
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,5 +19,24 @@ public class BusinessYesanInputService {
 	
 	public List<Map<String,String>> getDeptList(){
 		return businessYesanInputMapper.getDeptList();
+	}
+	
+	public List<Map<String,String>> getProjectList(Map<String,Object> searchMap){
+		return businessYesanInputMapper.getProjectList(searchMap);
+	}
+	
+	public List<Map<String,String>> getResultProjectList(Map<String,Object> searchMap){
+		
+		return businessYesanInputMapper.getResultProjectList(searchMap);
+	}
+	
+	public List<Map<String,String>> getResultDeptList(Map<String,Object> searchMap){
+	
+		return businessYesanInputMapper.getResultEmpList(searchMap);
+	}
+	
+	public Map<String,Object> getResultProject (String PJT_CD){
+		
+		return businessYesanInputMapper.getResultProject(PJT_CD);
 	}
 }

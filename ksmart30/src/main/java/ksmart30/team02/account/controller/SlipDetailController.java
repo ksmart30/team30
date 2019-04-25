@@ -1,5 +1,6 @@
 package ksmart30.team02.account.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,6 +84,7 @@ public class SlipDetailController {
 	public @ResponseBody List<Map<String, Object>> slipSearchList(@RequestBody Map<String,Object> searchMap) throws JsonProcessingException{
 		System.out.println("slipSearchList 호출");
 		System.out.println(searchMap);
+		
 		return slipdetailservice.getSlipList(searchMap);
 	}
 }

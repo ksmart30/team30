@@ -9,4 +9,12 @@ import org.apache.ibatis.annotations.Mapper;
 public interface BusinessYesanInputMapper {
 
 	List<Map<String,String>> getDeptList();
+	
+	List<Map<String,String>> getProjectList(Map<String,Object> map);
+	
+	List<Map<String,String>> getResultProjectList(Map<String,Object> map);
+	
+	List<Map<String,String>> getResultEmpList(Map<String,Object> searchMap);
+	
+	Map<String,Object> getResultProject (String PJT_CD);
 }
