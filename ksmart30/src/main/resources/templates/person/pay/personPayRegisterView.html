@@ -1,246 +1,361 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorator="layout/main">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/main">
 <th:block layout:fragment="customHead">
 	<meta charset="UTF-8">
-	<title>급여대장리스트</title>
+	<title>급여 대장</title>
+
+	<!-- Jquery, Ajax 선언 -->
+	<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<script>
+	$(document).ready(function(){
+		// 1. 오늘날짜 넣기
+		let date = new Date();
+		let year = date.getFullYear();	//년도
+		let month = date.getMonth()+1;	//월
+		//let day = date.getDate();		//일
+		if((month+"").length<2) {
+			month = "0" + month;
+		}
+		/* if((day+"").length<2) {
+			day = "0" + day;
+		} */
+		let getToday = year+"-"+month;// +"-"+day;	// 오늘 날짜 (0000-00-00)
+
+		// 검색날짜에 대입
+		$('#SEARCH_DATE').val(getToday);
+
+		// 2. 검색 버튼 클릭시 (월간, 연간 가져오기)
+		$('#PAY_SEARCH').click(function() {
+			console.log("PAY_SEARCH 시작!");
+
+			let searchDate = $('#SEARCH_DATE').val();
+			let searchDeptNm = $('#DEPT_NM_SEARCH').val();
+			let searchKorNm = $('#KOR_NM_SEARCH').val();
+				// 1. 급여대장 월간
+				$.ajax({				
+					url:'/person/personPayRegisterMonthSearchProcess',
+					type:'GET',
+					data:{PAY_YYMM:searchDate,DEPT_NM:searchDeptNm,KOR_NM:searchKorNm},
+					success:(data)=>{
+						$('#personPayMonthList').empty();
+						// 결과값이 없다면
+						if(data.length == 0) {
+							$('#personPayMonthList').append('<tr><td colspan="19" style="text-align: center; background-color: bisque">검색결과가 없습니다.</td></tr>');
+						}
+						// 결과값이 있다면
+						$(data).each(function(index,item){
+							// 사원명과 부서명이 null이면 생략
+							if(item.kor_NM == null || item.dept_NM == null) {
+							// 구분 1인 경우 (급여)
+							}else if(item.pay_GB == '1'){		
+								$('#personPayMonthList').append('<tr><td></td><td style="text-align: center">'+item.emp_NO+'</td>'+
+								'<td style="text-align: center">'+item.dept_NM+'</td><td style="text-align: center">'+item.jikgup_NM+'</td>'+
+								'<td style="text-align: center">'+item.kor_NM+'</td><td style="text-align: center">급여</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.paytot)+'</td><td style="text-align: right">'+numberWithCommas(item.bikwat)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.kwaset)+'</td><td style="text-align: right">'+numberWithCommas(item.soduk_TAX)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.jumin_TAX)+'</td><td style="text-align: right">'+numberWithCommas(item.h_INSURE)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pension)+'</td><td style="text-align: right">'+numberWithCommas(item.e_INSURE)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.chagam)+'</td>'+
+								'<td style="text-align: center">'+item.pay_DT.substring(0,4)+'.'+item.pay_DT.substring(4,6)+'.'+item.pay_DT.substring(6,8)+'</td></tr>');
+							// 구분 2인 경우 (상여)	
+							}else if(item.pay_GB == '2'){		
+								$('#personPayMonthList').append('<tr><td></td><td style="text-align: center">'+item.emp_NO+'</td>'+
+								'<td style="text-align: center">'+item.dept_NM+'</td><td style="text-align: center">'+item.jikgup_NM+'</td>'+
+								'<td style="text-align: center">'+item.kor_NM+'</td><td style="text-align: center">상여</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.paytot)+'</td><td style="text-align: right">'+numberWithCommas(item.bikwat)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.kwaset)+'</td><td style="text-align: right">'+numberWithCommas(item.soduk_TAX)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.jumin_TAX)+'</td><td style="text-align: right">'+numberWithCommas(item.h_INSURE)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pension)+'</td><td style="text-align: right">'+numberWithCommas(item.e_INSURE)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.chagam)+'</td>'+
+								'<td style="text-align: center">'+item.pay_DT.substring(0,4)+'.'+item.pay_DT.substring(4,6)+'.'+item.pay_DT.substring(6,8)+'</td></tr>');
+							}		
+						});
+					}
+				});
+				// 2. 급여대장 연간
+				$.ajax({				
+					url:'/person/personPayRegisterYearSearchProcess',
+					type:'GET',
+					data:{PAY_YYMM:searchDate,DEPT_NM:searchDeptNm,KOR_NM:searchKorNm},
+					success:(data)=>{
+						$('#personPayYearList').empty();
+						// 결과값이 없다면
+						if(data.length == 0) {
+							$('#personPayYearList').append('<tr><td colspan="19" style="text-align: center; background-color: bisque">검색결과가 없습니다.</td></tr>');
+						}
+						// 결과값이 있다면
+						$(data).each(function(index,item){
+							// 합계 출력시
+							if(item.emp_NO == '99999999' && item.dept_CD != 'zzzzzzz') {
+								$('#personPayYearList').append('<tr style="background-color:gold"><td></td><td></td>'+
+								'<td style="text-align: center">'+item.dept_NM+'</td><td style="text-align: center">'+item.jikgup_NM+'</td><td style="text-align: center">'+item.kor_NM+'</td><td></td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_01)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_02)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_03)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_04)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_05)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_06)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_07)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_08)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_09)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_10)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_11)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_12)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_TOT)+'</td></tr>');	
+							}else if(item.emp_NO == '99999999' && item.dept_CD == 'zzzzzzz') {
+								$('#personPayYearList').append('<tr style="background-color:palegreen"><td></td><td></td>'+
+								'<td style="text-align: center">'+item.dept_NM+'</td><td style="text-align: center">'+item.jikgup_NM+'</td><td style="text-align: center">'+item.kor_NM+'</td><td></td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_01)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_02)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_03)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_04)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_05)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_06)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_07)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_08)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_09)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_10)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_11)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_12)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_TOT)+'</td></tr>');
+							}else {
+								$('#personPayYearList').append('<tr><td></td><td style="text-align: center">'+item.emp_NO+'</td>'+
+								'<td style="text-align: center">'+item.dept_NM+'</td><td style="text-align: center">'+item.jikgup_NM+'</td><td style="text-align: center">'+item.kor_NM+'</td><td style="text-align: center">급여</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_01)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_02)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_03)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_04)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_05)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_06)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_07)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_08)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_09)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_10)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_11)+'</td><td style="text-align: right">'+numberWithCommas(item.pay_12)+'</td>'+
+								'<td style="text-align: right">'+numberWithCommas(item.pay_TOT)+'</td></tr>');	
+							}								
+						});
+					}
+				});
+		});
+	});
+	/* 결과값 통화형식 변환 */
+	function numberWithCommas(x) {
+		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
+	</script>
 	<th:block th:include="layout/customHead"></th:block>
 </th:block>
 <th:block layout:fragment="customBody">
-	<h1>급여대장리스트TEST</h1>
-	<div class="">
-		<div class="page-title">
-			<div class="title_left">
-				<h3>
-					<font style="vertical-align: inherit;"><font
-						style="vertical-align: inherit;"></font></font><small><font
-						style="vertical-align: inherit;"><font
-							style="vertical-align: inherit;"></font></font></small>
-				</h3>
-			</div>
-			
-			<div class="title_right">
-				<div
-					class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
-					<div class="input-group">
-						<input type="text" class="form-control"
-							placeholder="Search for..."> <span
-							class="input-group-btn">
-							<button class="btn btn-default" type="button">
-								<font style="vertical-align: inherit;"><font
-									style="vertical-align: inherit;">검색</font></font>
-							</button>
-						</span>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="clearfix"></div>
-		
-		<div class="row">
-			<div class="col-md-12 col-sm-12 col-xs-12">
-				<div class="x_panel">
-					<div class="x_title">
-						<h2>
-							<font style="vertical-align: inherit;"><font
-								style="vertical-align: inherit;">급여 리스트 </font></font>
-						</h2>
-						<ul class="nav navbar-right panel_toolbox">
-							<li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-							</li>
-							<li class="dropdown"><a href="#" class="dropdown-toggle"
-								data-toggle="dropdown" role="button" aria-expanded="false"><i
-									class="fa fa-wrench"></i></a>
-								<ul class="dropdown-menu" role="menu">
-									<li><a href="#">Settings 1</a></li>
-									<li><a href="#">Settings 2</a></li>
-								</ul></li>
-							<li><a class="close-link"><i class="fa fa-close"></i></a></li>
-						</ul>
-						<div class="clearfix"></div>
-					</div>
-										
-					<div class="x_content">
-						<p class="text-muted font-13 m-b-30">
-							<font style="vertical-align: inherit;"></font>
-						</p>
-						<div id="datatable_wrapper"
-							class="dataTables_wrapper form-inline dt-bootstrap no-footer">
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="dataTables_length" id="datatable_length">
-										<label><font style="vertical-align: inherit;"><font
-												style="vertical-align: inherit;"> </font></font><select
-											name="datatable_length" aria-controls="datatable"
-											class="form-control input-sm"><option value="10"><font
-														style="vertical-align: inherit;"><font
-														style="vertical-align: inherit;">10</font></font></option>
-												<option value="25"><font
-														style="vertical-align: inherit;"><font
-														style="vertical-align: inherit;">25</font></font></option>
-												<option value="50"><font
-														style="vertical-align: inherit;"><font
-														style="vertical-align: inherit;">50</font></font></option>
-												<option value="100"><font
-														style="vertical-align: inherit;"><font
-														style="vertical-align: inherit;">100</font></font></option></select><font
-											style="vertical-align: inherit;"><font
-												style="vertical-align: inherit;"></font></font></label>
-									</div>
-								</div>
-								<div class="col-sm-6">
-									<div id="datatable_filter" class="dataTables_filter">
-										<label><font style="vertical-align: inherit;"><font
-												style="vertical-align: inherit;">검색:</font></font><input
-											type="search" class="form-control input-sm" placeholder=""
-											aria-controls="datatable"></label>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-sm-12">
-									<table id="datatable"
-										class="table table-striped table-bordered dataTable no-footer"
-										role="grid" aria-describedby="datatable_info">
-										<thead>
-											<tr role="row">
-												<th class="sorting_asc" tabindex="0"
-													aria-controls="datatable" rowspan="1" colspan="1"
-													aria-sort="ascending"
-													aria-label="Name: activate to sort column descending"
-													style="width: 75px;"><font
-													style="vertical-align: inherit;">신고귀속</font></th>
-												<th class="sorting" tabindex="0" aria-controls="datatable"
-													rowspan="1" colspan="1"
-													aria-label="Position: activate to sort column ascending"
-													style="width: 55px;"><font
-													style="vertical-align: inherit;">구분</font></th>
-												<th class="sorting" tabindex="0" aria-controls="datatable"
-													rowspan="1" colspan="1"
-													aria-label="Office: activate to sort column ascending"
-													style="width: 61px;"><font
-													style="vertical-align: inherit;">대장명칭</font></th>
-												<th class="sorting" tabindex="0" aria-controls="datatable"
-													rowspan="1" colspan="1"
-													aria-label="Age: activate to sort column ascending"
-													style="width: 45px;"><font
-													style="vertical-align: inherit;">지급일</font></th>
-												<th class="sorting" tabindex="0" aria-controls="datatable"
-													rowspan="1" colspan="1"
-													aria-label="Start date: activate to sort column ascending"
-													style="width: 58px;"><font
-													style="vertical-align: inherit;">지급연월</font></th>
-												<th class="sorting" tabindex="0" aria-controls="datatable"
-													rowspan="1" colspan="1"
-													aria-label="Salary: activate to sort column ascending"
-													style="width: 44px;"><font
-													style="vertical-align: inherit;">사전작업</font></th>
-												<th class="sorting" tabindex="0" aria-controls="datatable"
-													rowspan="1" colspan="1"
-													aria-label="Salary: activate to sort column ascending"
-													style="width: 70px;"><font
-													style="vertical-align: inherit;">급여계산(인원)</font></th>
-												<th class="sorting" tabindex="0" aria-controls="datatable"
-													rowspan="1" colspan="1"
-													aria-label="Salary: activate to sort column ascending"
-													style="width: 44px;"><font
-													style="vertical-align: inherit;">급여대장</font></th>
-												<th class="sorting" tabindex="0" aria-controls="datatable"
-													rowspan="1" colspan="1"
-													aria-label="Salary: activate to sort column ascending"
-													style="width: 44px;"><font
-													style="vertical-align: inherit;">기타</font></th>
-												<th class="sorting" tabindex="0" aria-controls="datatable"
-													rowspan="1" colspan="1"
-													aria-label="Salary: activate to sort column ascending"
-													style="width: 44px;"><font
-													style="vertical-align: inherit;">지급총액</font></th>		
-											</tr>
-										</thead>
-										<tbody>
-											<tr role="row" class="odd">
-												<td class=""><font style="vertical-align: inherit;">2019/05/1</font></td>
-														
-												<td class=""><font style="vertical-align: inherit;">급여</font></td>
-														
-												<td class=""><font style="vertical-align: inherit;">2019년 5월 급여</font></td>
-														
-												<td class=""><font style="vertical-align: inherit;">2019/03/21</font></td>
-														
-												<td class=""><font style="vertical-align: inherit;">2020/01</font></td>
-														
-												<td class=""><font style="vertical-align: inherit;">근무기록확정</font></td>
-												
-												<td class=""><font style="vertical-align: inherit;">전체계산 개인별계산 수정</font></td>
-												
-												<td class=""><font style="vertical-align: inherit;">조회 명세서 확정 삭제</font></td>
-												
-												<td class=""><font style="vertical-align: inherit;">기타</font></td>
-												
-												<td class=""><font style="vertical-align: inherit;">11,400,000</font></td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-							<!-- 페이징 글자설명 -->
-							<!-- <div class="row">
-					<div class="col-sm-5">
-						<div class="dataTables_info" id="datatable_info" role="status"
-							aria-live="polite">
-							<font style="vertical-align: inherit;"><font
-								style="vertical-align: inherit;">1 ~ 10 항목 중 57 항목 표시</font></font>
-						</div>
-					</div> -->
-							<!-- 페이징 -->
-							<!-- <div class="col-sm-7">
-								<div class="dataTables_paginate paging_simple_numbers"
-									id="datatable_paginate">
-									<ul class="pagination">
-										<li class="paginate_button previous disabled"
-											id="datatable_previous"><a href="#"
-											aria-controls="datatable" data-dt-idx="0" tabindex="0"><font
-												style="vertical-align: inherit;"><font
-													style="vertical-align: inherit;">이전</font></font></a></li>
-										<li class="paginate_button active"><a href="#"
-											aria-controls="datatable" data-dt-idx="1" tabindex="0"><font
-												style="vertical-align: inherit;"><font
-													style="vertical-align: inherit;">1</font></font></a></li>
-										<li class="paginate_button "><a href="#"
-											aria-controls="datatable" data-dt-idx="2" tabindex="0"><font
-												style="vertical-align: inherit;"><font
-													style="vertical-align: inherit;">2</font></font></a></li>
-										<li class="paginate_button "><a href="#"
-											aria-controls="datatable" data-dt-idx="3" tabindex="0"><font
-												style="vertical-align: inherit;"><font
-													style="vertical-align: inherit;">3</font></font></a></li>
-										<li class="paginate_button "><a href="#"
-											aria-controls="datatable" data-dt-idx="4" tabindex="0"><font
-												style="vertical-align: inherit;"><font
-													style="vertical-align: inherit;">4</font></font></a></li>
-										<li class="paginate_button "><a href="#"
-											aria-controls="datatable" data-dt-idx="5" tabindex="0"><font
-												style="vertical-align: inherit;"><font
-													style="vertical-align: inherit;">5</font></font></a></li>
-										<li class="paginate_button "><a href="#"
-											aria-controls="datatable" data-dt-idx="6" tabindex="0"><font
-												style="vertical-align: inherit;"><font
-													style="vertical-align: inherit;">6</font></font></a></li>
-										<li class="paginate_button next" id="datatable_next"><a
-											href="#" aria-controls="datatable" data-dt-idx="7"
-											tabindex="0"><font style="vertical-align: inherit;"><font
-													style="vertical-align: inherit;">다음</font></font></a></li>
-									</ul>
-								</div>
-							</div> -->
-						</div>
-					</div>
+	<div class="page-title">
+		<div class="col-md-12 col-xs-12">
+			<div class="page-title">
+				<div class="title_left">
+					<h2><b style="color:black;">급여 대장</b></h2>
+					<h5><fontcolor="gray"><b>6.인사 / 급여 &nbsp;>&nbsp;&nbsp;6.4 급여관리 &nbsp;>&nbsp;&nbsp;6.4.2 급여 대장</b></h5>
 				</div>
 			</div>
 		</div>
 	</div>
+	<div class="x_content" style="text-align: right">
+		<div class="btn-group" >
+			<button class="btn btn-default" id ="btnWrite" type="button" disabled="disabled">입력</button>
+			<button class="btn btn-default" type="button" disabled="disabled">수정</button>
+			<button class="btn btn-default" type="button" disabled="disabled">삭제</button>
+			<button class="btn btn-default" type="button">출력</button>
+		</div>
+	</div>
+	<div class="col-md-12 col-sm-6 col-xs-12 table-responsive" style="color:black;">
+		<div class="x_panel" style="color:black;">
+			<div class="x_title">
+				<form>
+					<h5>⊙ 검색 조건</h5>
+						<div class="col-md-12 col-sm-12 col-xs-12">
+						• 지급년도 &nbsp;&nbsp;
+							<input type="month" name="SEARCH_DATE" id="SEARCH_DATE" style="width: 12%" max="2999-12">
+							&nbsp;&nbsp;&nbsp;
+						• 부서명 &nbsp;&nbsp;
+							<input type="text" name="DEPT_NM_SEARCH" id="DEPT_NM_SEARCH">
+							&nbsp;&nbsp;&nbsp;
+						• 사원명 &nbsp;&nbsp;
+							<input type="text" name="KOR_NM_SEARCH" id="KOR_NM_SEARCH">
+							&nbsp;&nbsp;&nbsp;
+							<button type="button" class="btn" style="color:black" id="PAY_SEARCH">검색</button>
+						</div>
+				</form>
+			</div>
+		</div>
+		<div class="x_panel">
+			<div class="x_content">
+				<h5>⊙ 월간 급여내역</h5>
+				<div class="table-responsive" style="overflow: scroll; width: 100%; height: 450px; padding: 10px; background-color: white; color:black;">
+					<table class="table table-bordered jambo_table bulk_action">
+						<thead>
+							<tr class="headings">
+								<th></th>
+								<th style="text-align: center" class="column-title">사원번호</th>
+								<th style="text-align: center" class="column-title">부서</th>
+								<th style="text-align: center" class="column-title">직급</th>
+								<th style="text-align: center" class="column-title">성명</th>
+								<th style="text-align: center" class="column-title">급여구분</th>
+								<th style="text-align: center" class="column-title">급여총액</th>
+								<th style="text-align: center" class="column-title">비과세급여</th>
+								<th style="text-align: center" class="column-title">과세급여</th>
+								<th style="text-align: center" class="column-title">소득세</th>
+								<th style="text-align: center" class="column-title">주민세</th>
+								<th style="text-align: center" class="column-title">건강보험</th>
+								<th style="text-align: center" class="column-title">국민보험</th>
+								<th style="text-align: center" class="column-title">고용보험</th>               
+								<th style="text-align: center" class="column-title">차감지급액</th>
+								<th style="text-align: center" class="column-title">지급일자</th>
+							</tr>
+						</thead>
+						<tbody id="personPayMonthList">
+							<tr>
+								<td colspan="17" style="text-align: center; background-color: lemonchiffon">검색해주세요.</td>
+							</tr>
+						</tbody>
+						<!-- 
+						model을 통해 초기 리스트를 뿌려줄때 (월간)
+						<tbody id="personPayMonthList">
+							<tr th:each="personPayMonthList : ${personPayMonthList}">
+								<td></td>
+								<td style="text-align: center" th:text="${personPayMonthList.EMP_NO}"></td>		
+								<td style="text-align: center" th:text="${personPayMonthList.DEPT_NM}"></td>	
+								<td style="text-align: center" th:text="${personPayMonthList.JIKGUP_NM}"></td>	
+								<td style="text-align: center" th:text="${personPayMonthList.KOR_NM}"></td>		
+								<td style="text-align: center" th:if="${personPayMonthList.PAY_GB == '1'}">급여</td><!-- 급여구분 (1일때) 
+								<td style="text-align: center" th:unless="${personPayMonthList.PAY_GB == '1'}">상여</td><!-- 급여구분 (1이 아닐때)
+								<td style="text-align: right" th:text="${personPayMonthList.PAYTOT}"></td>
+								<td style="text-align: right" th:text="${personPayMonthList.BIKWAT}"></td>	
+								<td style="text-align: right" th:text="${personPayMonthList.KWASET}"></td>	
+								<td style="text-align: right" th:text="${personPayMonthList.SODUK_TAX}"></td>	
+								<td style="text-align: right" th:text="${personPayMonthList.JUMIN_TAX}"></td>
+								<td style="text-align: right" th:text="${personPayMonthList.H_INSURE}"></td>
+								<td style="text-align: right" th:text="${personPayMonthList.PENSION}"></td>
+								<td style="text-align: right" th:text="${personPayMonthList.E_INSURE}"></td>
+								<td style="text-align: right" th:text="${personPayMonthList.CHAGAM}"></td> 
+								<td style="text-align: right" th:text="${personPayMonthList.PAY_DT}"></td>
+							</tr>
+						</tbody> 
+						-->
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="x_panel">
+			<div class="x_content">
+				<h5>⊙ 연간 급여내역</h5>
+				<div class="table-responsive" style="overflow: auto; height: 450px; background-color: white; color:black;">
+					<table style="width:1700px;" class="table table-bordered jambo_table bulk_action">
+						<thead>
+							<tr class="headings">
+								<th></th>
+								<th style="text-align: center" class="column-title">사원번호</th>
+								<th style="text-align: center" class="column-title">부서</th>
+								<th style="text-align: center" class="column-title">직급</th>
+								<th style="text-align: center" class="column-title">성명</th>
+								<th style="text-align: center" class="column-title">급여구분</th>
+								<th style="text-align: center" class="column-title">1월</th>
+								<th style="text-align: center" class="column-title">2월</th>
+								<th style="text-align: center" class="column-title">3월</th>
+								<th style="text-align: center" class="column-title">4월</th>
+								<th style="text-align: center" class="column-title">5월</th>
+								<th style="text-align: center" class="column-title">6월</th>
+								<th style="text-align: center" class="column-title">7월</th>
+								<th style="text-align: center" class="column-title">8월</th>
+								<th style="text-align: center" class="column-title">9월</th>
+								<th style="text-align: center" class="column-title">10월</th>
+								<th style="text-align: center" class="column-title">11월</th>
+								<th style="text-align: center" class="column-title">12월</th>
+								<th style="text-align: center" class="column-title">급여총액</th>
+							</tr>
+						</thead>
+						<tbody id="personPayYearList">
+							<tr>
+								<td colspan="19" style="text-align: center; background-color: lemonchiffon">검색해주세요.</td>
+							</tr>
+						</tbody>		
+						<!--
+						model을 통해 초기 리스트를 뿌려줄때 (연간)
+						<tbody id="personPayYearList">
+							<tr th:each="personPayYearList : ${personPayYearList}">
+								<!-- 사원번호 (총계 일경우)
+								<th:block th:if="${personPayYearList.EMP_NO == '99999999' AND personPayYearList.DEPT_CD == 'zzzzzzz'}">
+									<td style="background-color:palegreen; text-align: center"></td>
+									<td style="background-color:palegreen; text-align: center" th:if="${personPayYearList.EMP_NO == '99999999'}"></td>
+									
+									<td style="background-color:palegreen; text-align: center" th:text="${personPayYearList.DEPT_NM}"></td>		
+									<td style="background-color:palegreen; text-align: center" th:text="${personPayYearList.JIKGUP_NM}"></td>	
+									<td style="background-color:palegreen; text-align: center" th:text="${personPayYearList.KOR_NM}"></td>		
+									<!-- 급여구분 (1일때)
+									<td style="background-color:palegreen; text-align: center" th:if="${personPayYearList.GUBUN == '1'}">급여</td>
+									<!-- 급여구분 (1이 아닐때(총계))
+									<td style="background-color:palegreen; text-align: center" th:unless="${personPayYearList.GUBUN == '1'}"></td>
+									
+									<td style="background-color:palegreen; text-align: right" th:text="${personPayYearList.PAY_01}"></td>		
+									<td style="background-color:palegreen; text-align: right" th:text="${personPayYearList.PAY_02}"></td>		
+									<td style="background-color:palegreen; text-align: right" th:text="${personPayYearList.PAY_03}"></td>		
+									<td style="background-color:palegreen; text-align: right" th:text="${personPayYearList.PAY_04}"></td>		
+									<td style="background-color:palegreen; text-align: right" th:text="${personPayYearList.PAY_05}"></td>		
+									<td style="background-color:palegreen; text-align: right" th:text="${personPayYearList.PAY_06}"></td>		
+									<td style="background-color:palegreen; text-align: right" th:text="${personPayYearList.PAY_07}"></td>		
+									<td style="background-color:palegreen; text-align: right" th:text="${personPayYearList.PAY_08}"></td>		
+									<td style="background-color:palegreen; text-align: right" th:text="${personPayYearList.PAY_09}"></td>		
+									<td style="background-color:palegreen; text-align: right" th:text="${personPayYearList.PAY_10}"></td>		
+									<td style="background-color:palegreen; text-align: right" th:text="${personPayYearList.PAY_11}"></td>		
+									<td style="background-color:palegreen; text-align: right" th:text="${personPayYearList.PAY_12}"></td>		 
+									<td style="background-color:palegreen; text-align: right" th:text="${personPayYearList.PAY_TOT}"></td>	
+								</th:block>
+
+								<th:block th:if="${personPayYearList.EMP_NO == '99999999' AND personPayYearList.DEPT_CD != 'zzzzzzz'}">
+									<td style="background-color:gold; text-align: center"></td>
+									<td style="background-color:gold; text-align: center" th:if="${personPayYearList.EMP_NO == '99999999'}"></td>
+									
+									<td style="background-color:gold; text-align: center" th:text="${personPayYearList.DEPT_NM}"></td>		
+									<td style="background-color:gold; text-align: center" th:text="${personPayYearList.JIKGUP_NM}"></td>	
+									<td style="background-color:gold; text-align: center" th:text="${personPayYearList.KOR_NM}"></td>		
+									<!-- 급여구분 (1일때) 
+									<td style="background-color:gold; text-align: center" th:if="${personPayYearList.GUBUN == '1'}">급여</td>
+									<!-- 급여구분 (1이 아닐때(총계))
+									<td style="background-color:gold; text-align: center" th:unless="${personPayYearList.GUBUN == '1'}"></td>
+									
+									<td style="background-color:gold; text-align: right" th:text="${personPayYearList.PAY_01}"></td>		
+									<td style="background-color:gold; text-align: right" th:text="${personPayYearList.PAY_02}"></td>		
+									<td style="background-color:gold; text-align: right" th:text="${personPayYearList.PAY_03}"></td>		
+									<td style="background-color:gold; text-align: right" th:text="${personPayYearList.PAY_04}"></td>		
+									<td style="background-color:gold; text-align: right" th:text="${personPayYearList.PAY_05}"></td>		
+									<td style="background-color:gold; text-align: right" th:text="${personPayYearList.PAY_06}"></td>		 
+									<td style="background-color:gold; text-align: right" th:text="${personPayYearList.PAY_07}"></td>		
+									<td style="background-color:gold; text-align: right" th:text="${personPayYearList.PAY_08}"></td>		 
+									<td style="background-color:gold; text-align: right" th:text="${personPayYearList.PAY_09}"></td>		
+									<td style="background-color:gold; text-align: right" th:text="${personPayYearList.PAY_10}"></td>		
+									<td style="background-color:gold; text-align: right" th:text="${personPayYearList.PAY_11}"></td>		
+									<td style="background-color:gold; text-align: right" th:text="${personPayYearList.PAY_12}"></td>		 
+									<td style="background-color:gold; text-align: right" th:text="${personPayYearList.PAY_TOT}"></td>		
+								</th:block>
+								<!-- 사원번호 (총계가 아닐경우)
+								<th:block th:unless="${personPayYearList.EMP_NO == '99999999'}">
+									<td></td>
+									<!-- 사원번호 (총계가 아닐경우)
+									<td style="text-align: center" th:unless="${personPayYearList.EMP_NO == '99999999'}" th:text="${personPayYearList.EMP_NO}"></td>
+									
+									<td style="text-align: center" th:text="${personPayYearList.DEPT_NM}"></td>		
+									<td style="text-align: center" th:text="${personPayYearList.JIKGUP_NM}"></td>
+									<td style="text-align: center" th:text="${personPayYearList.KOR_NM}"></td>		
+									<!-- 급여구분 (1일때)
+									<td style="text-align: center" th:if="${personPayYearList.GUBUN == '1'}">급여</td>
+									<!-- 급여구분 (1이 아닐때(총계))
+									<td style="text-align: center" th:unless="${personPayYearList.GUBUN == '1'}"></td>
+									
+									<td style="text-align: right" th:text="${personPayYearList.PAY_01}"></td>		
+									<td style="text-align: right" th:text="${personPayYearList.PAY_02}"></td>		
+									<td style="text-align: right" th:text="${personPayYearList.PAY_03}"></td>		
+									<td style="text-align: right" th:text="${personPayYearList.PAY_04}"></td>		
+									<td style="text-align: right" th:text="${personPayYearList.PAY_05}"></td>		
+									<td style="text-align: right" th:text="${personPayYearList.PAY_06}"></td>		
+									<td style="text-align: right" th:text="${personPayYearList.PAY_07}"></td>		
+									<td style="text-align: right" th:text="${personPayYearList.PAY_08}"></td>		 
+									<td style="text-align: right" th:text="${personPayYearList.PAY_09}"></td>		
+									<td style="text-align: right" th:text="${personPayYearList.PAY_10}"></td>		
+									<td style="text-align: right" th:text="${personPayYearList.PAY_11}"></td>		
+									<td style="text-align: right" th:text="${personPayYearList.PAY_12}"></td>		
+									<td style="text-align: right" th:text="${personPayYearList.PAY_TOT}"></td>		
+								</th:block>
+							</tr>
+						</tbody> 
+						-->
+					</table>
+				</div>
+			</div>
+		</div>
+		</div>
+
 </th:block>
 <th:block layout:fragment="customJquery">
 <th:block th:include="layout/customJquery"></th:block>

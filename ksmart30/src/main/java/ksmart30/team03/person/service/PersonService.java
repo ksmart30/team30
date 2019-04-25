@@ -6,6 +6,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ksmart30.team03.person.domain.Education;
+import ksmart30.team03.person.domain.Family;
+import ksmart30.team03.person.domain.FamilyCare;
+import ksmart30.team03.person.domain.License;
 import ksmart30.team03.person.domain.Person;
 import ksmart30.team03.person.domain.PersonRequest;
 import ksmart30.team03.person.mapper.PersonMapper;
@@ -69,10 +73,49 @@ public class PersonService {
 		return personMapper.gbCdRelationListView();	
 	}
 	//6.1.1 인사기록카드 추가기록(가족사항 입력)
-	public int modifyPersonInsaFamily(Person vo){
+	public int modifyPersonInsaFamily(Family family){
 		System.out.println("SERVICE : 가족사항 입력");
-		return  personMapper.modifyPersonInsaFamily(vo);		
+		return  personMapper.modifyPersonInsaFamily(family);		
 	}
+	//6.1.1 인사기록카드 추가기록(부양가족 입력)
+	public int modifyPersonInsaFamilyCare(FamilyCare familyCare){
+		System.out.println("SERVICE : 부양가족 입력");
+		return  personMapper.modifyPersonInsaFamilyCare(familyCare);		
+	}
+	//6.1.1 인사기록카드 추가기록(자격,면허사항 입력)
+	public int modifyPersonInsaLicense(License license) {
+		System.out.println("SERVICE : 자격,면허사항 입력");
+		return  personMapper.modifyPersonInsaLicense(license);
+	}	
+	//6.1.1 인사기록카드 추가기록(가족사항 list)
+	public List<Family> getPersonInsaInfoFamily(String EMP_NO){
+		List<Family> data = personMapper.getPersonInsaInfoFamily(EMP_NO);
+		System.out.println("SERVICE : 가족사항 list 출력 " + data);
+		return data;
+	}
+	//6.1.1 인사기록카드 추가기록(자격,면허 list)
+	public List<License> getPersonInsaInfoLicense(String EMP_NO){
+		List<License> data = personMapper.getPersonInsaInfoLicense(EMP_NO);
+		System.out.println("SERVICE : 자격, 면허사항 list 출력 " + data);
+		return data;
+	}
+	//6.1.1 인사기록카드 추가기록(부양가족 list)
+	public List<FamilyCare> getPersonInsaInfoFamilyCare(String EMP_NO){
+		System.out.println("SERVICE : 부양가족 list 출력");
+		return personMapper.getPersonInsaInfoFamilyCare(EMP_NO);
+	}
+	//6.1.1 인사기록카드 추가기록(학력사항 list)
+	public List<Education> getPersonInsaInfoEducation(String EMP_NO){
+		System.out.println("SERVICE : 부양가족 list 출력");
+		return personMapper.getPersonInsaInfoEducation(EMP_NO);
+	}
+	
+	//6.1.1 인사기록카드 추가기록(자격,면허 select box)
+	public List<Map<String, Object>> licenseListView(){
+		System.out.println("SERVICE : 부양가족 select box 출력");
+		return personMapper.licenseListView();
+	}
+	
 	
 }
 

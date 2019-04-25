@@ -22,17 +22,21 @@ function updateInsa(EMP_NO){
 		}
 				
 	}); 
-	
-	
-	
+
 }
-	$(document).ready(function(){
+function retireeEmployee(){
+	alert('수정 할 권한이 없습니다.');
+}
+
+$(document).ready(function(){
 		console.log('인사기록카드 등록 시작');
 		
 		$('#btn_list').click(function(){
 			let EMP_NO2 = $('#EMP_NO2').val();
 			let KOR_NM2 = $('#KOR_NM2').val();
 			let OUT_DT3 = $('#OUT_DT3').val();
+			let session_EMP_NO = '[[${session.EMP_NO}]]';
+			console.log('로그인 한 사원번호 : '+session_EMP_NO); 
 			$.ajax({
 				url:'/person/personInsaList',
 				type:'GET',
@@ -41,14 +45,13 @@ function updateInsa(EMP_NO){
 					$('#list').empty();
 					console.log("직원리스트 출력: "+data);
 					$(data).each(function(index,item){
-						$('#list').append('<tr class="even pointer">');
-						$('#list').append('<td class="a-center "><input type="checkbox" class="flat" name="table_records"></td>');
-						$('#list').append('<td>'+item.SORT_VALUE+'</td>');
-						$('#list').append('<td>'+item.DEPT_NM+'</td>');
-						$('#list').append('<td id="EMP_NO" onclick="updateInsa('+item.EMP_NO+')">'+item.EMP_NO+'</td>');
-						$('#list').append('<td>'+item.KOR_NM+'</td>');						
-						$('#list').append('<td>'+item.OUT_DT+'</td>');	
-						$('#list').append('</tr>');	
+						if(item.OUT_DT=="재직자" && session_EMP_NO=="20190007"){
+							$('#list').append('<tr class="even pointer"><td class="a-center "><input id="EMP_NO" type="checkbox" class="flat" name="table_records"></td><td onclick="updateInsa('+item.EMP_NO+')" >'+item.SORT_VALUE+'</td><td onclick="updateInsa('+item.EMP_NO+')" >'+item.DEPT_NM+'</td><td id="EMP_NO" onclick="updateInsa('+item.EMP_NO+')">'+item.EMP_NO+'</td><td onclick="updateInsa('+item.EMP_NO+')" >'+item.KOR_NM+'</td><td onclick="updateInsa('+item.EMP_NO+')" >'+item.OUT_DT+'</td></tr>');				
+						}else{
+							$('#list').append('<tr class="even pointer"><td class="a-center "><input id="EMP_NO" type="checkbox" class="flat" name="table_records"></td><td>'+item.SORT_VALUE+'</td><td onclick="retireeEmployee()">'+item.DEPT_NM+'</td><td onclick="retireeEmployee()" id="EMP_NO">'+item.EMP_NO+'</td><td onclick="retireeEmployee()">'+item.KOR_NM+'</td><td onclick="retireeEmployee()">'+item.OUT_DT+'</td></tr>');						
+						
+						}
+						
 					});	
 					
 				}
@@ -69,17 +72,19 @@ function updateInsa(EMP_NO){
 		<div class="title_left">
 			
 			<h2><b>인사기록카드 등록</b></h2>
-			<h5><font color="gray"><b>6. 인사/급여&nbsp;>&nbsp;&nbsp;6.1 인력관리</b></font></h5>
+			<h5><font color="gray"><b>6.인사/급여&nbsp;>&nbsp;&nbsp;6.1 인력관리&nbsp;>&nbsp;&nbsp;6.1.1 인사기록카드 등록</b></font></h5>
 			
 			</div>
 		</div>
 	</div>
 	<div class="x_content" style="text-align: right">
 		<div class="btn-group" >
-				<a href="/person/personInsaWriteView"><button class="btn btn-default" id ="btnWrite"type="reset">입력</button></a>
-				<a href="/person/personInsaModifyView"><button class="btn btn-default" type="button" id="btn_up">수정</button></a>
-				
-				<button class="btn btn-default" type="button">삭제</button>				
+			<button class="btn btn-default" type="button" id="btn_list">조회</button>
+			<a href="/person/personInsaWriteView"><button class="btn btn-default" type="reset" >입력</button></a>
+			<a href="/person/personInsaModifyView"><button class="btn btn-default" type="button" disabled="disabled">수정</button></a>
+			<button class="btn btn-default" type="button" disabled="disabled">삭제</button>
+			<button class="btn btn-default" type="button" disabled="disabled">저장</button>
+			<button class="btn btn-default" type="button"  disabled="disabled">출력</button>					
 		</div>
 	</div>		
 	
@@ -91,13 +96,8 @@ function updateInsa(EMP_NO){
 				<!-- 검색 -->
 				<div class="col-md-13 col-xs-14">
 							<div class="x_panel">
-				<div class="x_title">
-					<form>
-						<h4 style="color:black;">⊙ 검색 조건</h4>		
-							 <div class="x_content" style="text-align: right">
-								 <button type="button" class="btn" style="color:black" id="btn_list">검색</button>
-							</div>	 
-					</form>
+				<div class="x_title">					
+					<h4 style="color:black;">⊙ 검색 조건</h4>								  				
 				</div>
 				<div class="x_content">
 					<!-- 입력 폼 -->
@@ -156,7 +156,7 @@ function updateInsa(EMP_NO){
 						<table class="table table-striped jambo_table bulk_action">
 							<thead>
 								<tr class="headings">
-									<th><input type="checkbox" id="check-all" class="flat">
+									<th><input type="checkbox" id="check-all" class="flat" >
 									</th>
 									<th class="column-title">순번</th>
 									<th class="column-title">부서명</th>
