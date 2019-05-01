@@ -27,7 +27,6 @@ public class ResultController {
 		model.addAttribute("list", list);
 		return "mh/result/resultWriteView";
 		}
-		
 		//M/H 실적 입력 액션 
 		@PostMapping("/manHour/resultWriteView")
 		public String resultWriteView(Result result) {
@@ -44,6 +43,7 @@ public class ResultController {
 	  return resultdate;
 	  
 	  }
+	  
 	  @GetMapping("/manHour/resultWritePjtView")
 	  public List<Result> resultWritePjtView(){
 		  List<Result> list = resultService.getSelectListView();  
@@ -51,13 +51,18 @@ public class ResultController {
 	  }
 	  // M/H 실적 입력 디테일 컨트롤러
 	  @GetMapping("/manHour/resultWriteDetailView")
-	  public @ResponseBody List<Result> resultWriteModifyView(@RequestParam(value = "EMP_NO")String EMP_NO) {
+	  public @ResponseBody List<Result> resultWriteModifyView(@RequestParam(value = "WORK_DT")String WORK_DT) {
 		  System.out.println("실적 입력디테일보기");
-		  List<Result> data = resultService.getResultListDetailView(EMP_NO);
+		  List<Result> data = resultService.getResultListDetailView(WORK_DT);
 		  System.out.println("실적 List 디테일 :" + data);
-	  return data;
-		  
+	  return data;		  
 	  }
-	  
-	 
+	  // M/H 입력 PJT 명 목록 가져오기
+	  @GetMapping("/manHour/getSelectPjtNameView")
+	  public @ResponseBody List<Map<String,Object>> getSelectPjtNameView(Result result){
+		  System.out.println("C: 프로젝트이름 가져오기");
+		  List<Map<String,Object>> vo = resultService.getSelectPjtNameView(result);		 
+		return vo;
+	  }
+ 
 }
