@@ -4,7 +4,7 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="ksmart30.team01.cooperation.mapper.CooperationMapper">
 
- <!-- 외주관리 - 외주계약서 관리 - 외주계약서 검색 쿼리 -->
+ <!--3.1.2 외주관리 - 외주계약서 관리 - 외주계약서 검색 쿼리 -->
 	<select id="getCooperationList" 
 		parameterType="ksmart30.team01.cooperation.domain.CooperationSearchRequest" 
 		resultType="java.util.Map">
@@ -91,7 +91,7 @@
  			A.OUT_CORP
 
 	</select>
-<!-- 외주관리 - 외주계약서 관리 - 외주계약서 검색 쿼리 -->
+<!--3.1.1 외주관리 - 외주계약서 관리 - 외주계약서 검색 쿼리 -->
 	<!--입력 위한 PJT별 용역 계약현황 검색-->
 	<select id="getCooperationPJT"
 		parameterType="String"
@@ -117,26 +117,26 @@
 		ORDER BY
 			OUT_ITEM
 	</select>
-	<!--입력 위한 PJT별 예산현황 검색-->
+<!--3.1.1 입력 위한 PJT별 예산현황 검색-->
 	<select id="getCooperationYesan"
 		parameterType="String"
 		resultType="java.util.Map">
 	
-		SELECT
-		 	B.LEVEL2_NM as SCV_NM <!-- 부문 -->
-		 	,A.EX_AMT as EX_AMT <!-- 계약예산 -->
-		 	,ISNULL(A.EX_WORK_AMT,0) as EX_WORK_AMT <!-- 실행예산 -->
-		FROM 
-		 	T_P11070 A <!-- 외주용역 -->
-		 	,(SELECT * FROM T_SC9100 WHERE BUSI_GB = 'J' AND LEVEL1_CD = '160')B <!-- 부문출력 -->
-		WHERE 
-			A.SCV_PART *= B.LEVEL2_CD
-			AND
-			A.PJT_CD LIKE '%'+#{PJT_CD}+'%'
-		ORDER BY
-			SCV_PART
+SELECT
+ 	B.LEVEL2_NM as SCV_NM ,
+ 	A.EX_AMT ,
+ 	A.EX_WORK_AMT
+FROM 
+ 	(SELECT SUM(EX_AMT) as EX_AMT ,ISNULL(SUM(EX_WORK_AMT),0) as EX_WORK_AMT,SCV_PART,PJT_CD FROM T_P11070 GROUP BY PJT_CD,SCV_PART) A 
+ 	,(SELECT * FROM T_SC9100 WHERE BUSI_GB = 'J' AND LEVEL1_CD = '160')B
+WHERE 
+ 	 A.SCV_PART = B.LEVEL2_CD
+	AND
+ 	 A.PJT_CD LIKE '%'+#{PJT_CD}+'%'
+ORDER BY
+	SCV_PART
 	</select>
-	<!-- 계약프로젝트 기본 정보 검색(프로젝트,수행부서,PM) -->
+<!--3.1.1 계약프로젝트 기본 정보 검색(프로젝트,수행부서,PM) -->
 	<select id="getCooperationPJTPM"
 		parameterType="String"
 		resultType="java.util.Map">
@@ -162,31 +162,31 @@
 			AND 
 			 PJT_SEQ = (SELECT max(PJT_SEQ)from T_P11000_H WHERE PJT_CD = #{PJT_CD})
 	</select>
-	<!-- 용역계약서 본문 출력  -->
+<!--3.1.1 용역계약서 본문 출력  -->
 	<select id="getCooperationPJTSangse"
 		parameterType="ksmart30.team01.cooperation.domain.CooperationSangseRequest"
 		resultType="java.util.Map">
 		SELECT
-		 	OUT_ITEM	<!-- 부문 -->
-			,A.OUT_CORP AS OUT_CORP <!-- 외주처 -->
-			,B.CUST_NM AS OUT_CORP_NM<!-- 외주처 이름 -->
-			,CONTRACT_NM <!-- 용역명 -->
-			,CONVERT (DATE, A.CONTRACT_DATE) AS CONTRACT_DATE <!-- 계약일자 -->
-			,CONVERT (DATE, A.S_DATE) AS S_DATE <!-- 계약기간 시작 -->
-			,CONVERT (DATE, A.E_DATE) AS E_DATE <!-- 계약기간 끝 -->
-			,E_RMK <!-- 종료구문(까지) -->
-			,CON_DOC_YN <!-- 계약서 유무 0 없음 1 있음 -->
-			,CONTRACT_AMT <!-- 계약액 -->
-			,VAT_YN <!-- VAT여부 -->
+		 	OUT_ITEM	-- 부문 -->
+			,A.OUT_CORP AS OUT_CORP -- 외주처 -->
+			,B.CUST_NM AS OUT_CORP_NM -- 외주처 이름 -->
+			,CONTRACT_NM -- 용역명 -->
+			,CONVERT (DATE, A.CONTRACT_DATE) AS CONTRACT_DATE -- 계약일자 -->
+			,CONVERT (DATE, A.S_DATE) AS S_DATE -- 계약기간 시작 -->
+			,CASE ISNULL(A.E_DATE,'') WHEN '' THEN '' ELSE CONVERT(VARCHAR(10),CONVERT(date,A.E_DATE)) END E_DATE -- 계약기간 끝 -->
+			,E_RMK -- 종료구문(까지) -->
+			,CON_DOC_YN -- 계약서 유무 0 없음 1 있음 -->
+			,CONTRACT_AMT -- 계약액 -->
+			,VAT_YN -- VAT여부 -->
 			,D.VAT_YN_NM
 			,C.E_RMK_NM
 			,E.OUT_ITEM_NM
 		FROM 
 		 	T_P12000 A
-		 	,(SELECT CUST_CD,CUST_NM FROM T_AC0300) B <!-- 거래처(외주처,발주처) -->
-		 	,(SELECT LEVEL2_CD,LEVEL2_NM as E_RMK_NM FROM T_SC9100 WHERE busi_gb = 'j' and level1_cd = '130') C <!-- 종료구문(계약기간~까지) -->
-		 	,(SELECT LEVEL2_CD,LEVEL2_NM as VAT_YN_NM FROM T_SC9100 WHERE busi_gb = 'j' and level1_cd = '340') D <!-- VAT여부 -->
-		 	,(SELECT LEVEL2_CD,LEVEL2_NM as OUT_ITEM_NM FROM T_SC9100 WHERE BUSI_GB = 'J' AND LEVEL1_CD = '160') E <!-- 부문 -->
+		 	,(SELECT CUST_CD,CUST_NM FROM T_AC0300) B -- 거래처(외주처,발주처) -->
+		 	,(SELECT LEVEL2_CD,LEVEL2_NM as E_RMK_NM FROM T_SC9100 WHERE busi_gb = 'j' and level1_cd = '130') C -- 종료구문(계약기간~까지) -->
+		 	,(SELECT LEVEL2_CD,LEVEL2_NM as VAT_YN_NM FROM T_SC9100 WHERE busi_gb = 'j' and level1_cd = '340') D -- VAT여부 -->
+		 	,(SELECT LEVEL2_CD,LEVEL2_NM as OUT_ITEM_NM FROM T_SC9100 WHERE BUSI_GB = 'J' AND LEVEL1_CD = '160') E -- 부문 -->
 		WHERE
 			 A.OUT_ITEM *= E.LEVEL2_CD
 			AND
@@ -198,11 +198,11 @@
 			AND
 		 	 PJT_CD = #{PJT_CD} 
 			AND 
-		 	 OUT_CORP = #{OUT_CORP} <!-- 외주처 검색이 안될경우에도 출력하기 위해 LIKE절 사용 -->
+		 	 OUT_CORP = #{OUT_CORP} 
 		 	AND
 	 		 OUT_ITEM = #{OUT_ITEM}
 	</select>
-	<!-- 용역계약서 기성단계 출력  -->
+<!--3.1.1 용역계약서 기성단계 출력  -->
 	<select id="getCooperationPJTGisung"
 		parameterType="ksmart30.team01.cooperation.domain.CooperationSangseRequest"
 		resultType="java.util.Map">
@@ -216,11 +216,11 @@
 			AND
 		 	 PJT_CD = #{PJT_CD} 
 			AND 
-		 	 OUT_CORP = #{OUT_CORP} <!-- 외주처 검색이 안될경우에도 출력하기 위해 LIKE절 사용 -->
+		 	 OUT_CORP = #{OUT_CORP} 
 		 	AND
 	 		 OUT_ITEM = #{OUT_ITEM}
 	</select>
-	<!-- 용역계약서 용역내용 출력  -->
+<!--3.1.1 용역계약서 용역내용 출력  -->
 	<select id="getCooperationPJTDragon"
 		parameterType="ksmart30.team01.cooperation.domain.CooperationSangseRequest"
 		resultType="java.util.Map">
@@ -234,11 +234,11 @@
 			AND
 		 	 PJT_CD = #{PJT_CD} 
 			AND 
-		 	 OUT_CORP = #{OUT_CORP} <!-- 외주처 검색이 안될경우에도 출력하기 위해 LIKE절 사용 -->
+		 	 OUT_CORP = #{OUT_CORP} 
 		 	AND
 	 		 OUT_ITEM = #{OUT_ITEM}
 	</select>
-<!-- 외주비 분석현황(용도별) 검색 쿼리 -->
+<!--3.2.1 외주비 분석현황(용도별) 검색 쿼리 -->
 	<select id="getCooperationDragonHyunhwang"
 		parameterType="ksmart30.team01.cooperation.domain.CooperationDragonHyunhwangRequest"
 		resultType="java.util.Map">
@@ -273,5 +273,127 @@
 			X.BUILD_GBN, X.YAREA_GBN, X.BIZ_GBN, X.GUBUN, X.GUBUN_SEQ, X.G_YAREA_P, X.PJT_CD
 	
 	</select>
+	
+	
+<!--3.1.1 용역계약서 입력 본문 insert -->
+	<insert id="addCooperationPJTSangse"
+		parameterType="String">
+		INSERT INTO 
+		T_P12000(
+			PJT_CD -- 프로젝트코드
+			,OUT_CORP -- 외주처
+			,CONTRACT_NM -- 외주처이름
+			,DEPT_CD -- 부서코드
+			,OUT_ITEM -- 부문
+			,CONTRACT_DATE -- 계약일자
+			,S_DATE -- 계약기간 시작
+			,E_DATE -- 계약기간 끝
+			,E_RMK -- 종료구분
+			,EX_AMT -- 금액
+			,CONTRACT_AMT --계약금액
+			,VAT_YN -- VAT여부
+			,CON_DOC_YN --계약서 유무
+			,CO_SERVICE --면세근거
+			,CRT_DATE -- 입력날짜
+			) 
+		VALUES (
+			#{PJT_CD} --프로젝트코드
+			,#{OUT_CORP} --외주처 코드(사업자?)
+			,#{CONTRACT_NM} --외주처이름
+			,#{DEPT_CD} --부서코드
+			,#{OUT_ITEM} -- 부문
+			,CONVERT(VARCHAR(8),CONVERT(DATE,#{CONTRACT_DATE}),112) --계약일자
+			,CONVERT(VARCHAR(8),CONVERT(DATE,#{S_DATE}),112) --계약기간 시작
+			,#{E_DATE} --계약기간 끝 입력하지 않아도 됨
+			,#{E_RMK} --종료구분 01 ~ 08
+			,'0' -- 어떤 금액인지 모르겟음
+			,#{CONTRACT_AMT} -- 계약금액 기성 단계 총합과 같아야 됨
+			,#{VAT_YN} -- VAT여부 1,2,3,4
+			,#{CON_DOC_YN} --계약서 유무
+			,'' -- 공백 or 해당없음 (공백도 해당없음 처리) 왜??
+			,CONVERT(VARCHAR(8),GETDATE(),112) -- 현재날짜 문자열로 변환후 입력
+			)	
+	</insert>
+<!--3.1.1 용역계약서 입력 기성단계 insert -->
+	<insert id="addCooperationPJTGisung"
+		parameterType="String">
+		INSERT INTO 
+		T_P12010(
+			PJT_CD
+			,OUT_CORP
+			,CRT_SEQ
+			,OUT_ITEM
+			,GI_GBN
+			,GI_AMT
+			,GI_RATE	
+			) 
+		VALUES (
+			#{PJT_CD} -- 프로젝트코드
+			,#{OUT_CORP} --외주처 코드(사업자?)
+			,#{CRT_SEQ} -- 기성단계 구분 숫자 1~
+			,#{OUT_ITEM} -- 01~27
+			,#{GI_GBN} -- 01 ~ 99
+			,#{GI_AMT} -- 전체 기성 단계 합이 계약 금액과 같아야함
+			,#{GI_RATE} -- % 입력하지 않아도 됨
+			)	
+	</insert>
+<!--3.1.1 용역계약서 입력 용역내용 insert -->
+	<insert id="addCooperationPJTDragon"
+		parameterType="String">
+		INSERT INTO 
+		T_P12020(
+			PJT_CD
+			,OUT_CORP
+			,OUT_ITEM
+			,SEQ
+			,CONTRACT_MEMO
+			) 
+		VALUES (
+			#{PJT_CD} -- 프로젝트코드
+			,#{OUT_CORP} --외주처 코드(사업자?)
+			,#{OUT_ITEM} -- 01~27
+			,#{SEQ} -- 용역 구분 숫자 1~
+			,#{CONTRACT_MEMO} -- 용역 내용코드
+			) 	
+	</insert>
+<!--3.1.1 용역계약서 입력 제조경비예산(예산현황) 입력  insert -->
+	<insert id="addCooperationJEJO"
+		parameterType="String">
+		INSERT INTO
+		T_P11070(
+			PJT_CD --프로젝트 코드
+			,SCV_PART -- 부문
+			,EXCHANGE_NO --외주처
+			,EX_AMT -- 예산
+			,EX_RATE -- 계약 예산
+			,EX_GROUND -- ??
+			,EX_WORK_AMT --실행 예산
+			,BIGO
+		)
+		VALUES(
+			#{PJT_CD} -- 필수
+			,#{OUT_ITEM} -- 필수 
+			,#{OUT_CORP} --필수
+			,'0' -- 계약 외주없체 외 다른 업체입력시 공백
+			,'' -- % 기준이 먼지 몰겟다;;
+			,''
+			,#{CONTRACT_AMT} -- 계약 금액 필수 -- 이거때문에 ㅜㅡ;;
+			,''
+		)
+	</insert>
+<!--3.1.1 용역계약서 입력 제조경비예산(예산현황) 수정  update -->
+	<update id="modifyCooperationJEJO"
+		parameterType="String">
+		UPDATE 
+			T_P11070 
+		SET 
+			EX_WORK_AMT = #{CONTRACT_AMT} -- 계약금액 입력
+		WHERE
+			PJT_CD = #{PJT_CD} -- 프로젝트코드
+			AND
+			SCV_PART = #{OUT_ITEM} --부문
+			AND
+			EXCHANGE_NO = #{OUT_CORP} -- 외주처
+	</update>
 
 </mapper>

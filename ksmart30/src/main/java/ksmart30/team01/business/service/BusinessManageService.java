@@ -43,6 +43,13 @@ public class BusinessManageService {
 		
 		return list;
 	}
+	
+	// 사원 검색
+	public List<Map<String,String>> ResultDeptList(Map<String,Object> searchMap){
+
+		return businessManageMapper.ResultEmpList(searchMap);
+	}
+	
 	// 사업수행결정서 저장
 	public void businessManageViewInsert(BusinessMarket vo) {
 		 String Gubun = vo.getBIZ_GBN(); //프로젝트 타입 
@@ -61,6 +68,42 @@ public class BusinessManageService {
 		businessManageMapper.businessManageViewInsert(vo);
 		
 	}
+	
+	//사업 수행결정서 승인및  업데이트 businessManageViewUpdate
+	public void businessManageSeunginViewUpdate(BusinessMarket vo) {
+		
+		
+		String BU_YY = vo.getBUSI_YY2();  // PJT 코드 만들기
+		BU_YY = BU_YY.substring(2,4);
+		String BUSI_SEQ = vo.getBUSI_SEQ();  
+		BUSI_SEQ = BUSI_SEQ.substring(1,4);
+		vo.setPJT_CD(BU_YY+BUSI_SEQ);
+		System.out.println(vo.getPJT_CD());
+		
+		String Gubun = vo.getBIZ_GBN(); //프로젝트 타입 
+		 
+		 
+		if(Gubun.equals("10")) {
+			vo.setPJT_TYPE("F");
+		}else if(Gubun.equals("16")){
+			vo.setPJT_TYPE("F");
+		}else {
+			vo.setPJT_TYPE("C");  //BUSI_SEQ
+		}
+		
+		businessManageMapper.businessManageSeunginViewUpdate(vo);
+		businessManageMapper.businessManageSeunginViewInsert1(vo); //SM3000
+		businessManageMapper.businessManageSeunginViewInsert2(vo); //PS1000
+	}
+
+	public void businessManageViewDelete(BusinessMarket vo) {
+		
+		businessManageMapper.businessManageViewDelete(vo);
+		
+		
+	}
+	
+	
 
 
 
