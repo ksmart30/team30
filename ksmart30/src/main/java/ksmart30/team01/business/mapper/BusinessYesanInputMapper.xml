@@ -191,6 +191,115 @@
 				AND ISNULL(A.END_BIGO1,'') IN ('', ' ')
 				AND ISNULL(G.END_GBN, '') != '22'
 		<![CDATA[ORDER BY (CASE WHEN SUBSTRING(A.PJT_CD,1,2) < '70' THEN '20' + A.PJT_CD  ELSE '19' + A.PJT_CD END )]]>
-		
 	</select>
+	<select id="getProjectSchedule" parameterType="String" resultType="hashmap">
+		SELECT 	A.SEQ,
+				A.JOB_STEP,
+				(	SELECT CASE WHEN COUNT(*) = 0 THEN COUNT(*) ELSE COUNT(*)-1 END
+					FROM T_PS1050_H
+					WHERE PRE_PJT_CD = A.PRE_PJT_CD AND SEQ = A.SEQ) UPD_COUNT,
+				A.END_EXP_DATE,
+				RTRIM(A.END_DATE) END_DATE,
+				A.BIGO
+		FROM T_PS1050 A
+		WHERE A.PRE_PJT_CD LIKE '%' + #{PJT_CD} + '%'
+	</select>
+	<select id="getProjectMhPlan" parameterType="String" resultType="hashmap">
+		SELECT 	(ROW_NUMBER() OVER (ORDER BY B.LEVEL2_CD)) as NUM,
+				B.LEVEL2_CD,
+				B.LEVEL2_NM,
+				C.INWON_1,
+				C.MD_PLAN_1,
+				C.INWON_2,
+				C.MD_PLAN_2,
+				C.INWON,
+				ISNULL(A.MD_PLAN,'0') MD_PLAN,
+				ISNULL(A.YEA_AMT,'0') YEA_AMT,
+				C.BIGO
+		FROM SF_P01_1210M_SL4 (#{PJT_CD},'','S') A RIGHT OUTER JOIN T_SC9100 B ON B.LEVEL2_CD = A.JIKGUP_CD
+		LEFT OUTER JOIN T_PS1010 C ON B.LEVEL2_CD = C.JIKGUB 
+		WHERE B.LEVEL1_CD = '110' AND B.BUSI_GB = 'H' AND B.LEVEL2_CD > '130' AND B.LEVEL2_CD <![CDATA[< ]]> '800' AND C.PRE_PJT_CD LIKE '%' + #{PJT_CD} + '%'
+		ORDER BY  B.LEVEL2_CD
+	</select>
+	<select id="getProjectJejo1Left" parameterType="String" resultType="hashmap">
+		SELECT (ROW_NUMBER() OVER (ORDER BY A.COST_CD)) as NUM,
+			   ISNULL(A.PRE_PJT_CD, '20'+ #{PJT_CD}) PRE_PJT_CD,
+		       ISNULL(A.COST_CD   , B.LEVEL2_CD)    COST_CD,
+		       CASE A.COST_CD WHEN '021' THEN '시내교통비'
+		                      WHEN '031' THEN '인지세'
+		                      WHEN '051' THEN '교제비'
+		                      WHEN '062' THEN '도서등록비'
+		                                 ELSE B.LEVEL2_NM END COST_NM,
+		       ISNULL(A.PJT_CD,'')  PJT_CD,
+		       ISNULL(A.COST_AMT,0) COST_AMT,
+		       ISNULL(A.COST_CD,B.LEVEL2_CD) OLD_COST_CD,
+		       ISNULL(A.BIGO,'') BIGO,
+		       CASE SUBSTRING(B.REF2_NM,1,1) WHEN 'A' THEN 'red'
+		       ELSE '' END COLOR
+		  FROM T_PS1020 A,
+		       T_SC9100 B
+		 WHERE B.BUSI_GB    = 'J'
+		   AND B.LEVEL1_CD  = '180'
+		   AND SUBSTRING(B.REF2_NM,1,1) = 'A'
+		   AND ((ISNULL((SELECT CD_REG_DATE FROM T_PS1000 WHERE PRE_PJT_CD = '20'+ #{PJT_CD}),'20030000') <![CDATA[< ]]>  '20030000' AND B.LEVEL2_CD NOT IN ('081','012')) OR
+		        (ISNULL((SELECT CD_REG_DATE FROM T_PS1000 WHERE PRE_PJT_CD = '20'+ #{PJT_CD}),'20030000') >= '20030000' ))
+		   AND A.COST_CD    =* B.LEVEL2_CD
+		   AND A.PRE_PJT_CD = '20'+ #{PJT_CD}
+		ORDER BY COST_CD
+	</select>
+	<select id="getProjectJejo1Right" parameterType="String" resultType="hashmap">
+		SELECT 	(ROW_NUMBER() OVER (ORDER BY A.COST_CD)) as NUM,
+				ISNULL(A.PRE_PJT_CD, '20'+ #{PJT_CD}) PRE_PJT_CD,
+		       	ISNULL(A.COST_CD, B.LEVEL2_CD)  COST_CD,
+		       	ISNULL(B.LEVEL2_NM, '')         COST_NM,
+		       	ISNULL(A.PJT_CD,'')  PJT_CD,
+		       	ISNULL(A.COST_AMT,0) COST_AMT,
+		       	ISNULL(A.COST_CD,B.LEVEL2_CD) OLD_COST_CD,
+		       	ISNULL(A.BIGO,'') BIGO,
+		       	'' COLOR
+		FROM 		T_PS1020 A,
+		       	T_SC9100 B
+		WHERE 	B.BUSI_GB    = 'J'
+		   		AND B.LEVEL1_CD  = '180'
+	<![CDATA[	AND (SUBSTRING(B.REF2_NM,1,1) <> 'A' OR B.LEVEL2_CD IN ('081','012'))
+		   		AND ((ISNULL((SELECT CD_REG_DATE FROM T_PS1000 WHERE PRE_PJT_CD = '20'+ #{PJT_CD}),'20030000') <  '20030000') OR]]>
+		        		 (ISNULL((SELECT CD_REG_DATE FROM T_PS1000 WHERE PRE_PJT_CD = '20'+ #{PJT_CD}),'20030000') >= '20030000' AND B.LEVEL2_CD NOT IN ('081','012')))   
+		   		AND A.PRE_PJT_CD = '20'+ #{PJT_CD}
+		   		AND A.COST_CD    =* B.LEVEL2_CD
+		ORDER BY A.COST_CD
+	</select>
+	<select id="getProjectJejo2" parameterType="String" resultType="hashmap">
+		SELECT 	(ROW_NUMBER() OVER (ORDER BY ACC_CD)) as NUM,*
+		FROM	(SELECT DISTINCT A.ACC_CD,
+						A.ACC_DTL_CD,
+		       			A.ACC_LONG_NM,
+		       			A.YEA_AMT,
+				       	B.BIGO,
+				       	CASE WHEN A.CHA_AMT <![CDATA[< ]]>0 THEN 'red' ELSE 'black'
+				       	END COLOR
+				 FROM 	SF_P21_4100M_JEJO2 (#{PJT_CD},'','S') A LEFT OUTER JOIN T_PS1030 B ON B.PRE_PJT_CD LIKE '%' + #{PJT_CD} + '%') C
+		ORDER BY C.ACC_DTL_CD
+	</select>
+	<select id="getProjectReport" parameterType="String" resultType="hashmap">
+		SELECT PRE_PJT_CD AS PJT_CD, 
+		       COST_AMT1 AS LABOR_COST, 
+		       COST_AMT2 AS MANU_COST1,
+		       COST_AMT3 AS MANU_COST2,
+		       (COST_AMT1 + COST_AMT2 + COST_AMT3) AS SELF_SUM,
+		       DIV_AMT40 AS COMMON_COST1,
+		       DIV_AMT44 AS COMMON_COST_BU, 
+		       (DIV_AMT41+DIV_AMT42) AS COMMON_COST_BON,
+			   (DIV_AMT45+DIV_AMT46) AS COMMON_COST_DEPT,
+			   DIV_AMT10 AS INDIREC_COST,
+		       DIV_AMT11 AS BUILDING_COST,
+		       DIV_AMT13 AS TELE_COST,
+		       DIV_AMT12 AS NET_COST,
+			   DIV_AMT20 AS COMMON_COST2,
+		       DIV_AMT30 AS MANAGE_COST,
+		       (DIV_AMT20 + DIV_AMT30+ DIV_AMT10 + DIV_AMT40) AS DIV_AMT,
+		       (COST_AMT1 + COST_AMT2 + COST_AMT3 + DIV_AMT20 + DIV_AMT30 + DIV_AMT10 + DIV_AMT40) AS COST_AMT    	 
+	  FROM T_PS1090 A
+	 WHERE A.PRE_PJT_CD = '20'+ #{PJT_CD}
+	</select>
+	
 </mapper>

@@ -39,4 +39,27 @@ public class BusinessYesanInputService {
 		
 		return businessYesanInputMapper.getResultProject(PJT_CD);
 	}
+	public Map<String,Object> getProjectDetail (String PJT_CD){
+		/*
+		 * System.out.println(PJT_CD1+"<-service");
+		 * System.out.println(businessYesanInputMapper.getProjectSchedule(PJT_CD1));
+		 */
+		
+		  Map<String,Object> map = new HashMap<String,Object>(); 
+		  map.put("schedule",businessYesanInputMapper.getProjectSchedule(PJT_CD));
+		  map.put("mhPlan", businessYesanInputMapper.getProjectMhPlan(PJT_CD));
+		  map.put("manufacture1Left", businessYesanInputMapper.getProjectJejo1Left(PJT_CD));
+		  map.put("manufacture1Right",businessYesanInputMapper.getProjectJejo1Right(PJT_CD));
+		  map.put("manufacture2", businessYesanInputMapper.getProjectJejo2(PJT_CD));
+		  map.put("bizReport", businessYesanInputMapper.getProjectReport(PJT_CD));
+		  
+		  System.out.println(map.get("schedule"));
+		  System.out.println(map.get("mhPlan"));
+		  System.out.println(map.get("manufacture1Left"));
+		  System.out.println(map.get("manufacture1Right"));
+		  System.out.println(map.get("manufacture2"));
+		  System.out.println(map.get("bizReport"));
+		 
+		return map;
+	}
 }

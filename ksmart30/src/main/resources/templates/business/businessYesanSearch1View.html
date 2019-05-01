@@ -5,6 +5,12 @@
 
 <th:block layout:fragment="customHead">
 	<meta charset="UTF-8">
+	<!-- Datatables -->
+    <link href="../vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-buttons-bs/css/buttons.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-responsive-bs/css/responsive.bootstrap.min.css" rel="stylesheet">
+    <link href="../vendors/datatables.net-scroller-bs/css/scroller.bootstrap.min.css" rel="stylesheet">
 	<title>2.2.4 승인된 승인 사업성검토 검색 List</title>
 	<th:block th:include="layout/customHead"></th:block>
 	<link href="/build/css/selectCheck/fSelect.css" rel="stylesheet" type="text/css">
@@ -59,39 +65,61 @@
 					type : 'GET',
 					data : {DEPT_NM:DEPT_NM,PJT_CD:pjCode,PJT_NM:pjName,ADDR:ADDR,CUST_CD:CUST_CD,BIZ_GBN:BIZ_GBN,BUILD_TYPE_NM:LEVEL2_CD,CUST_GBN_NM:LEVEL2_NM,END_GBN_NM:END_GBN_NM,FORECAST_AMT:FORECAST_AMT,FORECAST_AMT2:FORECAST_AMT2,CLASS_GBN:CLASS_GBN},
 					success : (list)=>{
-					 	console.log(list+'<--list');
-					 	let tr = '';					
-						$(list).each((index,item)=>{
-							const index1 = index+1;
-							$('#list').empty();
-							tr += '<tr>';
-							tr += '<td>'+index1+'</td>';
-							tr += '<td>'+item.pjt_NM+'</td>';
-							tr += '<td>'+item.pjt_END_S+'</td>';
-							tr += '<td>'+item.pjt_END_E+'</td>';
-							tr += '<td>'+item.pjt_END_G+'</td>';
-							tr += '<td>'+item.pjt_END_T+'</td>';
-							tr += '<td>'+item.addr+'</td>';
-							tr += '<td>'+item.pm_EMP_NM+'</td>';
-							tr += '<td>'+item.emp_NM+'</td>';
-							tr += '<td>'+item.pd_EMP_NM+'</td>';
-							tr += '<td>'+item.market_NM+'</td>';				
-							tr += '<td>'+item.dept_NM+'</td>';
-							tr += '<td>'+item.cust_GBN_NM+'</td>';
-							tr += '<td>'+item.cust_NM+'</td>';
-							tr += '<td>'+item.biz_GBN+'</td>';
-							tr += '<td>'+item.forecast_AMT+'</td>';
-							tr += '<td>'+item.end_EXP_DATE+'</td>';
-							tr += '<td>'+item.end_GBN+'</td>';
-							tr += '<td>'+item.contract_AMT+'</td>';
-							tr += '<td>'+item.area_P+'</td>';
-							tr += '<td>'+item.yarea_P+'</td>';
-							tr += '<td>'+item.build_TYPE_NM+'</td>';
-							tr += '<td>'+item.product+'</td>';
-							tr += '<td></td>';
-							tr += '</tr>';
+						console.log(JSON.stringify(list));
+						$('#myTable').DataTable({
+							dom: 'Blfrtip',
+							buttons: [
+								{
+								  extend: "copy",
+								  className: "btn-sm"
+								},
+								{
+								  extend: "csv",
+								  className: "btn-sm"
+								},
+								{
+								  extend: "excel",
+								  className: "btn-sm"
+								},
+								{
+								  extend: "pdfHtml5",
+								  className: "btn-sm"
+								},
+								{
+								  extend: "print",
+								  className: "btn-sm"
+								},
+							  ],
+							searching:false,
+							lengthChange:false,
+							responsive: true,
+		    				destroy: true,
+		    				data:list,
+		    				columns: [
+		    			        {data: 'pjt_NM'},
+		    			        {data: 'pjt_END_S'},
+		    			        {data: 'pjt_END_E'},
+		    			        {data: 'pjt_END_G'},
+		    			        {data: 'pjt_END_T'},
+		    			        {data: 'addr'},
+		    			        {data: 'pm_EMP_NM'},
+		    			        {data: 'emp_NM'},
+		    			        {data: 'pd_EMP_NM'},
+		    			        {data: 'market_NM'},
+		    			        {data: 'dept_NM'},
+		    			        {data: 'cust_GBN_NM'},
+		    			        {data: 'cust_NM'},
+		    			        {data: 'biz_GBN'},
+		    			        {data: 'forecast_AMT'},
+		    			        {data: 'end_EXP_DATE'},
+		    			        {data: 'end_GBN'},
+		    			        {data: 'contract_AMT'},
+		    			        {data: 'area_P'},
+		    			        {data: 'yarea_P'},
+		    			        {data: 'build_TYPE_NM'},
+		    			        {data: 'product'}	        
+		    			    ]
 						});
-						$('#list').append(tr);
 					}
 				});
 			});
@@ -429,11 +457,9 @@
 			<div class="table-responsive">
 					<div style="overflow:scroll; width:2600px; height:600px; padding:10px; background-color:;">
 					
-					<table class="table table-striped jambo_table bulk_action" border="1" id="dataTable">
+					<table class="table table-striped jambo_table bulk_action" border="1" id="myTable">
 						<thead>
-							<tr class="headings" >
-							<td class="column-title" style="width:50px;">NO</td>
-							<td class="column-title" style="width:300px;">프로젝트명</td>
+							<tr class="headings" >							<td class="column-title" style="width:300px;">프로젝트명</td>
 							<td class="column-title" style="width:50px;">당선</td>
 							<td class="column-title" style="width:50px;">탈락</td>
 							<td class="column-title" style="width:50px;">무산</td>
@@ -455,7 +481,7 @@
 							<td class="column-title" style="width:100px;">연면적(평)</td>
 							<td class="column-title" style="width:100px;">건축물용도</td>
 							<td class="column-title" style="width:100px;">납품성과물</td>
-							<td class="column-title" style="width:100px;">결정서입력자</td>
+							<!-- <td class="column-title" style="width:100px;">결정서입력자</td> -->
 							</tr>
 						</thead>
 						<tbody id="list">
@@ -469,6 +495,22 @@
 </th:block>
 <th:block layout:fragment="customJquery">
 	<th:block th:include="layout/customJquery"></th:block>
+	<!-- Datatables -->
+    <script src="../vendors/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="../vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../vendors/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="../vendors/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="../vendors/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="../vendors/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="../vendors/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../vendors/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="../vendors/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+    <script src="../vendors/jszip/dist/jszip.min.js"></script>
+    <script src="../vendors/pdfmake/build/pdfmake.min.js"></script>
+    <script src="../vendors/pdfmake/build/vfs_fonts.js"></script>
 	<script src="/build/js/fSelect.js"></script>
 </th:block>
 </html>

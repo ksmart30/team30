@@ -35,6 +35,7 @@ public class BusinessYesanSearchController {
 	//사업성검토 검색2 화면
 	@GetMapping("/business/businessYesanSearch2View")
 	public String businessYesanSearch2View() {
+		
 		return "/business/businessYesanSearch2View";
 	}
 	

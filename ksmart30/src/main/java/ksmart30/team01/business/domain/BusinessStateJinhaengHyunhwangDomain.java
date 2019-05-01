@@ -23,6 +23,14 @@ public class BusinessStateJinhaengHyunhwangDomain {
 	private String END_GBN;       
 	private String END_GBN_NM;    
 	private String COLOR;
+	private String BIZ_CNT;
+	private String BIZ_NM;
+	private String BIZ_GBN;
+	private String BIZ1;
+	private String BIZ2;
+	private String TOTL;
+	
+	
 	public String getDEPT_CD() {
 		return DEPT_CD;
 	}
@@ -154,6 +162,42 @@ public class BusinessStateJinhaengHyunhwangDomain {
 	}
 	public void setCOLOR(String cOLOR) {
 		COLOR = cOLOR;
+	}	
+	public String getBIZ_CNT() {
+		return BIZ_CNT;
+	}
+	public void setBIZ_CNT(String bIZ_CNT) {
+		BIZ_CNT = bIZ_CNT;
+	}
+	public String getBIZ_NM() {
+		return BIZ_NM;
+	}
+	public void setBIZ_NM(String bIZ_NM) {
+		BIZ_NM = bIZ_NM;
+	}
+	public String getBIZ_GBN() {
+		return BIZ_GBN;
+	}
+	public void setBIZ_GBN(String bIZ_GBN) {
+		BIZ_GBN = bIZ_GBN;
+	}	
+	public String getBIZ1() {
+		return BIZ1;
+	}
+	public void setBIZ1(String bIZ1) {
+		BIZ1 = bIZ1;
+	}
+	public String getBIZ2() {
+		return BIZ2;
+	}
+	public void setBIZ2(String bIZ2) {
+		BIZ2 = bIZ2;
+	}
+	public String getTOTL() {
+		return TOTL;
+	}
+	public void setTOTL(String tOTL) {
+		TOTL = tOTL;
 	}
 	@Override
 	public String toString() {
@@ -163,8 +207,7 @@ public class BusinessStateJinhaengHyunhwangDomain {
 				+ ", EMP_NM=" + EMP_NM + ", PM_EMP_NM=" + PM_EMP_NM + ", INGUN_AMT=" + INGUN_AMT + ", COST_AMT="
 				+ COST_AMT + ", SCV_AMT=" + SCV_AMT + ", TOT_AMT=" + TOT_AMT + ", ACT_STAT=" + ACT_STAT
 				+ ", ACT_STAT_NM=" + ACT_STAT_NM + ", END_DATE=" + END_DATE + ", END_GBN=" + END_GBN + ", END_GBN_NM="
-				+ END_GBN_NM + ", COLOR=" + COLOR + "]";
+				+ END_GBN_NM + ", COLOR=" + COLOR + ", BIZ_CNT=" + BIZ_CNT + ", BIZ_NM=" + BIZ_NM + ", BIZ_GBN="
+				+ BIZ_GBN + ", BIZ1=" + BIZ1 + ", BIZ2=" + BIZ2 + ", TOTL=" + TOTL + "]";
 	}
-	
-	
 }

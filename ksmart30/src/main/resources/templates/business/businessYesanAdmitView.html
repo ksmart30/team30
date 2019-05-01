@@ -24,144 +24,422 @@
 	<!-- <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet"> -->
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script>
-		/* =============================엔터키 방지================================= */
-		$(document).keypress((e)=>{
-			if (e.keyCode == 13){
-				e.preventDefault();
-			}
-		});
-		/* =============================날짜 초기화================================= */
-		let today = new Date();
-		let dd = today.getDate();
-		let mm = today.getMonth()+1; //January is 0!
-		let yyyy = today.getFullYear();
-		if(dd<10) {
-		    dd='0'+dd
-		} 
-		if(mm<10) {
-		    mm='0'+mm
-		} 
-		today = yyyy+'-' + mm + '-' + dd;
-		MonthInit = yyyy+'-' + mm + '-01';
-		/* =============================날짜 초기화 end================================= */
-		
-		/* =============================페이지 초기화================================= */
-		let pjtList = ()=>{
-			console.log($(':radio[name="ACT_STAT"]:checked').val());
-			console.log($('#year').val());
-			console.log($('#deptSelect option:selected').val());
-			console.log($('#PJT_CD').val());
-			console.log($('#PJT_NM').val());
-			$("input:radio[name=ACT_STAT]").click();
-			
+	/* =============================엔터키 방지================================= */
+	$(document).keypress((e)=>{
+		if (e.keyCode == 13){
+			e.preventDefault();
 		}
-		
-		
-		/* =============================페이지 초기화 end================================= */
-		$(document).ready(()=>{
-			
-			/* $('#ResultCount').text('0'); */
-			$('#FIRSTDATE').val(MonthInit);
-			$('#ENDDATE').val(today);
-			
-			
-			$("input:radio[name=ACT_STAT]").click(()=>{
-				/* console.log($(':radio[name="ACT_STAT"]:checked').val()); */
-				$('#btnBizSearch').click();
-			});
-			
-			/* =============================프로젝트 코드조회 모달 테이블================================= */
-			$('#btnProjectSearch').click(()=>{
-				let searchArr = {
-								column:$('#selectedProject option:selected').val(),
-								columnValue:$('#PJT_Value').val()
-							};
-				/* console.log(JSON.stringify(searchArr)); */
+	});
+	/* =============================날짜 초기화================================= */
+	let today = new Date();
+	let dd = today.getDate();
+	let mm = today.getMonth()+1; //January is 0!
+	let yyyy = today.getFullYear();
+	if(dd<10) {
+	    dd='0'+dd
+	} 
+	if(mm<10) {
+	    mm='0'+mm
+	} 
+	today = yyyy+'-' + mm + '-' + dd;
+	MonthInit = yyyy+'-' + mm + '-01';
+	/* =============================날짜 초기화 end================================= */
+	
+	/* =============================금액 쉼표 ==================================== */
+	function amtCommas(x) {
+		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
+	/* =============================금액 쉼표 end================================= */
+	
+	/* =============================금액 쉼표================================= */
+	function numberCommas(n) {
+	    let parts=n.toString().split(".");
+	    return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (parts[1] ? "." + parts[1] : "");
+	}
+	/* =============================금액 쉼표 end================================= */
+	function runAjax(PJT_CD){
+		console.log(PJT_CD+'<- ajax 받았다.');
+		$.ajax({
+			contentType:'application/json',
+			dataType:'json',
+            url:'/businessYesanAdmitGetResultProject',
+            type:'POST',
+            data:PJT_CD,
+            success:(result)=>{
+            	/* console.log(JSON.stringify(result)); */
+            	let date =result.CD_REG_DATE.substring(0,4)+'-'+result.CD_REG_DATE.substring(4,6)+'-'+result.CD_REG_DATE.substring(6,8)
+            	PJT_CD = result.PJT_CD;
+            	$('#LPJT_CD').text(result.PJT_CD);
+            	$('#LPJT_NM').text(result.PJT_NM);
+            	$('#LCRT_DATE').text(date);
+            	$('#LACT_STAT').text(result.APPROVAL);
+            	$('#LACT_STAT').css('color',result.COLOR);/* COLOR  */
+            	$('#LCUST_NM').text(result.CUST_NM);
+            	$('#LCUST_GBN').text(result.CUST_GBN);
+            	$('#LZIP_CD').text(result.ZIP_CD);
+            	$('#LADDR').text(result.ADDR);
+            	$('#LREGION_NM').text(result.REGION1_NM +' / '+ result.REGION2_NM +' / '+ result.REGION3_NM);
+            	$('#LZONE_NM').text(result.ZONE1_NM +' / '+ result.ZONE2_NM +' / '+ result.ZONE3_NM);
+            	$('#LSCOPE_NM').text(result.SCOPE1_NM +' / '+ result.SCOPE2_NM +' / '+ result.SCOPE3_NM);
+            	$('#LBIZ_TYPE').text(result.BIZ_TYPE);
+            	$('#LBIZ_GBN').text(result.BIZ_GBN);
+            	$('#LBUILD_GB').text(result.BUILD_GB);
+            	$('#LBUILD_TYPE_NM').text(result.BUILD_TYPE);
+            	$('#LAREA_M').text(numberCommas(result.AREA_M));
+            	$('#LAREA_P').text(numberCommas(result.AREA_P));
+            	$('#LDOWN_SU').text(result.DOWN_SU);
+            	$('#LUP_SU').text(result.UP_SU);
+            	$('#LH_CNT').text(result.H_CNT);
+            	$('#LYAREA_M').text(numberCommas(result.YAREA_M));
+            	$('#LYAREA_P').text(numberCommas(result.YAREA_P));
+            	$('#LCOVERAGE').text(result.COVERAGE);
+            	$('#LCAPACITY').text(result.CAPACITY);
+            	$('#LDEPT_NM').text(result.DEPT_NM);
+            	$('#LINFO_EMP_NO').text(result.INFO_EMP_NO);
+            	$('#LCLASS_GBN').text(result.CLASS_GBN);
+            	$('#PmName').val(result.PM_EMP_NO);
+            	$('#PdName').val(result.DESIGN_MAN);
+            	$('#TPRODUCT').val(result.PRODUCT);
+            	
+            	$('#LFORECAST_AMT').text(amtCommas(result.FORECAST_AMT)+' 원');
+            	$('#LTOTAL_AMT').text(amtCommas(result.TOTAL_AMT)+' 원');
+            }
+		});
+		/* =============================일정계획 tab================================= */
+		SPJT_CD = PJT_CD.replace(/[a-z]/gi,"");
+		console.log(PJT_CD+'<--입력값');
+		console.log(SPJT_CD+'<--입력값');
+		$.when(
 				$.ajax({
-    				contentType:'application/json',
+					contentType:'application/json',
     				dataType:'json',
-		            url:'/businessYesanAdmitGetProjectList',
+		            url:'/businessYesanAdmitGetResultDetail',
 		            type:'POST',
-		            data:JSON.stringify(searchArr),
-		            success:(data)=>{
-		            	console.log(JSON.stringify(data));
-		            	$('#ProjectList').DataTable({
-		            		searching:false,
-							lengthChange:false,
-							responsive: true,
-		    				destroy: true,
-		    				data:data,
-		    				columns: [
-		    			        {data: 'PJT_CD'},
-		    			        {data: 'PJT_NM'}
-		    			    ]
-	        			});
-		            }
-				});
-			});
-			$('#ProjectList').delegate('tr','dblclick',function(){
-				let tr = $(this);
-				let td = tr.children();
-				$('#PJT_CD').val(td.eq(0).text());
-				$('#PJT_NM').val(td.eq(1).text());
-				$('#PJT_Value').val('');
-				$('#projectModal').click();
-			});
-			/* =============================프로젝트 코드조회 모달 테이블 end================================= */
-			
-			
-			/* =============================프로젝트 모달 테이블 초기화================================= */
-			/* $('#ProjectList').DataTable({
-				searching:false,
-				lengthChange:false,
-				responsive: true,
+		            data:SPJT_CD}
+	           )).done((data)=>{
+	        	  console.log(JSON.stringify(data.schedule));
+	        	   $('#schedulePlanList').DataTable({
+	        		   	searching:false,
+						lengthChange:false,
+						responsive: true,
+	    				destroy: true,
+	    				data:[data.schedule],
+	    				columns: [
+	    			        {data: 'SEQ'},
+	    			        {data: 'JOB_STEP'},
+	    			        {data: 'UPD_COUNT'},
+	    			        {data: 'END_EXP_DATE'},
+	    			        {data: 'END_DATE'},
+	    			        {data: 'BIGO'}
+	    			    ]
+	        	   });
+	        	   $('#MhPlanList').DataTable({
+	        		    searching:false,
+						lengthChange:false,
+						responsive: true,
+	    				destroy: true,
+	    				paging: false,
+	    				info:false,
+	    				data:data.mhPlan,
+	    				columns: [
+	    			        {data: 'NUM'},
+	    			        {data: 'LEVEL2_NM'},
+	    			        {data: 'INWON_1'},
+	    			        {data: 'MD_PLAN_1'},
+	    			        {data: 'INWON_2'},
+	    			        {data: 'MD_PLAN_2'},
+	    			        {data: 'INWON'},
+	    			        {data: 'MD_PLAN'},
+	    			        {data: 'YEA_AMT'},
+	    			        {data: 'BIGO'}
+	    			    ],
+	    			    footerCallback: function(row, data, start, end, display) {
+	    			    	  let api = this.api();
+	    			    	  columnsApi(api, 2, '#MhINWON_1Total');
+	    			    	  columnsApi(api, 3, '#MhMD_PLAN_1Total');
+	    			    	  columnsApi(api, 4, '#MhINWON_2Total');
+	    			    	  columnsApi(api, 5, '#MhMD_PLAN_2Total');
+	    			    	  columnsApi(api, 6, '#MhINWONTotal');
+	    			    	  columnsApi(api, 7, '#MhMD_PLANTotal');
+	    			    	  columnsApi(api, 8, '#MhYEA_AMTTotal');		    			    	  
+	    			    },
+	        	   		columnDefs:[
+	        	   				{
+		        	   				targets: [2],
+		        	   				className: 'text-right',
+		        	   				render: function ( data, type, row ) {
+                                       return amtCommas(row.INWON_1);
+                               	}
+	        	   				},
+                               {
+		        	   				targets: [3],
+		        	   				className: 'text-right',
+		        	   				render: function ( data, type, row ) {
+                                       return amtCommas(row.MD_PLAN_1);
+                               	}
+                               },
+                               {
+		        	   				targets: [4],
+		        	   				className: 'text-right',
+		        	   				render: function ( data, type, row ) {
+                                       return amtCommas(row.INWON_2);
+                               	}
+                               },
+                               {
+		        	   				targets: [5],
+		        	   				className: 'text-right',
+		        	   				render: function ( data, type, row ) {
+                                       return amtCommas(row.MD_PLAN_2);
+                               	}
+                               },
+                               {
+		        	   				targets: [6],
+		        	   				className: 'text-right',
+		        	   				render: function ( data, type, row ) {
+                                       return amtCommas(row.INWON);
+                               	}
+                               },
+                               {
+		        	   				targets: [7],
+		        	   				className: 'text-right',
+		        	   				render: function ( data, type, row ) {
+                                       return amtCommas(row.MD_PLAN);
+                               	}
+                               },
+                               {
+		        	   				targets: [8],
+		        	   				className: 'text-right',
+		        	   				render: function ( data, type, row ) {
+                                       return amtCommas(row.YEA_AMT);
+                               	}
+	        	   		}]
+	        	   });
+	        	   
+	        	   let Manufacture1Total = 0;
+	        	   
+	        	   $('#manufacture1Left').DataTable({
+	        		    searching:false,
+						lengthChange:false,
+						responsive: true,
+	    				destroy: true,
+	    				paging: false,
+	    				info:false,
+	    				data:data.manufacture1Left,
+	    				columns: [
+	    					{data: 'NUM'},
+	    			        {data: 'COST_NM'},
+	    			        {data: 'COST_AMT'}
+	    			    ],
+	    			    footerCallback: function(row, data, start, end, display) {
+	    			    	  let api = this.api();
+	    			    	  let sum = columnsApi(api, 2, '#Manufacture1LeftTotal');
+	    			    	  Manufacture1Total += sum;
+	    			    	 /*  let Manufacture1Total = ($('#Manufacture1LeftTotal').text()*1)+($('#Manufacture1RightTotal').text()*1);
+	    						$('#Manufacture1Total').text(Manufacture1Total); */
+	    			    },
+	        	   		columnDefs:[{
+	        	   				targets: [2],
+	        	   				className: 'text-right',
+	        	   				render: function ( data, type, row ) {
+                                  return amtCommas(row.COST_AMT);
+                              }
+	        	   		}]
+	        	   });
+	        	   
+	        	   $('#manufacture1Right').DataTable({
+	        		    searching:false,
+						lengthChange:false,
+						responsive: true,
+	    				destroy: true,
+	    				paging: false,
+	    				info:false,
+	    				data:data.manufacture1Right,
+	    				columns: [
+	    					{data: 'NUM'},
+	    			        {data: 'COST_NM'},
+	    			        {data: 'COST_AMT'}
+	    			    ],
+	    			    footerCallback: function(row, data, start, end, display) {
+	    			    	  let api = this.api();
+	    			    	  let sum = columnsApi(api, 2, '#Manufacture1RightTotal');
+	    			    	  Manufacture1Total += sum;
+	    			    },
+	        	   		columnDefs:[{
+	        	   				targets: [2],
+	        	   				className: 'text-right',
+	        	   				render: function ( data, type, row ) {
+                                 return amtCommas(row.COST_AMT);
+                             }
+	        	   		}]
+	        	   });
+	        	   
+	        	   $('#Manufacture1Total').text(amtCommas(Manufacture1Total)+' 원');
+	        	   
+	        	   $(data.manufacture2).each((index,item)=>{
+	        		   data.manufacture2[index].EM = '';
+	        		});
+	        	  
+	        	   $('#manufacture2').DataTable({
+	        		    searching:false,
+						lengthChange:false,
+						responsive: true,
+	    				destroy: true,
+	    				paging: false,
+	    				info:false,
+	    				data:data.manufacture2,
+	    				columns: [
+	    					{data: 'EM'},
+	    			        {data: 'NUM'},
+	    			        {data: 'ACC_LONG_NM'},
+	    			        {data: 'YEA_AMT'},
+	    			        {data: 'BIGO'}
+	    			    ],
+	    			    footerCallback: function(row, data, start, end, display) {
+	    			    	  let api = this.api();
+	    			    	  columnsApi(api, 3, '#jejo2Total');
+	    			    },
+	        	   		columnDefs:[{
+	        	   				targets: [3],
+	        	   				className: 'text-right',
+	        	   				render: function ( data, type, row ) {
+                                   return amtCommas(row.YEA_AMT);
+                               }
+	        	   		}]
+	        	   });
+	        	   /* console.log(JSON.stringify(data.bizReport)); */
+	        	   $('#LABOR_COST').text(amtCommas(data.bizReport.LABOR_COST));
+	        	   $('#MANU_COST1').text(amtCommas(data.bizReport.MANU_COST1));
+	        	   $('#MANU_COST2').text(amtCommas(data.bizReport.MANU_COST2));
+	        	   $('#SELF_SUM').text(amtCommas(data.bizReport.SELF_SUM));
+	        	   $('#COMMON_COST1').text(amtCommas(data.bizReport.COMMON_COST1));
+	        	   $('#INDIREC_COST').text(amtCommas(data.bizReport.INDIREC_COST));
+	        	   $('#COMMON_COST2').text(amtCommas(data.bizReport.COMMON_COST2));
+	        	   $('#MANAGE_COST').text(amtCommas(data.bizReport.MANAGE_COST));
+	        	   $('#DIV_AMT').text(amtCommas(data.bizReport.DIV_AMT));
+	        	   $('#COST_AMT').text(amtCommas(data.bizReport.COST_AMT));
+	        	   $('#BUILDING_COST').text(amtCommas(data.bizReport.BUILDING_COST));
+	        	   $('#TELE_COST').text(amtCommas(data.bizReport.TELE_COST));
+	        	   $('#NET_COST').text(amtCommas(data.bizReport.NET_COST));
+	        	   $('#INDIREC_COST_SUM').text(amtCommas(data.bizReport.INDIREC_COST));
+	        	   $('#COMMON_COST_BU').text(amtCommas(data.bizReport.COMMON_COST_BU));
+	        	   $('#COMMON_COST_BON').text(amtCommas(data.bizReport.COMMON_COST_BON));
+	        	   $('#COMMON_COST_DEPT').text(amtCommas(data.bizReport.COMMON_COST_DEPT));
+	        	   $('#COMMON_COST1_SUM').text(amtCommas(data.bizReport.COMMON_COST1));
+	        	 
+	           });
+		
+		/* =============================일정계획 tab end================================= */
+	}
+
+	function columnsApi(api,index, labelName){
+		let sum;
+		api.columns(index, {
+    	    page: 'current'
+    	  }).every(function() {
+    	    sum = this
+    	      .data()
+    	      .reduce(function(a, b) {
+    	        var x = parseFloat(a) || 0;
+    	        var y = parseFloat(b) || 0;
+    	        return x + y;
+    	      }, 0);
+    	    console.log(sum); //alert(sum);
+    	    $(labelName).text(amtCommas(sum));
+    	  });
+		return sum;
+	};
+	$(document).ready(()=>{
+		
+		$('#FIRSTDATE').val(MonthInit);
+		$('#ENDDATE').val(today);
+		
+		$("input:radio[name=ACT_STAT]").click(()=>{
+			if($(':radio[name="ACT_STAT"]:checked').val() == '1'){
+				$('#btnBizInput').removeAttr('disabled');
+			}else{
+				$('#btnBizInput').attr('disabled','disabled');
+			}
+			$('#btnBizSearch').click();
+		});
+		
+		/* =============================프로젝트 코드조회 모달 테이블================================= */
+		$('#btnProjectSearch').click(()=>{
+			let searchArr = {
+							column:$('#selectedProject option:selected').val(),
+							columnValue:$('#PJT_Value').val()
+						};
+			/* console.log(JSON.stringify(searchArr)); */
+			$.ajax({
 				contentType:'application/json',
 				dataType:'json',
-				ajax: {
-					'url' : '/businessYesanGetProjectList',
-				},columns: [
-			        {"data": "PJT_CD"},
-			        {"data": "PJT_NM"}
-			    ]
+	            url:'/businessYesanAdmitGetProjectList',
+	            type:'POST',
+	            data:JSON.stringify(searchArr),
+	            success:(data)=>{
+	            	console.log(JSON.stringify(data));
+	            	$('#ProjectList').DataTable({
+	            		searching:false,
+						lengthChange:false,
+						responsive: true,
+	    				destroy: true,
+	    				data:data,
+	    				columns: [
+	    			        {data: 'PJT_CD'},
+	    			        {data: 'PJT_NM'}
+	    			    ]
+        			});
+	            }
 			});
-			$('#ProjectList').delegate('tr','dblclick',function(){
-				let tr = $(this);
-				let td = tr.children();
-				$('#PJT_CD').val(td.eq(0).text());
-				$('#PJT_NM').val(td.eq(1).text());
-				$('#PJT_Value').val('');
-				$('#projectModal').click();
-			}); */
-			/* =============================프로젝트 모달 테이블 초기화 end================================= */
+		});
+		$('#ProjectList').delegate('tr','dblclick',function(){
+			let tr = $(this);
+			let td = tr.children();
+			$('#PJT_CD').val(td.eq(0).text());
+			$('#PJT_NM').val(td.eq(1).text());
+			$('#PJT_Value').val('');
+			$('#projectModal').click();
+		});
+		/* =============================프로젝트 코드조회 모달 테이블 end================================= */
+					
+		/* =============================조회버튼 클릭시 검색 결과 프로젝트 리스트 ================================= */
+		$('#btnBizSearch').click(()=>{
+			$('#ResultProjectListBody').empty();
 			
-			/* =============================조회버튼 클릭시 검색 결과 프로젝트 리스트 ================================= */
-			$('#btnBizSearch').click(()=>{
-				let subStringYear = $('#FIRSTDATE').val().substring(2,4);
-				let subStringDept = $('#deptSelect option:selected').val().substring(0,1);
-				 
-				let searchArr = {
-						DateYear: $('#FIRSTDATE').val(),
-						DEPT_CD:subStringDept,
-						PJT_CD:$('#PJT_CD').val(),
-						PJT_NM:$('#PJT_NM').val(),
-						ACT_STAT:$(':radio[name="ACT_STAT"]:checked').val(),
-						FIRSTDATE:$('#FIRSTDATE').val().replace(/-/gi, ''),
-						ENDDATE:$('#ENDDATE').val().replace(/-/gi, '')
-					};
-				console.log(JSON.stringify(searchArr));
-				$.ajax({
-    				contentType:'application/json',
-    				dataType:'json',
-		            url:'/businessYesanAdmitGetResultProjectList',
-		            type:'POST',
-		            data:JSON.stringify(searchArr),
-		            success:(list)=>{
-		            	console.log(JSON.stringify(list));
+			let subStringYear = $('#FIRSTDATE').val().substring(2,4);
+			let subStringDept = $('#deptSelect option:selected').val().substring(0,1);
+			
+			let searchArr = {
+					DateYear: $('#FIRSTDATE').val(),
+					DEPT_CD:subStringDept,
+					PJT_CD:$('#PJT_CD').val(),
+					PJT_NM:$('#PJT_NM').val(),
+					ACT_STAT:$(':radio[name="ACT_STAT"]:checked').val(),
+					FIRSTDATE:$('#FIRSTDATE').val().replace(/-/gi, ''),
+					ENDDATE:$('#ENDDATE').val().replace(/-/gi, '')
+				};
+			
+			console.log(JSON.stringify(searchArr));
+			
+			let init_PJT = '';
+			$.ajax({
+				contentType:'application/json',
+				dataType:'json',
+	            url:'/businessYesanAdmitGetResultProjectList',
+	            type:'POST',
+	            data:JSON.stringify(searchArr),
+	            success:(list)=>{
+	            	console.log(JSON.stringify(list));
+	            	if(list.length == 0){
+	            		let result = $(list).length;
+		            	$('#ResultCount').text(result);
+	            	}else{
 		            	let tr = '';
 		            	let result = $(list).length;
 		            	$('#ResultCount').text(result);
+		            	init_PJT = list[0].PJT_CD;
+		            	console.log(init_PJT + '<--이게 들어와야한다.')
 		            	$(list).each((index,item)=>{
-		            		$('#ResultProjectListBody').empty();
+		            		
 		            		tr += '<tr>';
 		            		tr += '<td style="width:5%;"></td>';
 							tr += '<td style="width:30%;">'+item.PJT_CD+'</td>';
@@ -169,148 +447,120 @@
 							tr += '</tr>';
 		            	});
 		            	$('#ResultProjectListBody').append(tr);
+		            	runAjax(init_PJT);
 	            	}
-				});
+            	}
 			});
-			/* =============================조회버튼 클릭시 검색 결과 프로젝트 리스트 end================================= */
-			$('#ResultProjectList').delegate('tr','click',function(){
-				let tr = $(this);
-				let td = tr.children();
-				let PJT_CD = td.eq(1).text();
-				console.log(JSON.stringify(PJT_CD));
-				$.ajax({
-					contentType:'application/json',
-    				dataType:'json',
-		            url:'/businessYesanAdmitGetResultProject',
-		            type:'POST',
-		            data:PJT_CD,
-		            success:(result)=>{
-		            	console.log(JSON.stringify(result));
-		            	let convertDate = new Date(result.CD_REG_DATE);
-		            	let date = convertDate;
-		            	$('#LPJT_CD').text(result.PJT_CD);
-		            	$('#LPJT_NM').text(result.PJT_NM);
-		            	$('#LCRT_DATE').text(date);
-		            	$('#LACT_STAT').text(result.APPROVAL);
-		            	$('#LACT_STAT').css('color',result.COLOR);/* COLOR  */
-		            	$('#LCUST_NM').text(result.CUST_NM);
-		            	$('#LCUST_GBN').text(result.CUST_GBN);
-		            	$('#LZIP_CD').text(result.ZIP_CD);
-		            	$('#LADDR').text(result.ADDR);
-		            	$('#LREGION_NM').text(result.REGION1_NM +' / '+ result.REGION2_NM +' / '+ result.REGION3_NM);
-		            	$('#LZONE_NM').text(result.ZONE1_NM +' / '+ result.ZONE2_NM +' / '+ result.ZONE3_NM);
-		            	$('#LSCOPE_NM').text(result.SCOPE1_NM +' / '+ result.SCOPE2_NM +' / '+ result.SCOPE3_NM);
-		            	$('#LBIZ_TYPE').text(result.BIZ_TYPE);
-		            	$('#LBIZ_GBN').text(result.BIZ_GBN);
-		            	$('#LBUILD_GB').text(result.BUILD_GB);
-		            	$('#LBUILD_TYPE_NM').text(result.BUILD_TYPE);
-		            	$('#LAREA_M').text(result.AREA_M);
-		            	$('#LAREA_P').text(result.AREA_P);
-		            	$('#LDOWN_SU').text(result.DOWN_SU);
-		            	$('#LUP_SU').text(result.UP_SU);
-		            	$('#LH_CNT').text(result.H_CNT);
-		            	$('#LYAREA_M').text(result.YAREA_M);
-		            	$('#LYAREA_P').text(result.YAREA_P);
-		            	$('#LCOVERAGE').text(result.COVERAGE);
-		            	$('#LCAPACITY').text(result.CAPACITY);
-		            	$('#LDEPT_NM').text(result.DEPT_NM);
-		            	$('#LINFO_EMP_NO').text(result.INFO_EMP_NO);
-		            	$('#LCLASS_GBN').text(result.CLASS_GBN);
-		            	$('#PmName').val(result.PM_EMP_NO);
-		            	$('#PdName').val(result.DESIGN_MAN);
-		            	$('#LPRODUCT').val(result.PRODUCT);
-		            	$('#LFORECAST_AMT').text(result.FORECAST_AMT);
-		            	$('#LTOTAL_AMT').text(result.TOTAL_AMT);
-		            }
-				})
-				
-				
-			});
-			
-			
-			/* pjtList(); */
-			/* =============================PM 모달 테이블================================= */
-			$('#btnPMSearch').click(()=>{
-				let searchArr = {
-						column:$('#selectedEmpPMItem option:selected').val(),
-						columnValue:$('#PMValue').val(),
-						EMP_GB:$('#selectedEmpPMGB option:selected').val()
-						}; 
-				console.log(JSON.stringify(searchArr));
-				$.ajax({
-    				contentType:'application/json',
-    				dataType:'json',
-		            url:'/businessYesanAdmitGetResultEmpList',
-		            type:'POST',
-		            data:JSON.stringify(searchArr),
-		            success:(data)=>{
-		            	/* $('#accSearchList').destroy(); */
-		            	/* console.log(JSON.stringify(data)); */
-		    			$('#EmpPMList').DataTable({
-		    				searching:false,
-							lengthChange:false,
-							responsive: true,
-		    				destroy: true,
-		    				data:data,
-		    				columns: [
-		    			        {data: 'EMP_NO'},
-		    			        {data: 'KOR_NM'},
-		    			        {data: 'DEPT_NM'},
-		    			        {data: 'JIKGUP_NM'}
-		    			    ]
-	        			}); 
-	            	}
-				});
-			});
-			$('#EmpPMList').delegate('tr','dblclick',function(){
-				let tr = $(this);
-				let td = tr.children();
-				$('#PmName').val(td.eq(1).text());
-				$('#PmModal').click();
-			});
-			/* =============================PM 모달 테이블 end================================= */
-			
-			/* =============================PD 모달 테이블================================= */
-			$('#btnPDSearch').click(()=>{
-				let searchArr = {
-						column:$('#selectedEmpPDItem option:selected').val(),
-						columnValue:$('#PdValue').val(),
-						EMP_GB:$('#selectedEmpPDGB option:selected').val()
-						}; 
-				console.log(JSON.stringify(searchArr));
-				$.ajax({
-    				contentType:'application/json',
-    				dataType:'json',
-		            url:'/businessYesanAdmitGetResultEmpList',
-		            type:'POST',
-		            data:JSON.stringify(searchArr),
-		            success:(data)=>{
-		            	/* $('#accSearchList').destroy(); */
-		            	/* console.log(JSON.stringify(data)); */
-		    			$('#EmpPDList').DataTable({
-		    				searching:false,
-							lengthChange:false,
-							responsive: true,
-		    				destroy: true,
-		    				data:data,
-		    				columns: [
-		    			        {data: 'EMP_NO'},
-		    			        {data: 'KOR_NM'},
-		    			        {data: 'DEPT_NM'},
-		    			        {data: 'JIKGUP_NM'}
-		    			    ]
-	        			}); 
-	            	}
-				});
-			});
-			$('#EmpPDList').delegate('tr','dblclick',function(){
-				let tr = $(this);
-				let td = tr.children();
-				$('#PdName').val(td.eq(1).text());
-				$('#PdModal').click();
-			});
-			/* =============================PM 모달 테이블 end================================= */
 		});
+		/* =============================조회버튼 클릭시 검색 결과 프로젝트 리스트 end================================= */
+		$('#ResultProjectList').delegate('tr','click',function(){
+			let tr = $(this);
+			let td = tr.children();
+			let PJT_CD = td.eq(1).text();
+			console.log(JSON.stringify(PJT_CD)+'<-- 클릭시 반응');
+			runAjax(PJT_CD);
+		});
+		
+		/* =============================PM 모달 테이블================================= */
+		$('#btnPMSearch').click(()=>{
+			let searchArr = {
+					column:$('#selectedEmpPMItem option:selected').val(),
+					columnValue:$('#PMValue').val(),
+					EMP_GB:$('#selectedEmpPMGB option:selected').val()
+					}; 
+			console.log(JSON.stringify(searchArr));
+			$.ajax({
+				contentType:'application/json',
+				dataType:'json',
+	            url:'/businessYesanAdmitGetResultEmpList',
+	            type:'POST',
+	            data:JSON.stringify(searchArr),
+	            success:(data)=>{
+	            	console.log(JSON.stringify(data));
+	            	
+	    			$('#EmpPMList').DataTable({
+	    				searching:false,
+						lengthChange:false,
+						responsive: true,
+	    				destroy: true,
+	    				data:data,
+	    				columns: [
+	    			        {data: 'EMP_NO'},
+	    			        {data: 'KOR_NM'},
+	    			        {data: 'DEPT_NM'},
+	    			        {data: 'JIKGUP_NM'}
+	    			    ]
+        			}); 
+            	}
+			});
+		});
+		$('#EmpPMList').delegate('tr','dblclick',function(){
+			let tr = $(this);
+			let td = tr.children();
+			$('#PmName').val(td.eq(1).text());
+			$('#PmModal').click();
+		});
+		/* =============================PM 모달 테이블 end================================= */
+		
+		/* =============================PD 모달 테이블================================= */
+		$('#btnPDSearch').click(()=>{
+			let searchArr = {
+					column:$('#selectedEmpPDItem option:selected').val(),
+					columnValue:$('#PdValue').val(),
+					EMP_GB:$('#selectedEmpPDGB option:selected').val()
+					}; 
+			console.log(JSON.stringify(searchArr));
+			$.ajax({
+				contentType:'application/json',
+				dataType:'json',
+	            url:'/businessYesanAdmitGetResultEmpList',
+	            type:'POST',
+	            data:JSON.stringify(searchArr),
+	            success:(data)=>{
+	            	/* $('#accSearchList').destroy(); */
+	            	/* console.log(JSON.stringify(data)); */
+	    			$('#EmpPDList').DataTable({
+	    				searching:false,
+						lengthChange:false,
+						responsive: true,
+	    				destroy: true,
+	    				data:data,
+	    				columns: [
+	    			        {data: 'EMP_NO'},
+	    			        {data: 'KOR_NM'},
+	    			        {data: 'DEPT_NM'},
+	    			        {data: 'JIKGUP_NM'}
+	    			    ]
+        			}); 
+            	}
+			});
+		});
+		$('#EmpPDList').delegate('tr','dblclick',function(){
+			let tr = $(this);
+			let td = tr.children();
+			$('#PdName').val(td.eq(1).text());
+			$('#PdModal').click();
+		});
+		/* =============================PM 모달 테이블 end================================= */
+		$('#EmpPDList').delegate('tr','dblclick',function(){
+			let tr = $(this);
+			let td = tr.children();
+			$('#PdName').val(td.eq(1).text());
+			$('#PdModal').click();
+		});
+		
+		init_pjtList();
+	});
+
+	/* =============================페이지 초기화================================= */
+	let init_pjtList = ()=>{
+		$(':radio[name="ACT_STAT"]:checked').trigger('click');
+		$('#btnProjectSearch').trigger('click');
+		$('#btnPMSearch').trigger('click');
+		$('#btnPDSearch').trigger('click');
+		
+	}
+	/* =============================페이지 초기화 end================================= */
 	</script>
 </th:block>
 
@@ -320,8 +570,8 @@
 		<div class="col-md-8 col-sm-12 col-xs-12" style="color:black;">
 			<div class="page-title">
 				<div class="title_left">
-					<h2><b>사업성검토 예산 입력</b></h2>
-					<h5><font color="gray"><b>1. 사업성검토 관리&nbsp;>&nbsp;&nbsp;1.2.1 사업성검토 예산 입력</b></font></h5>
+					<h2><b>사업성검토 예산 승인</b></h2>
+					<h5><font color="gray"><b>1. 사업성검토 관리&nbsp;>&nbsp;&nbsp;1.2.1 사업성검토 예산 승인</b></font></h5>
 					<br>
 				</div>
 			</div>
@@ -686,7 +936,7 @@
 								<tr>
 									<td style="background-color: #E8F0FA">예산총계</td>
 									<td colspan="2"><label id="LTOTAL_AMT"></label></td>
-									<td><button type="button" class="btn" style="color: black;">예산pjt코드 입력</button></td>
+									<td><button id="admitProcess" type="button" class="btn" style="color: black;">승인처리</button></td>
 								</tr>
 							</tbody>
 						</table>
@@ -712,7 +962,7 @@
 						</div>
 						<div id="myTabContent" class="tab-content">
 							<div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
-								<table class="table table-striped table-bordered table-hover jambo_table">
+								<table id="schedulePlanList" class="table table-striped table-bordered table-hover jambo_table">
 									<thead>
 										<tr>
 											<th>순번</th>
@@ -723,20 +973,11 @@
 											<th>사유</th>
 										</tr>
 									</thead>
-									<tbody>
-										<tr>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-										</tr>
-									</tbody>																	
+																								
 								</table>
 							</div>
 							<div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab1">
-								<table class="table table-striped table-bordered table-hover jambo_table">
+								<table id="MhPlanList" class="table table-striped table-bordered table-hover jambo_table" style="width: 100%">
 									<thead>
 										<tr>
 											<th rowspan="2">순번</th>
@@ -756,25 +997,25 @@
 											<th>계획MH</th>
 										</tr>
 									</thead>
-									<tbody>
+									<tfoot style="background-color: #FFFFB6">
 										<tr>
 											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
+											<td>소계</td>
+											<td><label id="MhINWON_1Total"></label></td>
+											<td><label id="MhMD_PLAN_1Total"></label></td>
+											<td><label id="MhINWON_2Total"></label></td>
+											<td><label id="MhMD_PLAN_2Total"></label></td>
+											<td><label id="MhINWONTotal"></label></td>
+											<td><label id="MhMD_PLANTotal"></label></td>
+											<td><label id="MhYEA_AMTTotal"></label></td>
 											<td></td>
 										</tr>
-									</tbody>																	
+									</tfoot>																
 								</table>
 							</div>
 							<div role="tabpanel" class="tab-pane fade" id="tab_content3" aria-labelledby="home-tab">
 								<div class="col-md-6 col-sm-12 col-xs-12">
-									<table class="table table-striped table-bordered table-hover jambo_table">
+									<table id="manufacture1Left" class=" table-striped table-bordered table-hover jambo_table" style="width: 100%">
 										<thead>
 											<tr>
 												<th>순번</th>
@@ -783,24 +1024,17 @@
 												
 											</tr>
 										</thead>
-										<tbody>
-											<tr>
-												<td></td>
-												<td></td>
-												<td></td>
-											</tr>
-										</tbody>
 										<tfoot style="background-color: #FFFFB6">
 											<tr>
 												<td></td>
 												<td>소계</td>
-												<td>0</td>
+												<td><label id="Manufacture1LeftTotal"></label></td>
 											</tr>
 										</tfoot>															
 									</table>
 								</div>
 								<div class="col-md-6 col-sm-12 col-xs-12">
-									<table class="table table-striped table-bordered table-hover jambo_table">
+									<table id="manufacture1Right" class="table table-striped table-bordered table-hover jambo_table" style="width: 100%">
 										<thead>
 											<tr>
 												<th>순번</th>
@@ -809,18 +1043,11 @@
 												
 											</tr>
 										</thead>
-										<tbody>
-											<tr>
-												<td></td>
-												<td></td>
-												<td></td>
-											</tr>
-										</tbody>
 										<tfoot style="background-color: #FFFFB6">
 											<tr>
 												<td></td>
 												<td>소계</td>
-												<td>0</td>
+												<td><label id="Manufacture1RightTotal"></label></td>
 											</tr>
 										</tfoot>																	
 									</table>
@@ -832,13 +1059,13 @@
 											<td>0원</td>
 											<td>제조경비 1</td>
 											<td>합계:</td>
-											<td>0원</td>
+											<td><label id="Manufacture1Total"></label></td>
 										</tr>
 									</tbody>																
 								</table>
 							</div>
 							<div role="tabpanel" class="tab-pane fade" id="tab_content4" aria-labelledby="home-tab">
-								<table class="table table-striped table-bordered table-hover jambo_table">
+								<table id="manufacture2" class="table table-striped table-bordered table-hover jambo_table" style="width: 100%">
 									<thead>
 										<tr>
 											<th></th>
@@ -848,21 +1075,12 @@
 											<th>비고</th>
 										</tr>
 									</thead>
-									<tbody>
-										<tr>
-											<td></td>
-											<td>1</td>
-											<td>건축</td>
-											<td>금액</td>
-											<td>비고</td>
-										</tr>
-									</tbody>
 									<tfoot style="background-color: #FFFFB6">
 										<tr>
 											<td></td>
 											<td></td>
 											<td>합계</td>
-											<td>600000</td>
+											<td><label id="jejo2Total"></label></td>
 											<td></td>
 										</tr>
 									</tfoot>																	
@@ -883,56 +1101,56 @@
 											<tr>
 												<td rowspan="4">자체비용</td>
 												<td>인건비</td>
-												<td></td>
-												<td></td>
+												<td style="text-align: right"><label id="LABOR_COST"></label></td>
+												<td style="text-align: right"><label id="LABOR_COST_PER"></label></td>
 											</tr>
 											<tr>
 												<td>제조경비I</td>
-												<td></td>
-												<td></td>
+												<td style="text-align: right"><label id="MANU_COST1"></label></td>
+												<td style="text-align: right"><label id="MANU_COST1_PER"></label></td>
 											</tr>
 											<tr>
 												<td>제조경비II</td>
-												<td></td>
-												<td></td>
+												<td style="text-align: right"><label id="MANU_COST2"></label></td>
+												<td style="text-align: right"><label id="MANU_COST2_PER"></label></td>
 											</tr>
 											<tr>
 												<td>소계</td>
-												<td></td>
-												<td></td>
+												<td style="text-align: right"><label id="SELF_SUM"></label></td>
+												<td style="text-align: right"><label id="SELF_SUM_PER"></label></td>
 											</tr>
 											<tr>
 												<td rowspan="5">배부비용</td>
 												<td>공통비I</td>
-												<td></td>
-												<td></td>
+												<td style="text-align: right"><label id="COMMON_COST1"></label></td>
+												<td style="text-align: right"><label id="COMMON_COST1_PER"></label></td>
 											</tr>
 											<tr>
 												<td>간접비</td>
-												<td></td>
-												<td></td>
+												<td style="text-align: right"><label id="INDIREC_COST"></label></td>
+												<td style="text-align: right"><label id="INDIREC_COST_PER"></label></td>
 											</tr>
 											<tr>
 												<td>공통비II</td>
-												<td></td>
-												<td></td>
+												<td style="text-align: right"><label id="COMMON_COST2"></label></td>
+												<td style="text-align: right"><label id="COMMON_COST2_PER"></label></td>
 											</tr>
 											<tr>
 												<td>관리부문비</td>
-												<td></td>
-												<td></td>
+												<td style="text-align: right"><label id="MANAGE_COST"></label></td>
+												<td style="text-align: right"><label id="MANAGE_COST_PER"></label></td>
 											</tr>
 											<tr>
 												<td>소계</td>
-												<td></td>
-												<td></td>
+												<td style="text-align: right"><label id="DIV_AMT"></label></td>
+												<td style="text-align: right"><label id="DIV_AMT_PER"></label></td>
 											</tr>
 										</tbody>
 										<tfoot>
 											<tr>
 												<td colspan="2">비용합계</td>
-												<td>7100000</td>
-												<td>10</td>
+												<td style="text-align: right"><label id="COST_AMT"></label></td>
+												<td style="text-align: right"><label id="COST_AMT_PER"></label></td>
 											</tr>
 										</tfoot>															
 									</table>
@@ -950,25 +1168,25 @@
 										<tbody>
 											<tr>
 												<td>빌딩</td>
-												<td>0</td>
-												<td>0</td>
+												<td style="text-align: right"><label id="BUILDING_COST"></label></td>
+												<td style="text-align: right"><label id="BUILDING_COST_PER"></label></td>
 											</tr>
 											<tr>
 												<td>통신</td>
-												<td>0</td>
-												<td>0</td>
+												<td style="text-align: right"><label id="TELE_COST"></label></td>
+												<td style="text-align: right"><label id="TELE_COST_PER"></label></td>
 											</tr>
 											<tr>
 												<td>전산</td>
-												<td>0</td>
-												<td>0</td>
+												<td style="text-align: right"><label id="NET_COST"></label></td>
+												<td style="text-align: right"><label id="NET_COST_PER"></label></td>
 											</tr>
 										</tbody>
 										<tfoot style="background-color: #FFFFB6">
 											<tr>
 												<td>합계</td>
-												<td>0</td>
-												<td>0</td>
+												<td style="text-align: right"><label id="INDIREC_COST_SUM"></label></td>
+												<td style="text-align: right"><label id="INDIREC_COST_SUM_PER"></label></td>
 											</tr>
 										</tfoot>																	
 									</table>
@@ -985,25 +1203,25 @@
 										<tbody>
 											<tr>
 												<td>부문장</td>
-												<td>0</td>
-												<td>0</td>
+												<td style="text-align: right"><label id="COMMON_COST_BU"></label></td>
+												<td style="text-align: right"><label id="COMMON_COST_BU_PER"></label></td>
 											</tr>
 											<tr>
 												<td>본부장</td>
-												<td>0</td>
-												<td>0</td>
+												<td style="text-align: right"><label id="COMMON_COST_BON"></label></td>
+												<td style="text-align: right"><label id="COMMON_COST_BON_PER"></label></td>
 											</tr>
 											<tr>
 												<td>지원부서</td>
-												<td>0</td>
-												<td>0</td>
+												<td style="text-align: right"><label id="COMMON_COST_DEPT"></label></td>
+												<td style="text-align: right"><label id="COMMON_COST_DEPT_PER"></label></td>
 											</tr>
 										</tbody>
 										<tfoot style="background-color: #FFFFB6">
 											<tr>
 												<td>합계</td>
-												<td>0</td>
-												<td>0</td>
+												<td style="text-align: right"><label id="COMMON_COST1_SUM"></label></td>
+												<td style="text-align: right"><label id="COMMON_COST1_SUM_PER"></label></td>
 											</tr>
 										</tfoot>																	
 									</table>
