@@ -549,6 +549,29 @@
 				$('#PdModal').click();
 			});
 			/* =============================PM 모달 테이블 end================================= */
+			$(':radio[name="DATE_BEFORE"]').click(()=>{
+				let before = $(':radio[name="DATE_BEFORE"]:checked').val();
+				
+				let beforeDate = new Date();
+				beforeDate.setMonth(beforeDate.getMonth()-before);
+				
+				let beforeDate_mm = beforeDate.getMonth()+1;
+				let beforeDate_dd = beforeDate.getDate();
+				let beforeDate_yyyy = beforeDate.getFullYear();
+				
+				if(beforeDate_dd<10) {
+					beforeDate_dd='0'+beforeDate_dd;
+				} 
+				if(beforeDate_mm<10) {
+					beforeDate_mm='0'+beforeDate_mm;
+				}
+				
+				let result = beforeDate_yyyy + '-' + beforeDate_mm + '-' + beforeDate_dd;
+				
+				$('#FIRSTDATE').val(result);
+				$('#btnBizSearch').click();
+			});
+			
 			init_pjtList();
 		});
 
@@ -559,7 +582,7 @@
 			$('#btnPMSearch').trigger('click');
 			$('#btnPDSearch').trigger('click');
 			
-		}
+		};
 		/* =============================페이지 초기화 end================================= */
 	</script>
 </th:block>
@@ -606,9 +629,17 @@
 								</tr>
 								<tr>
 									<td><label class="control-label">년도</label></td>
-									<td colspan="2">
-										<input type="date" id="FIRSTDATE" max="2100-12-31"> <b>-</b> 
+									<td colspan="2" style="text-align: center;">
+										<input type="date" id="FIRSTDATE" max="2100-12-31">&emsp;<b>-</b>&emsp;
 										<input type="date" id="ENDDATE" max="2100-12-31">
+									</td>
+								</tr>
+								<tr>
+									<td><label class="control-label">기간 선택</label></td>
+									<td style="text-align: center;">
+										<input type="radio" name="DATE_BEFORE" value="1">1개월 전&emsp;&emsp;
+										<input type="radio" name="DATE_BEFORE" value="3">3개월 전&emsp;&emsp;
+										<input type="radio" name="DATE_BEFORE" value="6">6개월 전
 									</td>
 								</tr>
 								<tr>
@@ -936,7 +967,7 @@
 								<tr>
 									<td style="background-color: #E8F0FA">예산총계</td>
 									<td colspan="2"><label id="LTOTAL_AMT"></label></td>
-									<td><button type="button" class="btn" style="color: black;">예산pjt코드 입력</button></td>
+									<td><button type="button" class="btn" style="color: black;" disabled="disabled">예산pjt코드 입력</button></td>
 								</tr>
 							</tbody>
 						</table>
