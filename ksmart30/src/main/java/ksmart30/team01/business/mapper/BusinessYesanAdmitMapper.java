@@ -28,4 +28,6 @@ public interface BusinessYesanAdmitMapper {
 	List<Map<String,Object>> getProjectJejo1Right (String PJT_CD);
 	
 	Map<String,Object> getProjectReport (String PJT_CD);
+
+	int admitProcess(String PJT_CD);
 }

@@ -55,18 +55,18 @@ BusinessYesanInputMapper businessYesanInputMapper;
 			map.put("manufacture2", businessYesanInputMapper.getProjectJejo2(PJT_CD));
 			map.put("bizReport", businessYesanInputMapper.getProjectReport(PJT_CD));
 		
-		System.out.println(map.get("schedule"));
-		System.out.println(map.get("mhPlan"));
-		System.out.println(map.get("manufacture1Left"));
-		System.out.println(map.get("manufacture1Right"));
-		System.out.println(map.get("manufacture2"));
-		System.out.println(map.get("bizReport"));
-		
+			System.out.println(map.get("schedule"));
+			System.out.println(map.get("mhPlan"));
+			System.out.println(map.get("manufacture1Left"));
+			System.out.println(map.get("manufacture1Right"));
+			System.out.println(map.get("manufacture2"));
+			System.out.println(map.get("bizReport"));
 		return map;
 	}
 
-	/*
-	 * public String admitProcess(String PJT_CD) { return
-	 * businessYesanAdmitMapper.admitProcess(PJT_CD); }
-	 */
+
+	  public int admitProcess(String PJT_CD) { 
+		  System.out.println(PJT_CD+"<-- 맵퍼단계 전 파라미터");
+		  return businessYesanAdmitMapper.admitProcess(PJT_CD);
+	  }
 }

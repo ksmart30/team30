@@ -24,543 +24,561 @@
 	<!-- <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet"> -->
 	<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 	<script>
-	/* =============================엔터키 방지================================= */
-	$(document).keypress((e)=>{
-		if (e.keyCode == 13){
-			e.preventDefault();
-		}
-	});
-	/* =============================날짜 초기화================================= */
-	let today = new Date();
-	let dd = today.getDate();
-	let mm = today.getMonth()+1; //January is 0!
-	let yyyy = today.getFullYear();
-	if(dd<10) {
-	    dd='0'+dd
-	} 
-	if(mm<10) {
-	    mm='0'+mm
-	} 
-	today = yyyy+'-' + mm + '-' + dd;
-	MonthInit = yyyy+'-' + mm + '-01';
-	/* =============================날짜 초기화 end================================= */
-	
-	/* =============================금액 쉼표 ==================================== */
-	function amtCommas(x) {
-		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-	}
-	/* =============================금액 쉼표 end================================= */
-	
-	/* =============================금액 쉼표================================= */
-	function numberCommas(n) {
-	    let parts=n.toString().split(".");
-	    return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (parts[1] ? "." + parts[1] : "");
-	}
-	/* =============================금액 쉼표 end================================= */
-	function runAjax(PJT_CD){
-		console.log(PJT_CD+'<- ajax 받았다.');
-		$.ajax({
-			contentType:'application/json',
-			dataType:'json',
-            url:'/businessYesanAdmitGetResultProject',
-            type:'POST',
-            data:PJT_CD,
-            success:(result)=>{
-            	/* console.log(JSON.stringify(result)); */
-            	let date =result.CD_REG_DATE.substring(0,4)+'-'+result.CD_REG_DATE.substring(4,6)+'-'+result.CD_REG_DATE.substring(6,8)
-            	PJT_CD = result.PJT_CD;
-            	$('#LPJT_CD').text(result.PJT_CD);
-            	$('#LPJT_NM').text(result.PJT_NM);
-            	$('#LCRT_DATE').text(date);
-            	$('#LACT_STAT').text(result.APPROVAL);
-            	$('#LACT_STAT').css('color',result.COLOR);/* COLOR  */
-            	$('#LCUST_NM').text(result.CUST_NM);
-            	$('#LCUST_GBN').text(result.CUST_GBN);
-            	$('#LZIP_CD').text(result.ZIP_CD);
-            	$('#LADDR').text(result.ADDR);
-            	$('#LREGION_NM').text(result.REGION1_NM +' / '+ result.REGION2_NM +' / '+ result.REGION3_NM);
-            	$('#LZONE_NM').text(result.ZONE1_NM +' / '+ result.ZONE2_NM +' / '+ result.ZONE3_NM);
-            	$('#LSCOPE_NM').text(result.SCOPE1_NM +' / '+ result.SCOPE2_NM +' / '+ result.SCOPE3_NM);
-            	$('#LBIZ_TYPE').text(result.BIZ_TYPE);
-            	$('#LBIZ_GBN').text(result.BIZ_GBN);
-            	$('#LBUILD_GB').text(result.BUILD_GB);
-            	$('#LBUILD_TYPE_NM').text(result.BUILD_TYPE);
-            	$('#LAREA_M').text(numberCommas(result.AREA_M));
-            	$('#LAREA_P').text(numberCommas(result.AREA_P));
-            	$('#LDOWN_SU').text(result.DOWN_SU);
-            	$('#LUP_SU').text(result.UP_SU);
-            	$('#LH_CNT').text(result.H_CNT);
-            	$('#LYAREA_M').text(numberCommas(result.YAREA_M));
-            	$('#LYAREA_P').text(numberCommas(result.YAREA_P));
-            	$('#LCOVERAGE').text(result.COVERAGE);
-            	$('#LCAPACITY').text(result.CAPACITY);
-            	$('#LDEPT_NM').text(result.DEPT_NM);
-            	$('#LINFO_EMP_NO').text(result.INFO_EMP_NO);
-            	$('#LCLASS_GBN').text(result.CLASS_GBN);
-            	$('#PmName').val(result.PM_EMP_NO);
-            	$('#PdName').val(result.DESIGN_MAN);
-            	$('#TPRODUCT').val(result.PRODUCT);
-            	
-            	$('#LFORECAST_AMT').text(amtCommas(result.FORECAST_AMT)+' 원');
-            	$('#LTOTAL_AMT').text(amtCommas(result.TOTAL_AMT)+' 원');
-            }
+		/* =============================엔터키 방지================================= */
+		$(document).keypress((e)=>{
+			if (e.keyCode == 13){
+				e.preventDefault();
+			}
 		});
-		/* =============================일정계획 tab================================= */
-		SPJT_CD = PJT_CD.replace(/[a-z]/gi,"");
-		console.log(PJT_CD+'<--입력값');
-		console.log(SPJT_CD+'<--입력값');
-		$.when(
-				$.ajax({
-					contentType:'application/json',
-    				dataType:'json',
-		            url:'/businessYesanAdmitGetResultDetail',
-		            type:'POST',
-		            data:SPJT_CD}
-	           )).done((data)=>{
-	        	  console.log(JSON.stringify(data.schedule));
-	        	   $('#schedulePlanList').DataTable({
-	        		   	searching:false,
-						lengthChange:false,
-						responsive: true,
-	    				destroy: true,
-	    				data:[data.schedule],
-	    				columns: [
-	    			        {data: 'SEQ'},
-	    			        {data: 'JOB_STEP'},
-	    			        {data: 'UPD_COUNT'},
-	    			        {data: 'END_EXP_DATE'},
-	    			        {data: 'END_DATE'},
-	    			        {data: 'BIGO'}
-	    			    ]
-	        	   });
-	        	   $('#MhPlanList').DataTable({
-	        		    searching:false,
-						lengthChange:false,
-						responsive: true,
-	    				destroy: true,
-	    				paging: false,
-	    				info:false,
-	    				data:data.mhPlan,
-	    				columns: [
-	    			        {data: 'NUM'},
-	    			        {data: 'LEVEL2_NM'},
-	    			        {data: 'INWON_1'},
-	    			        {data: 'MD_PLAN_1'},
-	    			        {data: 'INWON_2'},
-	    			        {data: 'MD_PLAN_2'},
-	    			        {data: 'INWON'},
-	    			        {data: 'MD_PLAN'},
-	    			        {data: 'YEA_AMT'},
-	    			        {data: 'BIGO'}
-	    			    ],
-	    			    footerCallback: function(row, data, start, end, display) {
-	    			    	  let api = this.api();
-	    			    	  columnsApi(api, 2, '#MhINWON_1Total');
-	    			    	  columnsApi(api, 3, '#MhMD_PLAN_1Total');
-	    			    	  columnsApi(api, 4, '#MhINWON_2Total');
-	    			    	  columnsApi(api, 5, '#MhMD_PLAN_2Total');
-	    			    	  columnsApi(api, 6, '#MhINWONTotal');
-	    			    	  columnsApi(api, 7, '#MhMD_PLANTotal');
-	    			    	  columnsApi(api, 8, '#MhYEA_AMTTotal');		    			    	  
-	    			    },
-	        	   		columnDefs:[
-	        	   				{
+		/* =============================날짜 초기화================================= */
+		let today = new Date();
+		let dd = today.getDate();
+		let mm = today.getMonth()+1; //January is 0!
+		let yyyy = today.getFullYear();
+		if(dd<10) {
+		    dd='0'+dd
+		} 
+		if(mm<10) {
+		    mm='0'+mm
+		} 
+		today = yyyy+'-' + mm + '-' + dd;
+		MonthInit = yyyy+'-' + mm + '-01';
+		/* =============================날짜 초기화 end================================= */
+		
+		/* =============================금액 쉼표 ==================================== */
+		function amtCommas(x) {
+    		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		}
+		/* =============================금액 쉼표 end================================= */
+		
+		/* ============================= 숫자 쉼표================================= */
+		function numberCommas(n) {
+		    let parts=n.toString().split(".");
+		    return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (parts[1] ? "." + parts[1] : "");
+		}
+		/* =============================숫자 쉼표 end================================= */
+		function runAjax(PJT_CD){
+			console.log(PJT_CD+'<- ajax 받았다.');
+			$.ajax({
+				contentType:'application/json',
+				dataType:'json',
+	            url:'/businessYesanAdmitGetResultProject ',
+	            type:'POST',
+	            data:PJT_CD,
+	            success:(result)=>{
+	            	/* console.log(JSON.stringify(result)); */
+	            	let date =result.CD_REG_DATE.substring(0,4)+'-'+result.CD_REG_DATE.substring(4,6)+'-'+result.CD_REG_DATE.substring(6,8)
+	            	PJT_CD = result.PJT_CD;
+	            	$('#LPJT_CD').text(result.PJT_CD);
+	            	$('#LPJT_NM').text(result.PJT_NM);
+	            	$('#LCRT_DATE').text(date);
+	            	$('#LACT_STAT').text(result.APPROVAL);
+	            	$('#LACT_STAT').css('color',result.COLOR);/* COLOR  */
+	            	$('#LCUST_NM').text(result.CUST_NM);
+	            	$('#LCUST_GBN').text(result.CUST_GBN);
+	            	$('#LZIP_CD').text(result.ZIP_CD);
+	            	$('#LADDR').text(result.ADDR);
+	            	$('#LREGION_NM').text(result.REGION1_NM +' / '+ result.REGION2_NM +' / '+ result.REGION3_NM);
+	            	$('#LZONE_NM').text(result.ZONE1_NM +' / '+ result.ZONE2_NM +' / '+ result.ZONE3_NM);
+	            	$('#LSCOPE_NM').text(result.SCOPE1_NM +' / '+ result.SCOPE2_NM +' / '+ result.SCOPE3_NM);
+	            	$('#LBIZ_TYPE').text(result.BIZ_TYPE);
+	            	$('#LBIZ_GBN').text(result.BIZ_GBN);
+	            	$('#LBUILD_GB').text(result.BUILD_GB);
+	            	$('#LBUILD_TYPE_NM').text(result.BUILD_TYPE);
+	            	$('#LAREA_M').text(numberCommas(result.AREA_M));
+	            	$('#LAREA_P').text(numberCommas(result.AREA_P));
+	            	$('#LDOWN_SU').text(result.DOWN_SU);
+	            	$('#LUP_SU').text(result.UP_SU);
+	            	$('#LH_CNT').text(result.H_CNT);
+	            	$('#LYAREA_M').text(numberCommas(result.YAREA_M));
+	            	$('#LYAREA_P').text(numberCommas(result.YAREA_P));
+	            	$('#LCOVERAGE').text(result.COVERAGE);
+	            	$('#LCAPACITY').text(result.CAPACITY);
+	            	$('#LDEPT_NM').text(result.DEPT_NM);
+	            	$('#LINFO_EMP_NO').text(result.INFO_EMP_NO);
+	            	$('#LCLASS_GBN').text(result.CLASS_GBN);
+	            	$('#PmName').val(result.PM_EMP_NO);
+	            	$('#PdName').val(result.DESIGN_MAN);
+	            	$('#TPRODUCT').val(result.PRODUCT);
+	            	
+	            	$('#LFORECAST_AMT').text(amtCommas(result.FORECAST_AMT)+' 원');
+	            	$('#LTOTAL_AMT').text(amtCommas(result.TOTAL_AMT)+' 원');
+	            }
+			});
+			/* =============================일정계획 tab================================= */
+			SPJT_CD = PJT_CD.replace(/[a-z]/gi,"");
+			console.log(PJT_CD+'<--입력값');
+			console.log(SPJT_CD+'<--입력값');
+			$.when(
+					$.ajax({
+						contentType:'application/json',
+	    				dataType:'json',
+			            url:'/businessYesanAdmitGetResultDetail',
+			            type:'POST',
+			            data:SPJT_CD}
+		           )).done((data)=>{
+		        	  
+		        	   $('#schedulePlanList').DataTable({
+		        		   	searching:false,
+							lengthChange:false,
+							responsive: true,
+		    				destroy: true,
+		    				paging: false,
+		    				info:false,
+		    				data:[data.schedule],
+		    				columns: [
+		    			        {data: 'SEQ'},
+		    			        {data: 'JOB_STEP'},
+		    			        {data: 'UPD_COUNT'},
+		    			        {data: 'END_EXP_DATE'},
+		    			        {data: 'END_DATE'},
+		    			        {data: 'BIGO'}
+		    			    ]
+		        	   });
+		        	 	console.log(JSON.stringify(data.mhPlan));
+		        	   $('#MhPlanList').DataTable({
+		        		    searching:false,
+							lengthChange:false,
+							responsive: true,
+		    				destroy: true,
+		    				paging: false,
+		    				info:false,
+		    				data:data.mhPlan,
+		    				columns: [
+		    			        {data: 'NUM'},
+		    			        {data: 'LEVEL2_NM'},
+		    			        {data: 'INWON_1'},
+		    			        {data: 'MD_PLAN_1'},
+		    			        {data: 'INWON_2'},
+		    			        {data: 'MD_PLAN_2'},
+		    			        {data: 'INWON'},
+		    			        {data: 'MD_PLAN'},
+		    			        {data: 'YEA_AMT'},
+		    			        {data: 'BIGO'}
+		    			    ],
+		    			    footerCallback: function(row, data, start, end, display) {
+		    			    	  let api = this.api();
+		    			    	  columnsApi(api, 2, '#MhINWON_1Total');
+		    			    	  columnsApi(api, 3, '#MhMD_PLAN_1Total');
+		    			    	  columnsApi(api, 4, '#MhINWON_2Total');
+		    			    	  columnsApi(api, 5, '#MhMD_PLAN_2Total');
+		    			    	  columnsApi(api, 6, '#MhINWONTotal');
+		    			    	  columnsApi(api, 7, '#MhMD_PLANTotal');
+		    			    	  columnsApi(api, 8, '#MhYEA_AMTTotal');		    			    	  
+		    			    },
+		        	   		columnDefs:[
+		        	   				{
+			        	   				targets: [2],
+			        	   				className: 'text-right',
+			        	   				render: function ( data, type, row ) {
+	                                        return amtCommas(row.INWON_1);
+                                    	}
+		        	   				},
+                                    {
+    		        	   				targets: [3],
+    		        	   				className: 'text-right',
+    		        	   				render: function ( data, type, row ) {
+                                            return amtCommas(row.MD_PLAN_1);
+                                    	}
+                                    },
+                                    {
+    		        	   				targets: [4],
+    		        	   				className: 'text-right',
+    		        	   				render: function ( data, type, row ) {
+                                            return amtCommas(row.INWON_2);
+                                    	}
+                                    },
+                                    {
+    		        	   				targets: [5],
+    		        	   				className: 'text-right',
+    		        	   				render: function ( data, type, row ) {
+                                            return amtCommas(row.MD_PLAN_2);
+                                    	}
+                                    },
+                                    {
+    		        	   				targets: [6],
+    		        	   				className: 'text-right',
+    		        	   				render: function ( data, type, row ) {
+                                            return amtCommas(row.INWON);
+                                    	}
+                                    },
+                                    {
+    		        	   				targets: [7],
+    		        	   				className: 'text-right',
+    		        	   				render: function ( data, type, row ) {
+                                            return amtCommas(row.MD_PLAN);
+                                    	}
+                                    },
+                                    {
+    		        	   				targets: [8],
+    		        	   				className: 'text-right',
+    		        	   				render: function ( data, type, row ) {
+                                            return amtCommas(row.YEA_AMT);
+                                    	}
+		        	   		}]
+		        	   });
+		        	   
+		        	   let Manufacture1Total = 0;
+		        	   
+		        	   $('#manufacture1Left').DataTable({
+		        		    searching:false,
+							lengthChange:false,
+							responsive: true,
+		    				destroy: true,
+		    				paging: false,
+		    				info:false,
+		    				data:data.manufacture1Left,
+		    				columns: [
+		    					{data: 'NUM'},
+		    			        {data: 'COST_NM'},
+		    			        {data: 'COST_AMT'}
+		    			    ],
+		    			    footerCallback: function(row, data, start, end, display) {
+		    			    	  let api = this.api();
+		    			    	  let sum = columnsApi(api, 2, '#Manufacture1LeftTotal');
+		    			    	  Manufacture1Total += sum;
+		    			    	 /*  let Manufacture1Total = ($('#Manufacture1LeftTotal').text()*1)+($('#Manufacture1RightTotal').text()*1);
+		    						$('#Manufacture1Total').text(Manufacture1Total); */
+		    			    },
+		        	   		columnDefs:[{
 		        	   				targets: [2],
 		        	   				className: 'text-right',
 		        	   				render: function ( data, type, row ) {
-                                       return amtCommas(row.INWON_1);
-                               	}
-	        	   				},
-                               {
+                                       return amtCommas(row.COST_AMT);
+                                   }
+		        	   		}]
+		        	   });
+		        	   
+		        	   $('#manufacture1Right').DataTable({
+		        		    searching:false,
+							lengthChange:false,
+							responsive: true,
+		    				destroy: true,
+		    				paging: false,
+		    				info:false,
+		    				data:data.manufacture1Right,
+		    				columns: [
+		    					{data: 'NUM'},
+		    			        {data: 'COST_NM'},
+		    			        {data: 'COST_AMT'}
+		    			    ],
+		    			    footerCallback: function(row, data, start, end, display) {
+		    			    	  let api = this.api();
+		    			    	  let sum = columnsApi(api, 2, '#Manufacture1RightTotal');
+		    			    	  Manufacture1Total += sum;
+		    			    },
+		        	   		columnDefs:[{
+		        	   				targets: [2],
+		        	   				className: 'text-right',
+		        	   				render: function ( data, type, row ) {
+                                      return amtCommas(row.COST_AMT);
+                                  }
+		        	   		}]
+		        	   });
+		        	   
+		        	   $('#Manufacture1Total').text(amtCommas(Manufacture1Total)+' 원');
+		        	   
+		        	   $(data.manufacture2).each((index,item)=>{
+		        		   data.manufacture2[index].EM = '';
+		        		});
+		        	  
+		        	   $('#manufacture2').DataTable({
+		        		    searching:false,
+							lengthChange:false,
+							responsive: true,
+		    				destroy: true,
+		    				paging: false,
+		    				info:false,
+		    				data:data.manufacture2,
+		    				columns: [
+		    					{data: 'EM'},
+		    			        {data: 'NUM'},
+		    			        {data: 'ACC_LONG_NM'},
+		    			        {data: 'YEA_AMT'},
+		    			        {data: 'BIGO'}
+		    			    ],
+		    			    footerCallback: function(row, data, start, end, display) {
+		    			    	  let api = this.api();
+		    			    	  columnsApi(api, 3, '#jejo2Total');
+		    			    },
+		        	   		columnDefs:[{
 		        	   				targets: [3],
 		        	   				className: 'text-right',
 		        	   				render: function ( data, type, row ) {
-                                       return amtCommas(row.MD_PLAN_1);
-                               	}
-                               },
-                               {
-		        	   				targets: [4],
-		        	   				className: 'text-right',
-		        	   				render: function ( data, type, row ) {
-                                       return amtCommas(row.INWON_2);
-                               	}
-                               },
-                               {
-		        	   				targets: [5],
-		        	   				className: 'text-right',
-		        	   				render: function ( data, type, row ) {
-                                       return amtCommas(row.MD_PLAN_2);
-                               	}
-                               },
-                               {
-		        	   				targets: [6],
-		        	   				className: 'text-right',
-		        	   				render: function ( data, type, row ) {
-                                       return amtCommas(row.INWON);
-                               	}
-                               },
-                               {
-		        	   				targets: [7],
-		        	   				className: 'text-right',
-		        	   				render: function ( data, type, row ) {
-                                       return amtCommas(row.MD_PLAN);
-                               	}
-                               },
-                               {
-		        	   				targets: [8],
-		        	   				className: 'text-right',
-		        	   				render: function ( data, type, row ) {
-                                       return amtCommas(row.YEA_AMT);
-                               	}
-	        	   		}]
-	        	   });
-	        	   
-	        	   let Manufacture1Total = 0;
-	        	   
-	        	   $('#manufacture1Left').DataTable({
-	        		    searching:false,
-						lengthChange:false,
-						responsive: true,
-	    				destroy: true,
-	    				paging: false,
-	    				info:false,
-	    				data:data.manufacture1Left,
-	    				columns: [
-	    					{data: 'NUM'},
-	    			        {data: 'COST_NM'},
-	    			        {data: 'COST_AMT'}
-	    			    ],
-	    			    footerCallback: function(row, data, start, end, display) {
-	    			    	  let api = this.api();
-	    			    	  let sum = columnsApi(api, 2, '#Manufacture1LeftTotal');
-	    			    	  Manufacture1Total += sum;
-	    			    	 /*  let Manufacture1Total = ($('#Manufacture1LeftTotal').text()*1)+($('#Manufacture1RightTotal').text()*1);
-	    						$('#Manufacture1Total').text(Manufacture1Total); */
-	    			    },
-	        	   		columnDefs:[{
-	        	   				targets: [2],
-	        	   				className: 'text-right',
-	        	   				render: function ( data, type, row ) {
-                                  return amtCommas(row.COST_AMT);
-                              }
-	        	   		}]
-	        	   });
-	        	   
-	        	   $('#manufacture1Right').DataTable({
-	        		    searching:false,
-						lengthChange:false,
-						responsive: true,
-	    				destroy: true,
-	    				paging: false,
-	    				info:false,
-	    				data:data.manufacture1Right,
-	    				columns: [
-	    					{data: 'NUM'},
-	    			        {data: 'COST_NM'},
-	    			        {data: 'COST_AMT'}
-	    			    ],
-	    			    footerCallback: function(row, data, start, end, display) {
-	    			    	  let api = this.api();
-	    			    	  let sum = columnsApi(api, 2, '#Manufacture1RightTotal');
-	    			    	  Manufacture1Total += sum;
-	    			    },
-	        	   		columnDefs:[{
-	        	   				targets: [2],
-	        	   				className: 'text-right',
-	        	   				render: function ( data, type, row ) {
-                                 return amtCommas(row.COST_AMT);
-                             }
-	        	   		}]
-	        	   });
-	        	   
-	        	   $('#Manufacture1Total').text(amtCommas(Manufacture1Total)+' 원');
-	        	   
-	        	   $(data.manufacture2).each((index,item)=>{
-	        		   data.manufacture2[index].EM = '';
-	        		});
-	        	  
-	        	   $('#manufacture2').DataTable({
-	        		    searching:false,
-						lengthChange:false,
-						responsive: true,
-	    				destroy: true,
-	    				paging: false,
-	    				info:false,
-	    				data:data.manufacture2,
-	    				columns: [
-	    					{data: 'EM'},
-	    			        {data: 'NUM'},
-	    			        {data: 'ACC_LONG_NM'},
-	    			        {data: 'YEA_AMT'},
-	    			        {data: 'BIGO'}
-	    			    ],
-	    			    footerCallback: function(row, data, start, end, display) {
-	    			    	  let api = this.api();
-	    			    	  columnsApi(api, 3, '#jejo2Total');
-	    			    },
-	        	   		columnDefs:[{
-	        	   				targets: [3],
-	        	   				className: 'text-right',
-	        	   				render: function ( data, type, row ) {
-                                   return amtCommas(row.YEA_AMT);
-                               }
-	        	   		}]
-	        	   });
-	        	   /* console.log(JSON.stringify(data.bizReport)); */
-	        	   $('#LABOR_COST').text(amtCommas(data.bizReport.LABOR_COST));
-	        	   $('#MANU_COST1').text(amtCommas(data.bizReport.MANU_COST1));
-	        	   $('#MANU_COST2').text(amtCommas(data.bizReport.MANU_COST2));
-	        	   $('#SELF_SUM').text(amtCommas(data.bizReport.SELF_SUM));
-	        	   $('#COMMON_COST1').text(amtCommas(data.bizReport.COMMON_COST1));
-	        	   $('#INDIREC_COST').text(amtCommas(data.bizReport.INDIREC_COST));
-	        	   $('#COMMON_COST2').text(amtCommas(data.bizReport.COMMON_COST2));
-	        	   $('#MANAGE_COST').text(amtCommas(data.bizReport.MANAGE_COST));
-	        	   $('#DIV_AMT').text(amtCommas(data.bizReport.DIV_AMT));
-	        	   $('#COST_AMT').text(amtCommas(data.bizReport.COST_AMT));
-	        	   $('#BUILDING_COST').text(amtCommas(data.bizReport.BUILDING_COST));
-	        	   $('#TELE_COST').text(amtCommas(data.bizReport.TELE_COST));
-	        	   $('#NET_COST').text(amtCommas(data.bizReport.NET_COST));
-	        	   $('#INDIREC_COST_SUM').text(amtCommas(data.bizReport.INDIREC_COST));
-	        	   $('#COMMON_COST_BU').text(amtCommas(data.bizReport.COMMON_COST_BU));
-	        	   $('#COMMON_COST_BON').text(amtCommas(data.bizReport.COMMON_COST_BON));
-	        	   $('#COMMON_COST_DEPT').text(amtCommas(data.bizReport.COMMON_COST_DEPT));
-	        	   $('#COMMON_COST1_SUM').text(amtCommas(data.bizReport.COMMON_COST1));
-	        	 
-	           });
+                                        return amtCommas(row.YEA_AMT);
+                                    }
+		        	   		}]
+		        	   });
+		        	   /* console.log(JSON.stringify(data.bizReport)); */
+		        	   $('#LABOR_COST').text(amtCommas(data.bizReport.LABOR_COST));
+		        	   $('#MANU_COST1').text(amtCommas(data.bizReport.MANU_COST1));
+		        	   $('#MANU_COST2').text(amtCommas(data.bizReport.MANU_COST2));
+		        	   $('#SELF_SUM').text(amtCommas(data.bizReport.SELF_SUM));
+		        	   $('#COMMON_COST1').text(amtCommas(data.bizReport.COMMON_COST1));
+		        	   $('#INDIREC_COST').text(amtCommas(data.bizReport.INDIREC_COST));
+		        	   $('#COMMON_COST2').text(amtCommas(data.bizReport.COMMON_COST2));
+		        	   $('#MANAGE_COST').text(amtCommas(data.bizReport.MANAGE_COST));
+		        	   $('#DIV_AMT').text(amtCommas(data.bizReport.DIV_AMT));
+		        	   $('#COST_AMT').text(amtCommas(data.bizReport.COST_AMT));
+		        	   $('#BUILDING_COST').text(amtCommas(data.bizReport.BUILDING_COST));
+		        	   $('#TELE_COST').text(amtCommas(data.bizReport.TELE_COST));
+		        	   $('#NET_COST').text(amtCommas(data.bizReport.NET_COST));
+		        	   $('#INDIREC_COST_SUM').text(amtCommas(data.bizReport.INDIREC_COST));
+		        	   $('#COMMON_COST_BU').text(amtCommas(data.bizReport.COMMON_COST_BU));
+		        	   $('#COMMON_COST_BON').text(amtCommas(data.bizReport.COMMON_COST_BON));
+		        	   $('#COMMON_COST_DEPT').text(amtCommas(data.bizReport.COMMON_COST_DEPT));
+		        	   $('#COMMON_COST1_SUM').text(amtCommas(data.bizReport.COMMON_COST1));
+		        	   
+		        	   
+		        	   
+		        	   
+		           });
+			
+			/* =============================일정계획 tab end================================= */
+		};
 		
-		/* =============================일정계획 tab end================================= */
-	}
-
-	function columnsApi(api,index, labelName){
-		let sum;
-		api.columns(index, {
-    	    page: 'current'
-    	  }).every(function() {
-    	    sum = this
-    	      .data()
-    	      .reduce(function(a, b) {
-    	        var x = parseFloat(a) || 0;
-    	        var y = parseFloat(b) || 0;
-    	        return x + y;
-    	      }, 0);
-    	    console.log(sum); //alert(sum);
-    	    $(labelName).text(amtCommas(sum));
-    	  });
-		return sum;
-	};
-	$(document).ready(()=>{
+		function columnsApi(api,index, labelName){
+			let sum;
+			api.columns(index, {
+	    	    page: 'current'
+	    	  }).every(function() {
+	    	    sum = this
+	    	      .data()
+	    	      .reduce(function(a, b) {
+	    	        var x = parseFloat(a) || 0;
+	    	        var y = parseFloat(b) || 0;
+	    	        return x + y;
+	    	      }, 0);
+	    	    console.log(sum); //alert(sum);
+	    	    $(labelName).text(amtCommas(sum));
+	    	  });
+			return sum;
+		};
 		
-		$('#FIRSTDATE').val(MonthInit);
-		$('#ENDDATE').val(today);
-		
-		$("input:radio[name=ACT_STAT]").click(()=>{
-			if($(':radio[name="ACT_STAT"]:checked').val() == '1'){
-				$('#btnBizInput').removeAttr('disabled');
-			}else{
-				$('#btnBizInput').attr('disabled','disabled');
-			}
-			$('#btnBizSearch').click();
-		});
-		
-		/* =============================프로젝트 코드조회 모달 테이블================================= */
-		$('#btnProjectSearch').click(()=>{
-			let searchArr = {
-							column:$('#selectedProject option:selected').val(),
-							columnValue:$('#PJT_Value').val()
-						};
-			/* console.log(JSON.stringify(searchArr)); */
-			$.ajax({
-				contentType:'application/json',
-				dataType:'json',
-	            url:'/businessYesanAdmitGetProjectList',
-	            type:'POST',
-	            data:JSON.stringify(searchArr),
-	            success:(data)=>{
-	            	console.log(JSON.stringify(data));
-	            	$('#ProjectList').DataTable({
-	            		searching:false,
-						lengthChange:false,
-						responsive: true,
-	    				destroy: true,
-	    				data:data,
-	    				columns: [
-	    			        {data: 'PJT_CD'},
-	    			        {data: 'PJT_NM'}
-	    			    ]
-        			});
-	            }
+		$(document).ready(()=>{
+			
+			$('#FIRSTDATE').val(MonthInit);
+			$('#ENDDATE').val(today);
+			
+			$("input:radio[name=ACT_STAT]").click(()=>{
+				if($(':radio[name="ACT_STAT"]:checked').val() == '1'){
+					$('#btnBizInput').removeAttr('disabled');
+				}else{
+					$('#btnBizInput').attr('disabled','disabled');
+				}
+				$('#btnBizSearch').click();
 			});
-		});
-		$('#ProjectList').delegate('tr','dblclick',function(){
-			let tr = $(this);
-			let td = tr.children();
-			$('#PJT_CD').val(td.eq(0).text());
-			$('#PJT_NM').val(td.eq(1).text());
-			$('#PJT_Value').val('');
-			$('#projectModal').click();
-		});
-		/* =============================프로젝트 코드조회 모달 테이블 end================================= */
-					
-		/* =============================조회버튼 클릭시 검색 결과 프로젝트 리스트 ================================= */
-		$('#btnBizSearch').click(()=>{
-			$('#ResultProjectListBody').empty();
 			
-			let subStringYear = $('#FIRSTDATE').val().substring(2,4);
-			let subStringDept = $('#deptSelect option:selected').val().substring(0,1);
+			/* =============================프로젝트 코드조회 모달 테이블================================= */
+			$('#btnProjectSearch').click(()=>{
+				let searchArr = {
+								column:$('#selectedProject option:selected').val(),
+								columnValue:$('#PJT_Value').val()
+							};
+				/* console.log(JSON.stringify(searchArr)); */
+				$.ajax({
+    				contentType:'application/json',
+    				dataType:'json',
+		            url:'/businessYesanAdmitGetProjectList',
+		            type:'POST',
+		            data:JSON.stringify(searchArr),
+		            success:(data)=>{
+		            	console.log(JSON.stringify(data));
+		            	$('#ProjectList').DataTable({
+		            		searching:false,
+							lengthChange:false,
+							responsive: true,
+		    				destroy: true,
+		    				data:data,
+		    				columns: [
+		    			        {data: 'PJT_CD'},
+		    			        {data: 'PJT_NM'}
+		    			    ]
+	        			});
+		            }
+				});
+			});
+			$('#ProjectList').delegate('tr','dblclick',function(){
+				let tr = $(this);
+				let td = tr.children();
+				$('#PJT_CD').val(td.eq(0).text());
+				$('#PJT_NM').val(td.eq(1).text());
+				$('#PJT_Value').val('');
+				$('#projectModal').click();
+			});
+			/* =============================프로젝트 코드조회 모달 테이블 end================================= */
+				
 			
-			let searchArr = {
-					DateYear: $('#FIRSTDATE').val(),
-					DEPT_CD:subStringDept,
-					PJT_CD:$('#PJT_CD').val(),
-					PJT_NM:$('#PJT_NM').val(),
-					ACT_STAT:$(':radio[name="ACT_STAT"]:checked').val(),
-					FIRSTDATE:$('#FIRSTDATE').val().replace(/-/gi, ''),
-					ENDDATE:$('#ENDDATE').val().replace(/-/gi, '')
-				};
-			
-			console.log(JSON.stringify(searchArr));
-			
-			let init_PJT = '';
-			$.ajax({
-				contentType:'application/json',
-				dataType:'json',
-	            url:'/businessYesanAdmitGetResultProjectList',
-	            type:'POST',
-	            data:JSON.stringify(searchArr),
-	            success:(list)=>{
-	            	console.log(JSON.stringify(list));
-	            	if(list.length == 0){
-	            		let result = $(list).length;
-		            	$('#ResultCount').text(result);
-	            	}else{
-		            	let tr = '';
-		            	let result = $(list).length;
-		            	$('#ResultCount').text(result);
-		            	init_PJT = list[0].PJT_CD;
-		            	console.log(init_PJT + '<--이게 들어와야한다.')
-		            	$(list).each((index,item)=>{
-		            		
-		            		tr += '<tr>';
-		            		tr += '<td style="width:5%;"></td>';
-							tr += '<td style="width:30%;">'+item.PJT_CD+'</td>';
-							tr += '<td style="width:65%; overflow:hidden; text-overflow:ellipsis; color:'+item.COLOR+'" title="'+item.PJT_NM+'"><nobr>'+item.PJT_NM+'</nobr></td>';
-							tr += '</tr>';
-		            	});
-		            	$('#ResultProjectListBody').append(tr);
-		            	runAjax(init_PJT);
+			/* =============================조회버튼 클릭시 검색 결과 프로젝트 리스트 ================================= */
+			$('#btnBizSearch').click(()=>{
+				$('#ResultProjectListBody').empty();
+				
+				let subStringYear = $('#FIRSTDATE').val().substring(2,4);
+				let subStringDept = $('#deptSelect option:selected').val().substring(0,1);
+				
+				let searchArr = {
+						DateYear: $('#FIRSTDATE').val(),
+						DEPT_CD:subStringDept,
+						PJT_CD:$('#PJT_CD').val(),
+						PJT_NM:$('#PJT_NM').val(),
+						ACT_STAT:$(':radio[name="ACT_STAT"]:checked').val(),
+						FIRSTDATE:$('#FIRSTDATE').val().replace(/-/gi, ''),
+						ENDDATE:$('#ENDDATE').val().replace(/-/gi, '')
+					};
+				
+				console.log(JSON.stringify(searchArr));
+				
+				let init_PJT = '';
+				$.ajax({
+    				contentType:'application/json',
+    				dataType:'json',
+		            url:'/businessYesanAdmitGetResultProjectList',
+		            type:'POST',
+		            data:JSON.stringify(searchArr),
+		            success:(list)=>{
+		            	console.log(JSON.stringify(list));
+		            	if(list.length == 0){
+		            		let result = $(list).length;
+			            	$('#ResultCount').text(result);
+		            	}else{
+			            	let tr = '';
+			            	let result = $(list).length;
+			            	$('#ResultCount').text(result);
+			            	init_PJT = list[0].PJT_CD;
+			            	console.log(init_PJT + '<--이게 들어와야한다.')
+			            	$(list).each((index,item)=>{
+			            		
+			            		tr += '<tr>';
+			            		tr += '<td style="width:5%;"></td>';
+								tr += '<td style="width:30%;">'+item.PJT_CD+'</td>';
+								tr += '<td style="width:65%; overflow:hidden; text-overflow:ellipsis; color:'+item.COLOR+'" title="'+item.PJT_NM+'"><nobr>'+item.PJT_NM+'</nobr></td>';
+								tr += '</tr>';
+			            	});
+			            	$('#ResultProjectListBody').append(tr);
+			            	runAjax(init_PJT);
+		            	}
 	            	}
-            	}
+				});
 			});
-		});
-		/* =============================조회버튼 클릭시 검색 결과 프로젝트 리스트 end================================= */
-		$('#ResultProjectList').delegate('tr','click',function(){
-			let tr = $(this);
-			let td = tr.children();
-			let PJT_CD = td.eq(1).text();
-			console.log(JSON.stringify(PJT_CD)+'<-- 클릭시 반응');
-			runAjax(PJT_CD);
+			/* =============================조회버튼 클릭시 검색 결과 프로젝트 리스트 end================================= */
+			$('#ResultProjectList').delegate('tr','click',function(){
+				let tr = $(this);
+				let td = tr.children();
+				let PJT_CD = td.eq(1).text();
+				console.log(JSON.stringify(PJT_CD)+'<-- 클릭시 반응');
+				runAjax(PJT_CD);
+			});
+			/*=========승인처리===========  */
+			$('#admitProcess').click(()=>{
+				let PJT_CD = $('#LPJT_CD').text();
+				/* console.log(PJT_CD+'<-- 승인시 필요한 pjt_cd'); */
+				let data = PJT_CD.replace(/[a-z]/gi,"");
+				/* console.log(data+'<-- 승인시 가공한 pjt_cd'); */
+				$.ajax({
+					contentType:'application/json',
+					dataType:'json',
+			        url:'/businessYesanAdmitProcess',
+			        type:'POST',
+			        data:data,
+			        success:(data)=>{
+			        	console.log(JSON.stringify(data));
+			        }
+				});
+			});
+			/* =============================PM 모달 테이블================================= */
+			$('#btnPMSearch').click(()=>{
+				let searchArr = {
+						column:$('#selectedEmpPMItem option:selected').val(),
+						columnValue:$('#PMValue').val(),
+						EMP_GB:$('#selectedEmpPMGB option:selected').val()
+						}; 
+				console.log(JSON.stringify(searchArr));
+				$.ajax({
+    				contentType:'application/json',
+    				dataType:'json',
+		            url:'/businessYesanAdmitGetResultEmpList',
+		            type:'POST',
+		            data:JSON.stringify(searchArr),
+		            success:(data)=>{
+		            	console.log(JSON.stringify(data));
+		            	
+		    			$('#EmpPMList').DataTable({
+		    				searching:false,
+							lengthChange:false,
+							responsive: true,
+		    				destroy: true,
+		    				data:data,
+		    				columns: [
+		    			        {data: 'EMP_NO'},
+		    			        {data: 'KOR_NM'},
+		    			        {data: 'DEPT_NM'},
+		    			        {data: 'JIKGUP_NM'}
+		    			    ]
+	        			}); 
+	            	}
+				});
+			});
+			$('#EmpPMList').delegate('tr','dblclick',function(){
+				let tr = $(this);
+				let td = tr.children();
+				$('#PmName').val(td.eq(1).text());
+				$('#PmModal').click();
+			});
+			/* =============================PM 모달 테이블 end================================= */
+			
+			/* =============================PD 모달 테이블================================= */
+			$('#btnPDSearch').click(()=>{
+				let searchArr = {
+						column:$('#selectedEmpPDItem option:selected').val(),
+						columnValue:$('#PdValue').val(),
+						EMP_GB:$('#selectedEmpPDGB option:selected').val()
+						}; 
+				console.log(JSON.stringify(searchArr));
+				$.ajax({
+    				contentType:'application/json',
+    				dataType:'json',
+		            url:'/businessYesanAdmitGetResultEmpList',
+		            type:'POST',
+		            data:JSON.stringify(searchArr),
+		            success:(data)=>{
+		            	/* $('#accSearchList').destroy(); */
+		            	/* console.log(JSON.stringify(data)); */
+		    			$('#EmpPDList').DataTable({
+		    				searching:false,
+							lengthChange:false,
+							responsive: true,
+		    				destroy: true,
+		    				data:data,
+		    				columns: [
+		    			        {data: 'EMP_NO'},
+		    			        {data: 'KOR_NM'},
+		    			        {data: 'DEPT_NM'},
+		    			        {data: 'JIKGUP_NM'}
+		    			    ]
+	        			}); 
+	            	}
+				});
+			});
+			$('#EmpPDList').delegate('tr','dblclick',function(){
+				let tr = $(this);
+				let td = tr.children();
+				$('#PdName').val(td.eq(1).text());
+				$('#PdModal').click();
+			});
+			/* =============================PM 모달 테이블 end================================= */
+			init_pjtList();
 		});
 		
-		/* =============================PM 모달 테이블================================= */
-		$('#btnPMSearch').click(()=>{
-			let searchArr = {
-					column:$('#selectedEmpPMItem option:selected').val(),
-					columnValue:$('#PMValue').val(),
-					EMP_GB:$('#selectedEmpPMGB option:selected').val()
-					}; 
-			console.log(JSON.stringify(searchArr));
-			$.ajax({
-				contentType:'application/json',
-				dataType:'json',
-	            url:'/businessYesanAdmitGetResultEmpList',
-	            type:'POST',
-	            data:JSON.stringify(searchArr),
-	            success:(data)=>{
-	            	console.log(JSON.stringify(data));
-	            	
-	    			$('#EmpPMList').DataTable({
-	    				searching:false,
-						lengthChange:false,
-						responsive: true,
-	    				destroy: true,
-	    				data:data,
-	    				columns: [
-	    			        {data: 'EMP_NO'},
-	    			        {data: 'KOR_NM'},
-	    			        {data: 'DEPT_NM'},
-	    			        {data: 'JIKGUP_NM'}
-	    			    ]
-        			}); 
-            	}
-			});
-		});
-		$('#EmpPMList').delegate('tr','dblclick',function(){
-			let tr = $(this);
-			let td = tr.children();
-			$('#PmName').val(td.eq(1).text());
-			$('#PmModal').click();
-		});
-		/* =============================PM 모달 테이블 end================================= */
-		
-		/* =============================PD 모달 테이블================================= */
-		$('#btnPDSearch').click(()=>{
-			let searchArr = {
-					column:$('#selectedEmpPDItem option:selected').val(),
-					columnValue:$('#PdValue').val(),
-					EMP_GB:$('#selectedEmpPDGB option:selected').val()
-					}; 
-			console.log(JSON.stringify(searchArr));
-			$.ajax({
-				contentType:'application/json',
-				dataType:'json',
-	            url:'/businessYesanAdmitGetResultEmpList',
-	            type:'POST',
-	            data:JSON.stringify(searchArr),
-	            success:(data)=>{
-	            	/* $('#accSearchList').destroy(); */
-	            	/* console.log(JSON.stringify(data)); */
-	    			$('#EmpPDList').DataTable({
-	    				searching:false,
-						lengthChange:false,
-						responsive: true,
-	    				destroy: true,
-	    				data:data,
-	    				columns: [
-	    			        {data: 'EMP_NO'},
-	    			        {data: 'KOR_NM'},
-	    			        {data: 'DEPT_NM'},
-	    			        {data: 'JIKGUP_NM'}
-	    			    ]
-        			}); 
-            	}
-			});
-		});
-		$('#EmpPDList').delegate('tr','dblclick',function(){
-			let tr = $(this);
-			let td = tr.children();
-			$('#PdName').val(td.eq(1).text());
-			$('#PdModal').click();
-		});
-		/* =============================PM 모달 테이블 end================================= */
-		$('#EmpPDList').delegate('tr','dblclick',function(){
-			let tr = $(this);
-			let td = tr.children();
-			$('#PdName').val(td.eq(1).text());
-			$('#PdModal').click();
-		});
-		
-		init_pjtList();
-	});
 
-	/* =============================페이지 초기화================================= */
-	let init_pjtList = ()=>{
-		$(':radio[name="ACT_STAT"]:checked').trigger('click');
-		$('#btnProjectSearch').trigger('click');
-		$('#btnPMSearch').trigger('click');
-		$('#btnPDSearch').trigger('click');
-		
-	}
-	/* =============================페이지 초기화 end================================= */
+		/* =============================페이지 초기화================================= */
+		let init_pjtList = ()=>{
+			$(':radio[name="ACT_STAT"]:checked').trigger('click');
+			$('#btnProjectSearch').trigger('click');
+			$('#btnPMSearch').trigger('click');
+			$('#btnPDSearch').trigger('click');
+			
+		}
+		/* =============================페이지 초기화 end================================= */
 	</script>
 </th:block>
 
