@@ -309,7 +309,9 @@
 									<td><b>회계단위</b></td>
 									<td>
 										<select id="ACC_UNIT">
-											<option selected="selected" value="01">(주)운영회사</option>
+											<th:block th:each="f : ${accountFirm}">
+												<option value="01">[[${f.COMP_NM}]]</option>
+											</th:block>
 										</select>
 									</td>
 									<td><b>전표유형</b></td>
